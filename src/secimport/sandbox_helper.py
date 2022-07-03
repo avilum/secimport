@@ -35,7 +35,7 @@ def _run_dtrace_script_for_module(
         return True
 
     script_template = open(
-        "/Users/avilumelsky/Downloads/Python-3.10.0/dtrace-py/py_sandbox/py_sandbox_template.d",
+        "/Users/avilumelsky/git/secimport/templates/py_sandbox_template.d",
         "r",
     ).read()
     output_file = f"sandbox_{module_name}.log"
@@ -49,6 +49,8 @@ def _run_dtrace_script_for_module(
     dtrace_command = f'{"sudo " if use_sudo else ""} dtrace -q -s {module_file_path} -p {current_pid} -o {output_file} &2>/dev/null'
     print("(running command): ", dtrace_command)
     os.system(dtrace_command)
+
+    # TODO: wait for dtrace to start explicitly, not time based.
     time.sleep(2)
     return True
 

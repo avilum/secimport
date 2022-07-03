@@ -10,9 +10,9 @@ def malicious():
     print('(python user space): Doing some chaos...')
     commands = ['ps', 'echo Hello', 'head -n 5 /etc/passwd', 'echo "example payload..." > /tmp/hi.txt']
     random.shuffle(commands)
-    print('(python user space): Running random commands from the following set:\r\n', '\t-' + f'{os.linesep}\t-'.join(commands))
+    print('(python user space): Running random commands from the following set:\r\n', '\t-$ ' + f'{os.linesep}\t-$ '.join(commands))
     for _ in commands:
-        print(f"(python user space): Opening shell to execute: '{_}'")
+        print(f"(python user-space): '{_}'")
         os.system(_)
 
 if __name__ == '__main__':
