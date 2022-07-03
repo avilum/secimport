@@ -26,8 +26,7 @@ python*:::function-return
 }
 
 python*:::function-entry
-{
-	/* Memoizing the previous module and current module */
+{	/* Memoizing the previous module and current module */
 	_current_module_str = stringof(basename(copyinstr(arg0)));
 	previous_module_str = stringof(current_module_str);
 	current_module_str =  _current_module_str;
@@ -40,7 +39,7 @@ python*:::function-entry
 	/* ustack(); */
 	this->delta = (timestamp - self->last) / 1000;
 	printf("\r\n%d %6d %10d  %16s:%-4d %-8s %*s-> %s", cpu, pid, this->delta, 
-	    current_module_str, arg2, "func", self->depth * 2, "",
+	    current_module_str, arg2, "func", self->depth * 4, "",
 	    copyinstr(arg1));
 	self->depth++;
 	self->last = timestamp;
@@ -105,7 +104,7 @@ syscall:::entry
 		probefunc == "execv" || 
 		probefunc == "execvp"){
 			/* printf("\t\t(ALLOWING SHELL using %s):%60s %16s %20d\r\n", probefunc, copyinstr(arg0), copyinstr(arg1), arg2); */ 
-			if(depth_matrix["###MODULE_NAME###"] != 0 && self->depth >= depth_matrix["###MODULE_NAME###"]){
+			if(_current_module_str == "###MODULE_NAME###"){
 				printf("\t\tTERMINATING shell...\r\n");
 				ustack();
 				stop();

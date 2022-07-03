@@ -12,14 +12,21 @@ Examples based on:
 #pragma D option quiet
 #pragma D option switchrate=1
 
+/* A depth matrix for modules by name, maps each module (string) to the stack depth (int) at which it entered. */
+int depth_matrix[string];
 self int depth;
 self int sandbox_module_reached;
 
 string current_module_str;
 string previous_module_str;
+/* 
+inline string RED       = "33[31;1m";
+inline string BLUE      = "33[34;1m";
+inline string GREEN     = "33[32;1m";
+inline string VIOLET    = "33[35;1m";
+inline string OFF       = "33[0m";
+*/
 
-/* A depth matrix for modules by name, maps each module (string) to the stack depth (int) at which it entered. */
-int depth_matrix[string];
 dtrace:::BEGIN
 {
 	printf("%s %6s %10s  %16s:%-4s %-8s -- %s\n", "C", "PID", "DELTA(us)",
@@ -48,7 +55,7 @@ python*:::function-entry
 	}
 
 	printf("\r\n%d %6d %10d  %16s:%-4d %-8s %*s-> %s", cpu, pid, this->delta, 
-	    current_module_str, arg2, "func", self->depth * 2, "",
+	    current_module_str, arg2, "func", self->depth * 4, "",
 	    copyinstr(arg1));
 	self->depth++;
 	self->last = timestamp;
@@ -70,11 +77,22 @@ python*:::function-return
 syscall:::entry
 /pid == $target/
 {	
+	printf("\t%*s#%s",self->depth * 4, "",probefunc);
+	@calls[basename(execname), "syscall", probefunc] = count();
+	if (probefunc == "open"){
+		printf("(OPENING FILE): %s from thread %d in python module %s\r\n", probefunc, tid, current_module_str);
+	}
+	if (probefunc == "write"){
+		printf("(TOUCHING FILESYSTEM): %s(%d) from thread %d in python module %s\r\n", probefunc, arg1, tid, current_module_str);
+	}
+	if (probefunc == "socket") {
+		printf("(NETWORKING): %s(%d from thread %d in python module %s\r\n", probefunc, arg1, tid, current_module_str);
+	}
 	if (probefunc == "posix_spawn"){
-		printf("\t\t(OPENING SHELL using %s): (pid %d) (thread %d) (user %d) (python module: %s) (probe mod=%s, name=%s, prov=%s func=%s)\r\n", probefunc, pid, tid, uid, current_module_str, probemod, probename, probeprov, probefunc);
-		printf("\t\t%60s %16s %20d\$(r\n", copyinstr(arg0), copyinstr(arg1), arg2);
+		printf("(OPENING SHELL using %s): (pid %d) (thread %d) (user %d) (python module: %s) (probe mod=%s, name=%s, prov=%s func=%s)\r\n", probefunc, pid, tid, uid, current_module_str, probemod, probename, probeprov, probefunc);
+		printf("%60s %16s %20d\$(r\n", copyinstr(arg0), copyinstr(arg1), arg2);
 		if(depth_matrix["malicious.py"] != 0 && self->depth >= depth_matrix["malicious.py"]){
-			printf("\t\tSTOPPING shell...\r\n");
+			printf("\t\tTERMINATING shell...\r\n");
 			ustack();
 			stop();
 			printf("\t\tKILLING...\r\n");
@@ -98,7 +116,7 @@ syscall:::entry
 			{ 
 				/* printf("\t\t(ALLOWING SHELL using %s):%60s %16s %20d\r\n", probefunc, copyinstr(arg0), copyinstr(arg1), arg2); */ 
 				if(depth_matrix["malicious.py"] != 0 && self->depth >= depth_matrix["malicious.py"]){
-					printf("\t\tstopping shell...\r\n");
+					printf("\t\TERMINATING shell...\r\n");
 					ustack();
 					stop();
 					printf("\t\tkilling...\r\n");
@@ -107,17 +125,6 @@ syscall:::entry
 					exit(-1);
 				}
 	}
-	if (probefunc == "open"){
-		printf("\t\t(OPENING FILE): %s from thread %d in python module %s\r\n", probefunc, tid, current_module_str);
-	}
-	if (probefunc == "write"){
-		printf("\t\t(TOUCHING FILESYSTEM): %s(%d) from thread %d in python module %s\r\n", probefunc, arg1, tid, current_module_str);
-	}
-	if (probefunc == "socket") {
-		printf("\t\t(NETWORKING): %s(%d from thread %d in python module %s\r\n", probefunc, arg1, tid, current_module_str);
-	}
-	printf("\t\t#%s,\r\n", probefunc);
-	@calls[basename(execname), "syscall", probefunc] = count();
 }
 
 /* TODO: Add TCP established opening of connection probe, etc. */
