@@ -10,11 +10,13 @@ A cross-platform sandbox for python modules.<br> secimport can be used to:
 
 ### Requirements
 - A python interpreter that was built with --with-dtrace.
-  - See docs/INSTALL.md
+  - See <a href="docs/INSTALL.md">INSTALL.md</a>.
 
 <br>
 
 # Quick Start
+For the full list of examples, see <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
+
 ```python
 # example.py
 import os;  os.system('Hello World!');
