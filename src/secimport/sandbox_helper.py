@@ -1,75 +1,80 @@
+import importlib
 import os
-import imp
 import time
+
+BASE_DIR_NAME = f"/tmp/.secimport"
 
 
 def secure_import(
     module_name: str,
     allow_shells: bool = False,
     allow_networking: bool = False,
-    allow_filesystem: bool = False,
-    use_sudo=True,
-):
-    assert _run_dtrace_script_for_module(
-        module_name=module_name,
-        allow_shells=allow_shells,
-        allow_networking=allow_networking,
-        allow_filesystem=allow_filesystem,
-        use_sudo=use_sudo,
-    )
-    _module = __import__(module_name)
-    return _module
-
-
-def _run_dtrace_script_for_module(
-    module_name: str,
-    allow_shells: bool,
-    allow_networking: bool,
-    allow_filesystem: bool,
     use_sudo: bool = True,
     log_syscalls=True,
     log_network=True,
     log_file_system=True,
 ):
-    module_file_path = _create_dtrace_script_for_module(
+    assert run_dtrace_script_for_module(
         module_name=module_name,
         allow_shells=allow_shells,
         allow_networking=allow_networking,
-        log_syscalls=True,
-        log_network=True,
-        log_file_system=True,
+        use_sudo=use_sudo,
+        log_syscalls=log_syscalls,
+        log_network=log_network,
+        log_file_system=log_file_system,
     )
-    output_file = f"sandbox_{module_name}.log"
+    _module = __import__(module_name)
+    return _module
+
+
+def run_dtrace_script_for_module(
+    module_name: str,
+    allow_shells: bool,
+    allow_networking: bool,
+    use_sudo: bool,
+    log_syscalls: bool,
+    log_network: bool,
+    log_file_system: bool,
+):
+    module_file_path = create_dtrace_script_for_module(
+        module_name=module_name,
+        allow_shells=allow_shells,
+        allow_networking=allow_networking,
+        log_syscalls=log_syscalls,
+        log_network=log_network,
+        log_file_system=log_file_system,
+    )
+    output_file = os.path.join(BASE_DIR_NAME, f"sandbox_{module_name}.log")
     current_pid = os.getpid()
     dtrace_command = f'{"sudo " if use_sudo else ""} dtrace -q -s {module_file_path} -p {current_pid} -o {output_file} &2>/dev/null'
     print("(running dtrace supervisor): ", dtrace_command)
     os.system(dtrace_command)
 
-    # TODO: wait for dtrace to start explicitly using an event, not time based.
+    # TODO: wait for dtrace to start explicitly using an event/fd, not time based - although 2 seconds is more than enough.
     time.sleep(2)
     return True
 
-    # TODO: add startup logs for dropped packets without python modules (until the first python enter takes place).
+    # TODO: add startup logs for dropped packets without python modules (until the first python enter takes place in the syscalls probe, the python module is null).
     # TODO: add sanity check or parsing with dtrace on the flight and assert before attaching probes
 
 
-def _create_dtrace_script_for_module(
+def create_dtrace_script_for_module(
     module_name,
     allow_shells: bool,
     allow_networking: bool,
-    log_syscalls=True,
-    log_network=True,
-    log_file_system=True,
+    log_syscalls: bool,
+    log_network: bool,
+    log_file_system: bool,
 ) -> str:
     """
-    # Template components:
+    # Template components available at the moment:
     # ###FUNCTION_ENTRY###
     # ###FUNCTION_EXIT###
     # ###SYSCALL_ENTRY###
     """
-    module_traced_name = os.path.split(imp.find_module(module_name)[1])[
-        -1
-    ]  # "e.g this.py
+
+    module = importlib.machinery.PathFinder().find_spec(module_name)
+    module_traced_name = os.path.split(module.origin)[-1]  # "e.g this.py
 
     # TODO: Change path of all scripts
     script_template = open(
@@ -118,11 +123,19 @@ def _create_dtrace_script_for_module(
             "r",
         ).read()
         code_syscall_entry += f"{filter_networking_code}{{\n"
-        action_log_network = open(
-            "/Users/avilumelsky/git/secimport/templates/actions/log_network.d",
-            "r",
-        ).read()
-        code_syscall_entry += f"{action_log_network}}}\n"
+        if log_network is True:
+            action_log_network = open(
+                "/Users/avilumelsky/git/secimport/templates/actions/log_network.d",
+                "r",
+            ).read()
+            code_syscall_entry += f"{action_log_network}\n"
+        if allow_networking is False:
+            action_kill = open(
+                "/Users/avilumelsky/git/secimport/templates/actions/kill_process.d",
+                "r",
+            ).read()
+            code_syscall_entry += f"{action_kill}\n"
+        code_syscall_entry += "}\n"
 
     if allow_shells is False:
         filter_processes_code = open(
@@ -138,11 +151,18 @@ def _create_dtrace_script_for_module(
 
     script_template = script_template.replace("###SYSCALL_ENTRY###", code_syscall_entry)
     script_template = script_template.replace("###MODULE_NAME###", module_traced_name)
-    with open(f".sandbox-{module_name}.d", "w") as module_file:
+    if not os.path.exists(BASE_DIR_NAME):
+        os.mkdir(BASE_DIR_NAME)
+
+    module_file_name = os.path.join(BASE_DIR_NAME, f"sandbox-{module_name}.d")
+    with open(module_file_name, "w") as module_file:
         module_file.write(script_template)
-        return module_file.name
 
-
-if __name__ == "__main__":
-    print(_create_dtrace_script_for_module("this", allow_shells=True, allow_networking=True))
-    # secure_import("this")
+    # Making sure the script compiles
+    dtrace_compile_command = f"dtrace -s {module_file_name} -e"
+    compile_exit_code = os.system(dtrace_compile_command)
+    assert (
+        compile_exit_code == 0
+    ), f"Failed to compile the dtrace script at {module_file_name}"
+    print("Successfully compiled dtrace profile: ", module_file_name)
+    return module_file_name

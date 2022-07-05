@@ -1,4 +1,9 @@
- #!/bin/bash
+#!/bin/bash
+if [ `whoami` != root ]; then
+    echo Please run this script as root or using sudo.
+    exit
+fi
+
 echo "Testing the secure import..."
 source ~/venvs/dtrace/bin/activate
 

@@ -1,37 +1,60 @@
 # secimport
 A cross-platform sandbox for python modules. secimport can be used to:
 
-- Limit specific python modules inside your production environment.
+- Confine specific python modules inside your production environment.
   - Open Source, 3rd party from unstrusted sources.
-- Log the flow of your application/os level
+- Audit the flow of your python application at user-space/os/kernel level.
 - Run an entire python application under unified configuration
-  - Like `seccomp` and `seccomp-bpf`, <b>without changing your code</b>
+- Like `seccomp` and `seccomp-bpf`, <b>without changing your code</b>
+- Like `seccomp-bpf` per module in your code.
 
-# Why should I use secimport?
-- 
-- 
-- 
+### Requirements
+- A python interpreter that was built with --with-dtrace.
+  - See docs/INSTALL.md
 
-### Python Usage
+<br>
+
+# Quick Start
 ```python
-from secimport import secure_import 
-
-# import requests and kill it if a spawn/exec/fork/forkexec syscall is executed.
-requests = secure_import('requests', allow_shell=False)
+# example.py
+import os;  os.system('Hello World!');
 ```
+```python
+# Your production code
+from secimport import secure_import 
+example = secure_import('example', allow_shell=False)
+```
+- We imported `example` with limited capabilities.
+- If a syscall like `spawn/exec/fork/forkexec` will be executed
+  - The process will be `kill`ed with `-9` signal.
+<br><br>
 
+### How does it work?
+- TL;DR
+  - `dtrace` instrumentation scripts with destructive flag<br>
+- The supervision is done in syscall level, without IPC.
+  - very much like `seccomp/seccomp-bpf`.
+    - If you use docker, it does it as well, for example.
+- The supervision requires sudo privilliges (so `dtrace` will be able to read python's stack and modules).
+
+## Log4Shell as an example
+Not specific for python, but for the sake of demonstration.
+- <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=cve-2021-44228">Log4Shell - CVE-2021-44228</a>
+  - Let's say we want to block `log4j` from doing crazy things.
+  - In the following import we deny `log4j` from opening an LDAP connection / shell:
+    - `log4j = secure_import('log4j', allow_shell=False, allow_networking=False)`
+  - This would disable `log4j` from opening sockets and execute commands, IN THE KERNEL.
+  - You can choose any policy you like for any module.
+<br><br>
 
 ### Python Shell Interactive Example
 ```python
-(dtrace) ➜  src git:(master) ✗ python
 Python 3.10.0 (default, May  2 2022, 21:43:20) [Clang 13.0.0 (clang-1300.0.27.3)] on darwin
 Type "help", "copyright", "credits" or "license" for more information.
 
-# Let's import secimport
+# Let's import subprocess module, limiting it's syscall access.
 >>> import secimport
 >>> subprocess = secimport.secure_import("subprocess")
->>> subprocess
-<module 'subprocess' from '/Users/avilumelsky/Downloads/Python-3.10.0/Lib/subprocess.py'>    
 
 # Let's import os 
 >>> import os
@@ -41,90 +64,45 @@ Type "help", "copyright", "credits" or "license" for more information.
 50092 ttys001    0:04.66 /bin/zsh -l
 75860 ttys001    0:00.13 python
 0
-# It worked as expected, returning exit code 0;
+# It worked as expected, returning exit code 0.
 
 
-# Now, let's try to invoke the same command using the "secure imported" module:
+# Now, let's try to invoke the same logic using a different module, "subprocess", that was imported using secure_import:
 >>> subprocess.check_call('ps')
 [1]    75860 killed     python
-# Boom! 
+
+# Damn! That's cool.
 ```
 
-- `sandbox_subprocess.log`:
-```shell
-...
+- The dtrace profile is saved under:
+  -  `/tmp/.secimport/sandbox-subprocess.d`:
+- The log file for this module is under
+  -  `/tmp/.secimport/sandbox_subprocess.log`:
+        ```shell
+        ...
 
-(OPENING SHELL using posix_spawn): (pid 75860) (thread 344676) (user 501) (python module: <stdin>) (probe mod=, name=entry, prov=syscall func=posix_spawn) /bin/sh 
-		#posix_spawn,
-        (TOUCHING FILESYSTEM): write(140339021606912) from thread 344676 in python module <stdin>
-		
-...
-        libsystem_kernel.dylib`__fork+0xb
-        _posixsubprocess.cpython-310-darwin.so`do_fork_exec+0x29
-        _posixsubprocess.cpython-310-darwin.so`subprocess_fork_exec+0x71f
-        python.exe`cfunction_call+0x86
-killing...
-killed.
+        (OPENING SHELL using posix_spawn): (pid 75860) (thread 344676) (user 501) (python module: <stdin>) (probe mod=, name=entry, prov=syscall func=posix_spawn) /bin/sh 
+            #posix_spawn,
 
-Calls for PID 75860,
+        (TOUCHING FILESYSTEM): write(140339021606912) from thread 344676
+                    libsystem_kernel.dylib`__fork+0xb
+                    _posixsubprocess.cpython-310-darwin.so`do_fork_exec+0x29
+                    _posixsubprocess.cpython-310-darwin.so`subprocess_fork_exec+0x71f
+                    python.exe`cfunction_call+0x86
+        killing...
+        killed.
+        ```
 
- FILE                             TYPE       NAME                      COUNT
- python.exe                       syscall    fstatfs64                     1
- python.exe                       syscall    getdirentries64               1
- python.exe                       syscall    kqueue                        1
- python.exe                       syscall    poll                          1
- python.exe                       syscall    madvise                       2
- python.exe                       syscall    pipe                          2
- python.exe                       syscall    posix_spawn                   2
- python.exe                       syscall    wait4_nocancel                2
- python.exe                       syscall    write                         3
- python.exe                       syscall    munmap                        4
- python.exe                       syscall    fcntl_nocancel               10
- python.exe                       syscall    lseek                        10
- python.exe                       syscall    close_nocancel               11
- python.exe                       syscall    open_nocancel                11
- python.exe                       syscall    fcntl                        12
- python.exe                       syscall    open                         17
- python.exe                       syscall    close                        20
- python.exe                       syscall    fstat64                      20
- python.exe                       syscall    mmap                         20
- python.exe                       syscall    mprotect                     20
- python.exe                       syscall    sigprocmask                  34
- python.exe                       syscall    ioctl                        48
- python.exe                       syscall    stat64                       58
- python.exe                       syscall    sigaction                    78
- python.exe                       syscall    select                      102
- python.exe                       syscall    write_nocancel              114
- python.exe                       syscall    read                        222
-```
+## Useful Links
+- https://www.brendangregg.com/DTrace/DTrace-cheatsheet.pdf
+- https://github.com/netblue30/firejail/blob/master/contrib/syscalls.sh
+  - A script to list all your application's syscalls using `strace`. I contributed it to `firejail` a few years ago.
+    - ```
+      wget "https://raw.githubusercontent.com/netblue30/firejail/c5d426b245b24d5bd432893f74baec04cb8b59ed/contrib/syscalls.sh" -O syscalls.sh
+      chmod +x syscalls.sh
+      ./syscalls.sh examples/http_request.py
+      ```
 
-## Requirements
-The <b>only(!)</b> requirement is a python interpreter that was built with --with-dtrace.
-
-```shell
-PYTHON_VERSION="3.7.0"
-
-cd /tmp
-curl -o Python-$PYTHON_VERSION.tgz https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz
-tar -xzf Python-$PYTHON_VERSION.tgz
-cd Python-$PYTHON_VERSION && ./configure --with-dtrace && make
-
-python3 -m venv ~/venvs/dtrace
-source ~/venvs/dtrace/bin/activate
-```
-
-### How does it work?
-- (TL;DR) dtrace instrumentation scripts with destructive flag<br>
-- The supervision is done in a OS syscall level, without IPC. very much like `seccomp/seccomp-bpf`. Docker does it as well, for example.
-- The supervision requires the sudo privilliges
-
-### Is it production-ready?
-From <a href="https://en.wikipedia.org/wiki/DTrace">Wikipedia</a>:
->Special consideration has been taken to make DTrace safe to use in a production environment. For example, there is minimal probe effect when tracing is underway, and no performance impact associated with any disabled probe; this is important since there are tens of thousands of DTrace probes that can be enabled. New probes can also be created dynamically.
-
-### Mac users?
-To use dtrace and to access moduels names in the kernel, you should disable SIP (System Integrity Protection) for dtrace. You can disable it for dtrace only:
-  - boot into recovery mode using `command + R`.
-  -  When recovery mode screen is show, open Utilities -> Terminal
-  - `csrutil disable`
-  - `csrutil enable --without dtrace` 
+## Coming soon
+- Node/Deno support
+- Whitelist/Blacklist configuration

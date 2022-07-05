@@ -1,13 +1,13 @@
 from secimport import secure_import
 
-# Should not do anything as nothing is executed in the forbodden module.
+# 'secure_import' don't interfere with other modules. os should work.
 import os
 
 malicious = secure_import("malicious")
 
 if __name__ == "__main__":
     os.system(
-        'echo "Hello from os.system! Now we will try to execute the malicious module under supervision..."'
+        'echo "\nHello from os.system!\n Now we will try to execute the malicious module under supervision..."'
     )
     malicious.malicious()
 
