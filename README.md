@@ -1,5 +1,5 @@
 # secimport
-A cross-platform sandbox for python modules. secimport can be used to:
+A cross-platform sandbox for python modules.<br> secimport can be used to:
 
 - Confine specific python modules inside your production environment.
   - Open Source, 3rd party from unstrusted sources.
@@ -47,7 +47,7 @@ Not specific for python, but for the sake of demonstration.
   - You can choose any policy you like for any module.
 <br><br>
 
-### Python Shell Interactive Example
+## Python Shell Interactive Example
 ```python
 Python 3.10.0 (default, May  2 2022, 21:43:20) [Clang 13.0.0 (clang-1300.0.27.3)] on darwin
 Type "help", "copyright", "credits" or "license" for more information.
@@ -94,15 +94,20 @@ Type "help", "copyright", "credits" or "license" for more information.
         ```
 
 ## Useful Links
-- https://www.brendangregg.com/DTrace/DTrace-cheatsheet.pdf
+- <a href="docs/EXAMPLES.md">Examples</a>
+- <a href="docs/FAQ.md">F.A.Q</a>
+- <a href="docs/INSTALL.md">Installation</a>
+- <a href="docs/MAC_OS_USERS.md">Mac OS Users</a> - Disabling SIP for strace
 - https://github.com/netblue30/firejail/blob/master/contrib/syscalls.sh
-  - A script to list all your application's syscalls using `strace`. I contributed it to `firejail` a few years ago.
-    - ```
-      wget "https://raw.githubusercontent.com/netblue30/firejail/c5d426b245b24d5bd432893f74baec04cb8b59ed/contrib/syscalls.sh" -O syscalls.sh
-      chmod +x syscalls.sh
-      ./syscalls.sh examples/http_request.py
-      ```
+  - A script to list all your application's syscalls using `strace`.<br> I contributed it to `firejail` a few years ago.
+    ```
+    wget "https://raw.githubusercontent.com/netblue30/firejail/c5d426b245b24d5bd432893f74baec04cb8b59ed/contrib/syscalls.sh" -O syscalls.sh
+    chmod +x syscalls.sh
+    ./syscalls.sh examples/http_request.py
+    ```
+- https://www.brendangregg.com/DTrace/DTrace-cheatsheet.pdf
+<br><br>
 
-## Coming soon
-- Node/Deno support
+## TODO:
+- Node/Deno support (dtrace hooks)
 - Whitelist/Blacklist configuration
