@@ -14,31 +14,40 @@ A cross-platform sandbox for python modules. secimport can be used to:
 
 ### Python Usage
 ```python
-import secimport
+from secimport import secure_import 
 
-# import log4j and kill it if a spawn/exec/fork/forkexec syscall is executed, etc.
-log4j = secimport.secure_import('log4j', allow_shell=False)
+# import requests and kill it if a spawn/exec/fork/forkexec syscall is executed.
+requests = secure_import('requests', allow_shell=False)
 ```
-### Interactive Example
+
+
+### Python Shell Interactive Example
 ```python
 (dtrace) ➜  src git:(master) ✗ python
 Python 3.10.0 (default, May  2 2022, 21:43:20) [Clang 13.0.0 (clang-1300.0.27.3)] on darwin
 Type "help", "copyright", "credits" or "license" for more information.
 
+# Let's import secimport
 >>> import secimport
 >>> subprocess = secimport.secure_import("subprocess")
 >>> subprocess
 <module 'subprocess' from '/Users/avilumelsky/Downloads/Python-3.10.0/Lib/subprocess.py'>    
 
->>> import os # Regular import
+# Let's import os 
+>>> import os
 >>> os.system("ps")
   PID TTY           TIME CMD
  2022 ttys000    0:00.61 /bin/zsh -l
 50092 ttys001    0:04.66 /bin/zsh -l
 75860 ttys001    0:00.13 python
 0
+# It worked as expected, returning exit code 0;
+
+
+# Now, let's try to invoke the same command using the "secure imported" module:
 >>> subprocess.check_call('ps')
 [1]    75860 killed     python
+# Boom! 
 ```
 
 - `sandbox_subprocess.log`:

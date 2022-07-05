@@ -27,6 +27,7 @@ python*:::function-return
 python*:::function-entry
 {
 	this->delta = (timestamp - self->last) / 1000;
+	self->depth++;
 
 	/* Memoizing the previous module and current module */
 	_current_module_str = stringof(basename(copyinstr(arg0)));
@@ -34,13 +35,14 @@ python*:::function-entry
 	current_module_str =  _current_module_str;
 
 	/* Saving the stack depth for each module, assuming interpreter with GIL will run line-by-line. */
+	if (depth_matrix[current_module_str] > self->depth){
+		depth_matrix["###MODULE_NAME###"] = 0;
+	}
 	if (depth_matrix[current_module_str] == 0){
 		depth_matrix[current_module_str] = self->depth;
 	}
 	
 	###FUNCTION_ENTRY###
-
-	self->depth++;
 	self->last = timestamp;
 }
 
@@ -49,9 +51,11 @@ python*:::function-return
 	
 	this->delta = (timestamp - self->last) / 1000;
 	self->depth -= self->depth > 0 ? 1 : 0;
-	printf("\t\t\t DEPTH=%d\r\n", self->depth);
-	if (depth_matrix[current_module_str] >= self->depth){
+	/* if (depth_matrix[current_module_str] >= self->depth){
 		depth_matrix[current_module_str] = 0;
+	} */
+	if (depth_matrix["###MODULE_NAME###"] > self->depth){
+		depth_matrix["###MODULE_NAME###"] = 0;
 	}
 	###FUNCTION_EXIT###
 	self->last = timestamp;

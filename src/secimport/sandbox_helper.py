@@ -42,7 +42,7 @@ def _run_dtrace_script_for_module(
     output_file = f"sandbox_{module_name}.log"
     current_pid = os.getpid()
     dtrace_command = f'{"sudo " if use_sudo else ""} dtrace -q -s {module_file_path} -p {current_pid} -o {output_file} &2>/dev/null'
-    print("(running command): ", dtrace_command)
+    print("(running dtrace supervisor): ", dtrace_command)
     os.system(dtrace_command)
 
     # TODO: wait for dtrace to start explicitly using an event, not time based.
@@ -138,7 +138,7 @@ def _create_dtrace_script_for_module(
 
     script_template = script_template.replace("###SYSCALL_ENTRY###", code_syscall_entry)
     script_template = script_template.replace("###MODULE_NAME###", module_traced_name)
-    with open(f".{module_name}-sandbox.d", "w") as module_file:
+    with open(f".sandbox-{module_name}.d", "w") as module_file:
         module_file.write(script_template)
         return module_file.name
 

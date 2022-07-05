@@ -1,1 +1,1 @@
-        printf("\t\t#%s,\r\n", probefunc);
+        printf("\n\t\t-> #%s,", probefunc);
