@@ -3,7 +3,7 @@ from secimport.sandbox_helper import secure_import, create_dtrace_script_for_mod
 import os
 
 
-class TestPySandbox(TestCase):
+class TestSecImport(TestCase):
     def test_import_with_shell_true(self):
         secure_import("urllib")
         a = [_**9 for _ in range(100)]

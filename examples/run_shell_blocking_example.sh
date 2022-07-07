@@ -4,7 +4,7 @@ if [ `whoami` != root ]; then
     exit
 fi
 
-echo "Testing the secure import..."
+echo "Testing the secure import on shell opening..."
 source ~/venvs/dtrace/bin/activate
 
 # An example using using implicit python code
