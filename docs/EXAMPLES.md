@@ -2,7 +2,7 @@
 1. Enter a root shell and `export PYTHONPATH=$(pwd)/src:$(pwd)/examples:$(pwd):$PYTHONPATH`<br>
 2. Make sure the python interpreter you use was compiled with `dtrace`.
 3. Run any of the examples in the following way:
-- `(root) sh-3.2#  python examples/production.py`
+- `(root) sh-3.2#  python examples/malicious_with_secure_import.py`
 
 ## Available examples:
 - Python (import inline):
