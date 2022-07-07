@@ -1,15 +1,22 @@
 # secimport
-A sandbox for python modules.<br> secimport can be used to:
+<p align="center">
+ <a href="https://github.com/avilum/secimport"><img src="https://user-images.githubusercontent.com/19243302/177835749-6aec7200-718e-431a-9ab5-c83c6f68565e.png" alt="secimport"></a>
+</p>
 
-- Confine specific python modules inside your production environment.
+<p align="center">
+A sandbox/supervisor for python modules.
+</p>
+
+`secimport` can be used to:
+- Confine/Restrict specific python modules inside your production environment.
   - Open Source, 3rd party from unstrusted sources.
 - Audit the flow of your python application at user-space/os/kernel level.
 - Run an entire python application under unified configuration
-- Like `seccomp` and `seccomp-bpf`, <b>without changing your code</b>
-- Not limited to Linux kernels. Cross platform.
+  - Like `seccomp` and `seccomp-bpf`, <b>without changing your code</b>
+  - Not limited to Linux kernels. Cross platform.
 
 ### Requirements
-- A python interpreter that was built with --with-dtrace.
+- A python interpreter that was built with `--with-dtrace`.
   - See <a href="docs/INSTALL.md">INSTALL.md</a>.
 
 <br>
@@ -20,22 +27,22 @@ For the full list of examples, see <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
 ### Shell blocking
 ```python
 # example.py - Executes code upon import;
-import os;
+  import os;
 
-os.system('Hello World!');
+  os.system('Hello World!');
 ```
 ```python
 # production.py - Your production code
-from secimport import secure_import 
+  from secimport import secure_import 
 
-example = secure_import('example', allow_shells=False)
+  example = secure_import('example', allow_shells=False)
 ```
-- ```
-    (root) sh-3.2#  export PYTHONPATH=$(pwd)/src:$(pwd)/examples:$(pwd):$PYTHONPATH
-    (root) sh-3.2#  python examples/production.py 
-      Successfully compiled dtrace profile:  /tmp/.secimport/sandbox_example.d
-    Killed: 9
-  ```
+```
+(root) sh-3.2#  export PYTHONPATH=$(pwd)/src:$(pwd)/examples:$(pwd):$PYTHONPATH
+(root) sh-3.2#  python examples/production.py 
+  Successfully compiled dtrace profile:  /tmp/.secimport/sandbox_example.d
+Killed: 9
+```
 - We imported `example` with limited capabilities.
 - If a syscall like `spawn/exec/fork/forkexec` will be executed
   - The process will be `kill`ed with `-9` signal.
@@ -54,16 +61,6 @@ example = secure_import('example', allow_shells=False)
 >>> requests.get('https://google.com')
 [1]    86664 killed
 ```
-
-## Log4Shell as an example
-Not specific for python, but for the sake of demonstration.
-- <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=cve-2021-44228">Log4Shell - CVE-2021-44228</a>
-  - Let's say we want to block `log4j` from doing crazy things.
-  - In the following import we deny `log4j` from opening an LDAP connection / shell:
-    - `log4j = secure_import('log4j', allow_shells=False, allow_networking=False)`
-  - This would disable `log4j` from opening sockets and execute commands, IN THE KERNEL.
-  - You can choose any policy you like for any module.
-<br><br>
 
 ## Python Shell Interactive Example
 ```python
@@ -136,5 +133,10 @@ Type "help", "copyright", "credits" or "license" for more information.
 <br><br>
 
 ## TODO:
-- Node/Deno support (dtrace hooks)
-- Whitelist/Blocklist configuration
+- Node support (dtrace hooks)
+- Go support (dtrace hooks)
+- Allow/Block list configuration
+- Create a .yaml configuration per module in the code
+  - Use secimport to compile that yml
+  - Create a single dcript policy
+  - Run an application with that policy using dtrace, without using `secure_import`
