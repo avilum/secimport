@@ -1,6 +1,6 @@
         printf("\t\t\t\tDETECTED SHELL, depth=%d sandboxed_depth=%d\r\n", self->depth, depth_matrix["###MODULE_NAME###"]);
         if((self->depth == 0 && depth_matrix["###MODULE_NAME###"] == 0) ||
-            (depth_matrix["###MODULE_NAME###"] != 0 && self->depth > depth_matrix["###MODULE_NAME###"])){
+            (depth_matrix["###MODULE_NAME###"] != 0 && self->depth >= depth_matrix["###MODULE_NAME###"])){
                 printf("\t\tTERMINATING shell...\r\n");
                 ustack();
                 stop();

@@ -19,17 +19,23 @@ For the full list of examples, see <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
 
 ### Shell blocking
 ```python
-# example.py
+# example.py - Executes code upon import;
 import os;
 
 os.system('Hello World!');
 ```
 ```python
-# Your production code
+# production.py - Your production code
 from secimport import secure_import 
 
-example = secure_import('example', allow_shell=False)
+example = secure_import('example', allow_shells=False)
 ```
+- ```
+    (root) sh-3.2#  export PYTHONPATH=$(pwd)/src:$(pwd)/examples:$(pwd):$PYTHONPATH
+    (root) sh-3.2#  python examples/production.py 
+      Successfully compiled dtrace profile:  /tmp/.secimport/sandbox_example.d
+    Killed: 9
+  ```
 - We imported `example` with limited capabilities.
 - If a syscall like `spawn/exec/fork/forkexec` will be executed
   - The process will be `kill`ed with `-9` signal.
@@ -49,20 +55,12 @@ example = secure_import('example', allow_shell=False)
 [1]    86664 killed
 ```
 
-## How does it work?
-- TL;DR
-  - `dtrace` instrumentation scripts with destructive flag<br>
-- The supervision is done in syscall level, without IPC.
-  - very much like `seccomp/seccomp-bpf`.
-    - If you use docker, it does it as well, for example.
-- The supervision requires sudo privilliges (so `dtrace` will be able to read python's stack and modules).
-
 ## Log4Shell as an example
 Not specific for python, but for the sake of demonstration.
 - <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=cve-2021-44228">Log4Shell - CVE-2021-44228</a>
   - Let's say we want to block `log4j` from doing crazy things.
   - In the following import we deny `log4j` from opening an LDAP connection / shell:
-    - `log4j = secure_import('log4j', allow_shell=False, allow_networking=False)`
+    - `log4j = secure_import('log4j', allow_shells=False, allow_networking=False)`
   - This would disable `log4j` from opening sockets and execute commands, IN THE KERNEL.
   - You can choose any policy you like for any module.
 <br><br>
