@@ -17,18 +17,37 @@ A cross-platform sandbox for python modules.<br> secimport can be used to:
 # Quick Start
 For the full list of examples, see <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
 
+## Shell blocking example
 ```python
 # example.py
-import os;  os.system('Hello World!');
+import os;
+
+os.system('Hello World!');
 ```
 ```python
 # Your production code
 from secimport import secure_import 
+
 example = secure_import('example', allow_shell=False)
 ```
 - We imported `example` with limited capabilities.
 - If a syscall like `spawn/exec/fork/forkexec` will be executed
   - The process will be `kill`ed with `-9` signal.
+
+## Networking blocking example
+```
+>>> import requests
+>>> requests.get('https://google.com')
+<Response [200]>
+  
+
+>>> from secimport import secure_import
+>>> requests = secure_import('requests', allow_networking=False)
+
+# The next call should kill the process, since networking is not allowed
+>>> requests.get('https://google.com')
+[1]    86664 killed
+```
 <br><br>
 
 ### How does it work?

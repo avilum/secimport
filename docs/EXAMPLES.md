@@ -4,6 +4,7 @@ Python (import inline):
 - `examples/malicious_with_secure_import.py`
 - `requests` example - secure import vs regular import (Killed because of socket related syscall)
   - ```
+    
     from secimport import secure_import
     import requests
     
