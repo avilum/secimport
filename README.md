@@ -1,12 +1,12 @@
 # secimport
-A cross-platform sandbox for python modules.<br> secimport can be used to:
+A sandbox for python modules.<br> secimport can be used to:
 
 - Confine specific python modules inside your production environment.
   - Open Source, 3rd party from unstrusted sources.
 - Audit the flow of your python application at user-space/os/kernel level.
 - Run an entire python application under unified configuration
 - Like `seccomp` and `seccomp-bpf`, <b>without changing your code</b>
-- Like `seccomp-bpf` per module in your code.
+- Not limited to Linux kernels. Cross platform.
 
 ### Requirements
 - A python interpreter that was built with --with-dtrace.
@@ -17,7 +17,7 @@ A cross-platform sandbox for python modules.<br> secimport can be used to:
 # Quick Start
 For the full list of examples, see <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
 
-## Shell blocking example
+### Shell blocking
 ```python
 # example.py
 import os;
@@ -34,7 +34,7 @@ example = secure_import('example', allow_shell=False)
 - If a syscall like `spawn/exec/fork/forkexec` will be executed
   - The process will be `kill`ed with `-9` signal.
 
-## Networking blocking example
+### Network blocking
 ```
 >>> import requests
 >>> requests.get('https://google.com')
@@ -48,9 +48,8 @@ example = secure_import('example', allow_shell=False)
 >>> requests.get('https://google.com')
 [1]    86664 killed
 ```
-<br><br>
 
-### How does it work?
+## How does it work?
 - TL;DR
   - `dtrace` instrumentation scripts with destructive flag<br>
 - The supervision is done in syscall level, without IPC.
@@ -95,8 +94,8 @@ Type "help", "copyright", "credits" or "license" for more information.
 # Damn! That's cool.
 ```
 
-- The dtrace profile is saved under:
-  -  `/tmp/.secimport/sandbox-subprocess.d`:
+- The dtrace profile for the module is saved under:
+  -  `/tmp/.secimport/sandbox_subprocess.d`:
 - The log file for this module is under
   -  `/tmp/.secimport/sandbox_subprocess.log`:
         ```shell
@@ -114,21 +113,30 @@ Type "help", "copyright", "credits" or "license" for more information.
         killed.
         ```
 
-## Useful Links
+## Useful References
 - <a href="docs/EXAMPLES.md">Examples</a>
 - <a href="docs/FAQ.md">F.A.Q</a>
 - <a href="docs/INSTALL.md">Installation</a>
-- <a href="docs/MAC_OS_USERS.md">Mac OS Users</a> - Disabling SIP for strace
-- https://github.com/netblue30/firejail/blob/master/contrib/syscalls.sh
-  - A script to list all your application's syscalls using `strace`.<br> I contributed it to `firejail` a few years ago.
-    ```
-    wget "https://raw.githubusercontent.com/netblue30/firejail/c5d426b245b24d5bd432893f74baec04cb8b59ed/contrib/syscalls.sh" -O syscalls.sh
-    chmod +x syscalls.sh
-    ./syscalls.sh examples/http_request.py
-    ```
+- <a href="docs/MAC_OS_USERS.md">Mac OS Users</a> - Disabling SIP for dtrace
+- Tracing processes
+  - Using `dtrace`
+    - Tracing the syscalls of a process with pid `12345`
+      - `dtrace -n 'syscall::: /pid == ($1)/ {@[pid,execname,probefunc]=count()}' 12345`
+    - Tracing the syscalls of a docker container with pid `12345`
+      - `dtrace -n 'syscall::: /progenyof($1)/ {@[pid,execname,probefunc]=count()}' 12345`
+  - Using `strace`
+    -  A script to list all your application's syscalls using `strace`.<br> I contributed it to `firejail` a few years ago:
+      - https://github.com/netblue30/firejail/blob/master/contrib/syscalls.sh
+      - ```
+        wget "https://raw.githubusercontent.com/netblue30/firejail/c5d426b245b24d5bd432893f74baec04cb8b59ed/contrib/syscalls.sh" -O syscalls.sh
+
+        chmod +x syscalls.sh
+
+        ./syscalls.sh examples/http_request.py
+        ```
 - https://www.brendangregg.com/DTrace/DTrace-cheatsheet.pdf
 <br><br>
 
 ## TODO:
 - Node/Deno support (dtrace hooks)
-- Whitelist/Blacklist configuration
+- Whitelist/Blocklist configuration

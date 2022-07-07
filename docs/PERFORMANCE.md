@@ -1,4 +1,5 @@
 # Performance Benchmarks
+- ./python -m pyperformance run
 - examples/numpy_example.py
 - examples/numpy_example_with_secure_import.py
 
