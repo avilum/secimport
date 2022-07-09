@@ -1,3 +1,9 @@
+"""Import python modules with dtrace supervision.
+
+Copyright (c) 2022 Avi Lumelsky
+"""
+
+
 import importlib
 import os
 import time
@@ -11,9 +17,9 @@ def secure_import(
     allow_networking: bool = False,
     use_sudo: bool = True,
     log_python_calls: bool = False,  # When True, the log file might reach GB in seconds.
-    log_syscalls=False,  # When True, the log file might reach GB in seconds.
-    log_network=False,  # When True, the log file might reach GB in seconds.
-    log_file_system=False,  # When True, the log file might reach GB in seconds.
+    log_syscalls: bool = False,  # When True, the log file might reach GB in seconds.
+    log_network: bool = False,  # When True, the log file might reach GB in seconds.
+    log_file_system: bool = False,  # When True, the log file might reach GB in seconds.
 ):
     """Import a python module in confined settings.
 
@@ -76,7 +82,7 @@ def run_dtrace_script_for_module(
 
 
 def create_dtrace_script_for_module(
-    module_name,
+    module_name: str,
     allow_shells: bool,
     allow_networking: bool,
     log_python_calls: bool,
@@ -149,12 +155,14 @@ def create_dtrace_script_for_module(
             "r",
         ).read()
         code_syscall_entry += f"{filter_networking_code}{{\n"
+
         if log_network is True:
             action_log_network = open(
                 f"{templates_dir}/actions/log_network.d",
                 "r",
             ).read()
             code_syscall_entry += f"{action_log_network}\n"
+
         if allow_networking is False:
             action_kill = open(
                 f"{templates_dir}/actions/kill_process.d",
@@ -177,6 +185,8 @@ def create_dtrace_script_for_module(
 
     script_template = script_template.replace("###SYSCALL_ENTRY###", code_syscall_entry)
     script_template = script_template.replace("###MODULE_NAME###", module_traced_name)
+
+    # Creating a dscript file with the modified template
     if not os.path.exists(BASE_DIR_NAME):
         os.mkdir(BASE_DIR_NAME)
 
