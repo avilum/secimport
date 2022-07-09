@@ -7,8 +7,10 @@ Copyright (c) 2022 Avi Lumelsky
 import importlib
 import os
 import time
+from pathlib import Path
 
-BASE_DIR_NAME = f"/tmp/.secimport"
+BASE_DIR_NAME = Path("/tmp/.secimport")
+TEMPLATES_DIR_NAME = Path(os.path.split(__file__)[:-1][0]) / "templates"
 
 
 def secure_import(
@@ -57,6 +59,7 @@ def run_dtrace_script_for_module(
     log_syscalls: bool,
     log_network: bool,
     log_file_system: bool,
+    templates_dir: Path = TEMPLATES_DIR_NAME,
 ):
     module_file_path = create_dtrace_script_for_module(
         module_name=module_name,
@@ -66,8 +69,9 @@ def run_dtrace_script_for_module(
         log_syscalls=log_syscalls,
         log_network=log_network,
         log_file_system=log_file_system,
+        templates_dir=templates_dir
     )
-    output_file = os.path.join(BASE_DIR_NAME, f"sandbox_{module_name}.log")
+    output_file = BASE_DIR_NAME / f"sandbox_{module_name}.log"
     current_pid = os.getpid()
     dtrace_command = f'{"sudo " if use_sudo else ""} dtrace -q -s {module_file_path} -p {current_pid} -o {output_file} &2>/dev/null'
     print("(running dtrace supervisor): ", dtrace_command)
@@ -89,7 +93,7 @@ def create_dtrace_script_for_module(
     log_syscalls: bool,
     log_network: bool,
     log_file_system: bool,
-    templates_dir: str = "templates",
+    templates_dir: str
 ) -> str:
     """
     # Template components available at the moment:
@@ -104,7 +108,7 @@ def create_dtrace_script_for_module(
 
     # TODO: Change path of all scripts
     script_template = open(
-        f"{templates_dir}/default.template.d",
+        templates_dir / "default.template.d",
         "r",
     ).read()
 
@@ -112,11 +116,11 @@ def create_dtrace_script_for_module(
     code_syscall_entry = ""
     if log_python_calls is True:
         code_function_entry = open(
-            f"{templates_dir}/actions/log_python_module_entry.d",
+            templates_dir / "actions/log_python_module_entry.d",
             "r",
         ).read()
         code_function_exit = open(
-            f"{templates_dir}/actions/log_python_module_exit.d",
+            templates_dir / "actions/log_python_module_exit.d",
             "r",
         ).read()
         script_template = script_template.replace(
@@ -132,40 +136,40 @@ def create_dtrace_script_for_module(
     # SYSCALLS instrumentations
     if log_syscalls is True:
         _code = open(
-            f"{templates_dir}/actions/log_syscall.d",
+            templates_dir / "actions/log_syscall.d",
             "r",
         ).read()
         code_syscall_entry += f"{_code};\n"
 
     if log_file_system is True:
         filter_fs_code = open(
-            f"{templates_dir}/filters/file_system.d",
+            templates_dir / "filters/file_system.d",
             "r",
         ).read()
         code_syscall_entry += f"{filter_fs_code}\n{{"
         action_log_file_system = open(
-            f"{templates_dir}/actions/log_file_system.d",
+            templates_dir / "actions/log_file_system.d",
             "r",
         ).read()
         code_syscall_entry += f"{action_log_file_system}}}\n"
 
     if allow_networking is False or log_network is True:
         filter_networking_code = open(
-            f"{templates_dir}/filters/networking.d",
+            templates_dir / "filters/networking.d",
             "r",
         ).read()
         code_syscall_entry += f"{filter_networking_code}{{\n"
 
         if log_network is True:
             action_log_network = open(
-                f"{templates_dir}/actions/log_network.d",
+                templates_dir / "actions/log_network.d",
                 "r",
             ).read()
             code_syscall_entry += f"{action_log_network}\n"
 
         if allow_networking is False:
             action_kill = open(
-                f"{templates_dir}/actions/kill_process.d",
+                templates_dir / "actions/kill_process.d",
                 "r",
             ).read()
             code_syscall_entry += f"{action_kill}\n"
@@ -173,12 +177,12 @@ def create_dtrace_script_for_module(
 
     if allow_shells is False:
         filter_processes_code = open(
-            f"{templates_dir}/filters/processes.d",
+            templates_dir / "filters/processes.d",
             "r",
         ).read()
         code_syscall_entry += f"{filter_processes_code}{{\n"
         action_kill_on_processing = open(
-            f"{templates_dir}/actions/kill_on_processing.d",
+            templates_dir / "actions/kill_on_processing.d",
             "r",
         ).read()
         code_syscall_entry += f"{action_kill_on_processing}}}\n"
