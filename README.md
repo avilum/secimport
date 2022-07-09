@@ -1,8 +1,8 @@
 # secimport
+
 <p align="center">
  <a href="https://github.com/avilum/secimport"><img src="https://user-images.githubusercontent.com/19243302/177835749-6aec7200-718e-431a-9ab5-c83c6f68565e.png" alt="secimport"></a>
 </p>
-
 <p align="center">
 A sandbox/supervisor for python modules.
 </p>
@@ -16,9 +16,12 @@ A sandbox/supervisor for python modules.
   - Not limited to Linux kernels. Cross platform.
 
 ### Requirements
-- A python interpreter that was built with `--with-dtrace`.
-  - See <a href="docs/INSTALL.md">INSTALL.md</a>.
-
+The only requirement is a Python interpreter that was built with --with-dtrace.
+  - See <a href="docs/INSTALL.md">INSTALL.md</a> for a detailed setup from scratch.
+- pip
+  - `python3 -m pip install secimport`
+- Poetry
+  - `python3 -m pip install poetry && python3 -m poetry build`
 <br>
 
 # Quick Start
@@ -27,20 +30,21 @@ For the full list of examples, see <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
 ### Shell blocking
 ```python
 # example.py - Executes code upon import;
-  import os;
+import os;
 
-  os.system('Hello World!');
+os.system('Hello World!');
 ```
 ```python
 # production.py - Your production code
-  from secimport import secure_import 
+from secimport import secure_import 
 
-  example = secure_import('example', allow_shells=False)
+example = secure_import('example', allow_shells=False)
 ```
+Let's run the  and see what happens:
 ```
 (root) sh-3.2#  export PYTHONPATH=$(pwd)/src:$(pwd)/examples:$(pwd):$PYTHONPATH
 (root) sh-3.2#  python examples/production.py 
-  Successfully compiled dtrace profile:  /tmp/.secimport/sandbox_example.d
+Successfully compiled dtrace profile:  /tmp/.secimport/sandbox_example.d
 Killed: 9
 ```
 - We imported `example` with limited capabilities.
@@ -61,6 +65,16 @@ Killed: 9
 >>> requests.get('https://google.com')
 [1]    86664 killed
 ```
+
+## Log4Shell as an example
+Not related for python, but for the sake of explanation (Equivilant Demo soon).
+- <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=cve-2021-44228">Log4Shell - CVE-2021-44228</a>
+  - Let's say we want to block `log4j` from doing crazy things.
+  - In the following import we deny `log4j` from opening an LDAP connection / shell:
+    - `log4j = secure_import('log4j', allow_shells=False, allow_networking=False)`
+  - This would disable `log4j` from opening sockets and execute commands, IN THE KERNEL.
+  - You can choose any policy you like for any module.
+<br><br>
 
 ## Python Shell Interactive Example
 ```python
@@ -131,6 +145,7 @@ Type "help", "copyright", "credits" or "license" for more information.
         ```
 - https://www.brendangregg.com/DTrace/DTrace-cheatsheet.pdf
 <br><br>
+
 
 ## TODO:
 - Node support (dtrace hooks)
