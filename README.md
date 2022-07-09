@@ -10,10 +10,9 @@ A sandbox/supervisor for python modules.
 `secimport` can be used to:
 - Confine/Restrict specific python modules inside your production environment.
   - Open Source, 3rd party from unstrusted sources.
-- Audit the flow of your python application at user-space/os/kernel level.
+  - Audit the flow of your python application at user-space/os/kernel level.
 - Run an entire python application under unified configuration
-  - Like `seccomp` and `seccomp-bpf`, <b>without changing your code</b>
-  - Not limited to Linux kernels. Cross platform.
+  - Like `seccomp` but not limited to Linux kernels. Cross platform.
 
 ### Requirements
 The only requirement is a Python interpreter that was built with --with-dtrace.
