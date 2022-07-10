@@ -4,7 +4,8 @@
  <a href="https://github.com/avilum/secimport"><img src="https://user-images.githubusercontent.com/19243302/177835749-6aec7200-718e-431a-9ab5-c83c6f68565e.png" alt="secimport"></a>
 </p>
 <p align="center">
-A sandbox/supervisor for python modules.
+A sandbox/supervisor for python modules.<br>
+<a href="https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26">Medium Article</a>
 </p>
 
 `secimport` can be used to:
