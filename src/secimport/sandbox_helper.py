@@ -8,6 +8,7 @@ import importlib
 import os
 import time
 from pathlib import Path
+from tkinter import N
 
 BASE_DIR_NAME = Path("/tmp/.secimport")
 TEMPLATES_DIR_NAME = Path(os.path.split(__file__)[:-1][0]) / "templates"
@@ -22,6 +23,7 @@ def secure_import(
     log_syscalls: bool = False,  # When True, the log file might reach GB in seconds.
     log_network: bool = False,  # When True, the log file might reach GB in seconds.
     log_file_system: bool = False,  # When True, the log file might reach GB in seconds.
+    destructive: bool = True,
 ):
     """Import a python module in confined settings.
 
@@ -32,9 +34,10 @@ def secure_import(
         use_sudo (bool, optional): Whether to run dtrace with sudo. Can be turned off if sudo is not installed. Defaults to True.
         log_python_calls (bool, optional): Whether to log the call tree of the python stack - function entry and exit events. Defaults to False.
         log_network (bool, optional): Whether to log network successful connections - e.g socket syscalls.
-        log_file_system (bool, optional): Whether to log filesystem calls - e.g read, open, write, etc..
+        log_file_system (bool, optional): Whether to log filesystem calls - e.g read, open, write, etc.
+        destructive (bool, optional): Whether to kill the process with -9 sigkill upon violation of any of the configurations above. Defaults to True
     Returns:
-        _type_: A Python Module. The module is supervised by a dtrace process with destructive capabilities.
+        _type_: A Python Module. The module is supervised by a dtrace process with destructive capabilities unless the 'destructive' argument is set to False.
     """
     assert run_dtrace_script_for_module(
         module_name=module_name,
@@ -45,6 +48,7 @@ def secure_import(
         log_syscalls=log_syscalls,
         log_network=log_network,
         log_file_system=log_file_system,
+        destructive=destructive,
     )
     _module = __import__(module_name)
     return _module
@@ -59,6 +63,7 @@ def run_dtrace_script_for_module(
     log_syscalls: bool,
     log_network: bool,
     log_file_system: bool,
+    destructive: bool,
     templates_dir: Path = TEMPLATES_DIR_NAME,
 ):
     module_file_path = create_dtrace_script_for_module(
@@ -69,7 +74,8 @@ def run_dtrace_script_for_module(
         log_syscalls=log_syscalls,
         log_network=log_network,
         log_file_system=log_file_system,
-        templates_dir=templates_dir
+        destructive=destructive,
+        templates_dir=templates_dir,
     )
     output_file = BASE_DIR_NAME / f"sandbox_{module_name}.log"
     current_pid = os.getpid()
@@ -93,7 +99,8 @@ def create_dtrace_script_for_module(
     log_syscalls: bool,
     log_network: bool,
     log_file_system: bool,
-    templates_dir: str
+    destructive: bool,
+    templates_dir: Path = TEMPLATES_DIR_NAME,
 ) -> str:
     """
     # Template components available at the moment:
@@ -104,13 +111,20 @@ def create_dtrace_script_for_module(
     """
 
     module = importlib.machinery.PathFinder().find_spec(module_name)
+    if module is None:
+        raise ModuleNotFoundError(module)
     module_traced_name = os.path.split(module.origin)[-1]  # "e.g this.py
 
-    # TODO: Change path of all scripts
     script_template = open(
         templates_dir / "default.template.d",
         "r",
     ).read()
+
+    if destructive is True:
+        destructive = open(templates_dir / "headers/destructive.d", "r").read()
+        script_template = script_template.replace("###DESTRUCTIVE###", destructive)
+    else:
+        script_template = script_template.replace("###DESTRUCTIVE###", "")
 
     # PYTHON instrumentations
     code_syscall_entry = ""

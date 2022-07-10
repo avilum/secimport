@@ -1,6 +1,6 @@
 #!/usr/sbin/dtrace -Zs
 
-#pragma D option destructive
+###DESTRUCTIVE###
 #pragma D option quiet
 #pragma D option switchrate=1
 
