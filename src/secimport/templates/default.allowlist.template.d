@@ -2,9 +2,9 @@
 /*
 	This script generates a list of syscalls for a given program.
 	It generates a filter for dscript.
-	Line 13 can be replaced with your generated filter to run your app.
+	Line 17 can be replaced with the output of the following usage.
 
-	USAGE:	sudo dtrace -s src/secimport/templates/default.allowlist.template.d -c "python -m http.server"
+	USAGE:	sudo dtrace -s src/secimport/templates/default.allowlist.template.d -c "python -m http.server" # then CTRL+C
 */
 
 #pragma D option destructive
@@ -12,9 +12,9 @@
 #pragma D option switchrate=1
 
 /* Non-Allowed syscalls probe - Kills the process */
-/* Replace "0" with the output of this script; */
+/* Replace line 17 with the output of this script; */
 syscall:::entry
-/pid == $target && (0)/
+/pid == $target && (###SYSCALL_FILTER###)/
 {	
 	printf("\t\tDetected invalid syscall %s, terminating process %d...\r\n", probefunc, pid);
 	ustack();
