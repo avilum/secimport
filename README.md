@@ -5,7 +5,7 @@
 </p>
 <p align="center">
 A sandbox/supervisor for python modules.<br>
-<a href="https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26">Medium Article</a>
+<a href="https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26?source=friends_link&sk=5e9a2fa4d4921af0ec94f175f7ee49f9">Medium Article</a>
 </p>
 
 `secimport` can be used to:
