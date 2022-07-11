@@ -1,4 +1,6 @@
-# How to run an example
+# secimport Examples
+To understand how to trace you process and create custom profiles for modules or applications, please see <a href="TRACING_PROCESSES.md">TRACING_PROCESSES.md</a>
+# Prepared Examples
 1. Enter a root shell and `export PYTHONPATH=$(pwd)/src:$(pwd)/examples:$(pwd):$PYTHONPATH`<br>
 2. Make sure the python interpreter you use was compiled with `dtrace`.
 3. Run any of the examples in the following way:
@@ -36,20 +38,3 @@
     - `examples/run_dtrace_example.sh`
     - `examples/run_http_request_blocking_example.sh`
     - `examples/run_shell_blocking_example.sh`
-
-# Tracing processes
-  - Using `dtrace`
-    - Tracing the syscalls of a process with pid `12345`
-      - `dtrace -n 'syscall::: /pid == ($1)/ {@[pid,execname,probefunc]=count()}' 12345`
-    - Tracing the syscalls of a docker container with pid `12345`
-      - `dtrace -n 'syscall::: /progenyof($1)/ {@[pid,execname,probefunc]=count()}' 12345`
-  - Using `strace`
-    -  A script to list all your application's syscalls using `strace`.<br> I contributed it to `firejail` a few years ago:
-      - https://github.com/netblue30/firejail/blob/master/contrib/syscalls.sh
-      - ```
-        wget "https://raw.githubusercontent.com/netblue30/firejail/c5d426b245b24d5bd432893f74baec04cb8b59ed/contrib/syscalls.sh" -O syscalls.sh
-
-        chmod +x syscalls.sh
-
-        ./syscalls.sh examples/http_request.py
-        ```
