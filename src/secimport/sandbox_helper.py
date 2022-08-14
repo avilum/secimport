@@ -390,7 +390,7 @@ def build_module_sandbox_from_yaml_template(
     Returns:
         _type_: _description_
     """
-    assert template_path.exists(), "The template does not exist at {template_path}"
+    assert template_path.exists(), f"The template does not exist at {template_path}"
     safe_yaml = yaml.safe_load(open(template_path, "r").read())
     parsed_probes = []
     for module_name, module_config in safe_yaml.get("modules", {}).items():
