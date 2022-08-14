@@ -35,7 +35,7 @@ Done.
 ##  2. Save the YAML output
  After yout hit CTRL + C, after "Generated syscalls (yaml profile)", the YAML profile is printed.
 
-An example for a template is available in <a href="src/secimport/profiles/example.yaml">example.yaml</a>.
+An example for a template is available in <a href="../src/secimport/profiles/example.yaml">example.yaml</a>.
 
  It should look like this: 
 ```shell
@@ -73,6 +73,16 @@ Example:
 ```shell
 python examples/create_profile_from_yaml.py src/secimport/profiles/example.yaml /tmp/example.d
 ```
+
+Or, use the python API:
+```python
+import secimport, pathlib
+
+template_path = pathlib.Path(secimport.sandbox_helper.PROFILES_DIR_NAME / 'example.yaml')
+
+sandbox_code = secimport.sandbox_helper.build_module_sandbox_from_yaml_template(template_path)
+```
+
 
 ## 4. Run your app in your sandbox 
 ```shell
