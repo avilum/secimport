@@ -4,7 +4,7 @@
  <a href="https://github.com/avilum/secimport"><img src="https://user-images.githubusercontent.com/19243302/177835749-6aec7200-718e-431a-9ab5-c83c6f68565e.png" alt="secimport"></a>
 </p>
 <p align="center">
-A sandbox/supervisor for python modules.<br>
+Secure import for python modules using dtrace under the hood.<br>
 <a href="https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26?source=friends_link&sk=5e9a2fa4d4921af0ec94f175f7ee49f9">Medium Article</a>
 </p>
 
@@ -15,17 +15,37 @@ A sandbox/supervisor for python modules.<br>
 - Run an entire python application under unified configuration
   - Like `seccomp` but not limited to Linux kernels. Cross platform.
 
-### Requirements
-The only requirement is a Python interpreter that was built with --with-dtrace.
-  - See <a href="docs/INSTALL.md">INSTALL.md</a> for a detailed setup from scratch.
-- pip
-  - `python3 -m pip install secimport`
-- Poetry
-  - `python3 -m pip install poetry && python3 -m poetry build`
-<br>
 
 # Quick Start
 For the full list of examples, see <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
+
+## YAML Template Example
+```shell
+modules:
+  requests:
+    destructive: true
+    syscall_allowlist:
+      - write
+      - ioctl
+      ...
+      - stat64
+  fastapi:
+    destructive: true
+    syscall_allowlist:
+      - bind
+      - fchmod
+      ...
+      - stat64
+  uvicorn:
+    destructive: true
+    syscall_allowlist:
+      - getpeername
+      - getpgrp
+      ...
+      - stat64
+
+```
+See <a href="docs/YAML_PROFILES.md">YAML Profiles Usage</a>
 
 ## Python Shell Interactive Example
 ```python
@@ -112,6 +132,18 @@ Killed: 9
 >>> requests.get('https://google.com')
 [1]    86664 killed
 ```
+### Requirements
+The only requirement is a Python interpreter that was built with --with-dtrace.
+  - See <a href="docs/INSTALL.md">INSTALL.md</a> for a detailed setup from scratch.
+- pip
+  - `python3 -m pip install secimport`
+- Poetry
+  - `python3 -m pip install poetry && python3 -m poetry build`
+<br>
+
+### Tests
+`python -m pytest`
+
 
 ### Log4Shell as an example
 Not related for python, but for the sake of explanation (Equivilant Demo soon).
@@ -126,33 +158,18 @@ Not related for python, but for the sake of explanation (Equivilant Demo soon).
 
 # Useful References
 - <a href="docs/EXAMPLES.md">Examples</a>
+- <a href="docs/TRACING_PROCESSES.md">Tracing Guides</a>
 - <a href="docs/FAQ.md">F.A.Q</a>
 - <a href="docs/INSTALL.md">Installation</a>
 - <a href="docs/MAC_OS_USERS.md">Mac OS Users</a> - Disabling SIP for dtrace
-- Tracing processes
-  - Using `dtrace`
-    - Tracing the syscalls of a process with pid `12345`
-      - `dtrace -n 'syscall::: /pid == ($1)/ {@[pid,execname,probefunc]=count()}' 12345`
-    - Tracing the syscalls of a docker container with pid `12345`
-      - `dtrace -n 'syscall::: /progenyof($1)/ {@[pid,execname,probefunc]=count()}' 12345`
-  - Using `strace`
-    -  A script to list all your application's syscalls using `strace`.<br> I contributed it to `firejail` a few years ago:
-      - https://github.com/netblue30/firejail/blob/master/contrib/syscalls.sh
-      - ```
-        wget "https://raw.githubusercontent.com/netblue30/firejail/c5d426b245b24d5bd432893f74baec04cb8b59ed/contrib/syscalls.sh" -O syscalls.sh
-
-        chmod +x syscalls.sh
-
-        ./syscalls.sh examples/http_request.py
-        ```
 - https://www.brendangregg.com/DTrace/DTrace-cheatsheet.pdf
 <br><br>
-
 
 ## TODO:
 - Node support (dtrace hooks)
 - Go support (dtrace hooks)
 - Allow/Block list configuration
+- Use current_module_str together with thread ID
 - Create a .yaml configuration per module in the code
   - Use secimport to compile that yml
   - Create a single dcript policy

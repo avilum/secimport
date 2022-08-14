@@ -1,0 +1,15 @@
+[[package]]
+name = "pyyaml"
+version = "6.0"
+description = "YAML parser and emitter for Python"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[metadata]
+lock-version = "1.1"
+python-versions = "^3.6"
+content-hash = "c9af25c373b42ad4f760c94443e28037dc11cda8f878b2d534efdeb5ebe24a11"
+
+[metadata.files]
+pyyaml = []

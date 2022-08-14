@@ -68,4 +68,4 @@ source ~/venvs/dtrace/bin/activate
 You can proceed to <a href="EXAMPLES.md">EXAMPLES.md</a>
 
 # Tests
-`python -m pytest tests/test_sandbox_helper.py`
+`python -m pytest`
