@@ -1,5 +1,5 @@
 # YAML Profiles and Templates
-It is very convenient to specify all of you policies, for all of your 3rd party apps and open source apps, in a single YAML file. 
+It is very convenient to specify all of you policies, for all of your 3rd party and open source modules, in a single YAML file. 
 
 # Create a custom sandbox
 1. Generate a profile for your application using dtrace
