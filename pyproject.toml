@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "secimport"
-version = "0.3.0"
+version = "0.4.0"
 description = "A sandbox/supervisor for python modules."
 authors = ["Avi Lumelsky"]
 license = "MIT"
@@ -13,6 +13,7 @@ include = ["src/secimport/templates/**/*.d"]
 
 [tool.poetry.dependencies]
 python = "^3.6"
+PyYAML = "^6.0"
 
 [tool.poetry.dev-dependencies]
 

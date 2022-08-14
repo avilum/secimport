@@ -197,3 +197,49 @@ class TestSecImport(TestCase):
                     """.split(),
         )
         self.assertEqual(module.__name__, "http")
+
+    def test_render_probe_for_module(self):
+        from secimport.sandbox_helper import _render_probe_for_module
+
+        probe_text = _render_probe_for_module(
+            module_name="this.py",
+            destructive=True,
+            syscalls_allowlist=["open", "accept", "select"],
+        )
+        with open("/tmp/.secimport/example_probe.d", "w") as example_probe:
+            example_probe.write(probe_text)
+
+        self.assertTrue("open" in probe_text)
+        self.assertTrue("accept" in probe_text)
+        self.assertTrue("select" in probe_text)
+        self.assertTrue("kill" in probe_text)
+
+        probe_text = _render_probe_for_module(
+            module_name="yaml.py",
+            destructive=False,
+            syscalls_allowlist=["read", "ioctl", "fstat64"],
+        )
+
+        self.assertTrue("fstat64" in probe_text)
+        self.assertTrue("read" in probe_text)
+        self.assertTrue("ioctl" in probe_text)
+        self.assertFalse("kill" in probe_text)
+
+    def test_build_module_sandbox_from_yaml_template(self):
+        from secimport.sandbox_helper import (
+            build_module_sandbox_from_yaml_template,
+            PROFILES_DIR_NAME,
+        )
+
+        profile_file_path = PROFILES_DIR_NAME / "example.yaml"
+        module_sandbox_code: str = build_module_sandbox_from_yaml_template(
+            profile_file_path
+        )
+        self.assertTrue("fastapi" in module_sandbox_code)
+        self.assertTrue("requests" in module_sandbox_code)
+        self.assertTrue("uvicorn" in module_sandbox_code)
+        # with open("/tmp/.secimport/example_sandbox.d", "w") as example_sandbox:
+        #     example_sandbox.write(module_sandbox_code)
+
+        self.assertIsInstance(module_sandbox_code, str)
+        self.assertFalse("###SUPERVISED_MODULES_PROBES###" in module_sandbox_code)

@@ -19,13 +19,6 @@ self int sandbox_module_reached;
 
 string current_module_str;
 string previous_module_str;
-/* 
-inline string RED       = "33[31;1m";
-inline string BLUE      = "33[34;1m";
-inline string GREEN     = "33[32;1m";
-inline string VIOLET    = "33[35;1m";
-inline string OFF       = "33[0m";
-*/
 
 dtrace:::BEGIN
 {
@@ -45,7 +38,7 @@ python*:::function-entry
 	this->delta = (timestamp - self->last) / 1000;
 
 	/* Memoizing the previous module and current module */
-	_current_module_str = stringof(copyinstr(arg0)));
+	_current_module_str = stringof(copyinstr(arg0));
 	previous_module_str = stringof(current_module_str);
 	current_module_str =  _current_module_str;
 
@@ -54,9 +47,9 @@ python*:::function-entry
 		depth_matrix[current_module_str] = self->depth;
 	}
 
-	printf("\r\n%d %6d %10d  %16s:%-4d %-8s %*s-> %s", cpu, pid, this->delta, 
+	printf("\r\n%d %6d %10d  %16s:%-4d %-8s %*s-> %s (%s)", cpu, pid, this->delta, 
 	    current_module_str, arg2, "func", self->depth * 4, "",
-	    copyinstr(arg1));
+	    copyinstr(arg1), copyinstr(arg0));
 	self->depth++;
 	self->last = timestamp;
 }

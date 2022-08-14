@@ -14,6 +14,9 @@ From <a href="https://en.wikipedia.org/wiki/DTrace">Wikipedia</a>:
 ## What are the tradeoffs? How does it change they way I code?
 - You need can use `secimport` in 2 ways:
   - Compile a dtrace script for your configuration, and use dtrace to run your python process as a parent process
+    - YAML templates
+    - Allowlist
+    - Blocklist
   - use `secimport.secure_import` function in your code to import module. A dtrace process is opened upon `secure_import()` call.
 
 ## What are the performance impacts?
