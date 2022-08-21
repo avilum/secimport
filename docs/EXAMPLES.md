@@ -9,7 +9,7 @@ To understand how to trace you process and create custom profiles for modules or
 - YAML to Sandbox Example
     - `examples/create_profile_from_yaml.sh`
         - Create a sandbox template code for your app from a single YAML file.
-        - See <a href="docs/YAML_PROFILES.md">YAML Profiles Usage</a>
+        - See <a href="YAML_PROFILES.md">YAML Profiles Usage</a>
 - Python (import inline):
     -  `requests` example - secure import vs regular import (Killed because of socket related syscall)
         - `python examples/http_request.py` 

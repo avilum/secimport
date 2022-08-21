@@ -243,3 +243,7 @@ class TestSecImport(TestCase):
 
         self.assertIsInstance(module_sandbox_code, str)
         self.assertFalse("###SUPERVISED_MODULES_PROBES###" in module_sandbox_code)
+
+
+if __name__ == '__main__':
+     
