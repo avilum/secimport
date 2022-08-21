@@ -17,10 +17,66 @@ Secure import for python modules using dtrace under the hood.<br>
 
 
 # Quick Start
+`secimport` can be used out of the box in the following ways:
+1. Inside your code using `module = secimport.secure_import('module_name', ...)`.
+    - Replacing the regular `import` statement with `secure_import`
+    - Only modules that were imported with `secure_import` will be traced.
+2. As a sandbox, by specifying the modules and their policies.
+    - Use this repository to:
+        - Generate a YAML policy from your code
+        - Compile that YAML to dscript.
+    - Use `dtrace` command to run your main python application, with your tailor-made sandbox.
+        - No need for `secure_import`, you can keep using regular `import`s
+
 For the full list of examples, see <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
 
+# Pickle Example
+### How pickle can be exploited in your 3rd party packages:
+```python
+>>> import pickle
+>>> class Demo:
+...     def __reduce__(self):
+...         return (eval, ("__import__('os').system('echo Exploited!')",))
+... 
+>>> pickle.dumps(Demo())
+b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94."
+>>> pickle.loads(b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94.")
+Exploited!
+0
+```
+With `secimport`, you can control such action to do whatever you want:
+```python
+In [1]: import secimport
+In [2]: pickle = secimport.secure_import("pickle")
+In [3]: pickle.loads(b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94.")
+
+[1]    28027 killed     ipython
+```
+A log file is automatically created, containing everything you need to know:
+```
+$ less /tmp/.secimport/sandbox_pickle.log
+
+  @posix_spawn from /Users/avilumelsky/Downloads/Python-3.10.0/Lib/threading.py
+    DETECTED SHELL:
+        depth=8
+        sandboxed_depth=0
+        sandboxed_module=/Users/avilumelsky/Downloads/Python-3.10.0/Lib/pickle.py  
+
+    TERMINATING SHELL:
+        libsystem_kernel.dylib`__posix_spawn+0xa
+        ...
+                libsystem_kernel.dylib`__posix_spawn+0xa
+                libsystem_c.dylib`system+0x18b
+                python.exe`os_system+0xb3
+    KILLED
+:
+```
+
 ## YAML Template Example
+For a full tutorial, see <a href="docs/YAML_PROFILES.md">YAML Profiles Usage</a>
 ```shell
+# An example yaml template for a sandbox.
+
 modules:
   requests:
     destructive: true
@@ -45,9 +101,8 @@ modules:
       - stat64
 
 ```
-See <a href="docs/YAML_PROFILES.md">YAML Profiles Usage</a>
 
-## Python Shell Interactive Example
+## Python Processing Example
 ```python
 Python 3.10.0 (default, May  2 2022, 21:43:20) [Clang 13.0.0 (clang-1300.0.27.3)] on darwin
 Type "help", "copyright", "credits" or "license" for more information.
@@ -93,7 +148,7 @@ Type "help", "copyright", "credits" or "license" for more information.
         killed.
         ```
 
-## Shell blocking
+## Shell Blocking Example
 ```python
 # example.py - Executes code upon import;
 import os;
@@ -117,7 +172,7 @@ Killed: 9
 - If a syscall like `spawn/exec/fork/forkexec` will be executed
   - The process will be `kill`ed with `-9` signal.
 
-## Network blocking
+## Network Blocking Example
 ```
 >>> import requests
 >>> requests.get('https://google.com')
@@ -166,11 +221,11 @@ Not related for python, but for the sake of explanation (Equivilant Demo soon).
 <br><br>
 
 ## TODO:
+- ✔️ Allow/Block list configuration
+- ✔️ Create a .yaml configuration per module in the code
+  - ✔️ Use secimport to compile that yml
+  - ✔️ Create a single dcript policy
+  - ✔️ Run an application with that policy using dtrace, without using `secure_import`
 - Node support (dtrace hooks)
 - Go support (dtrace hooks)
-- Allow/Block list configuration
 - Use current_module_str together with thread ID
-- Create a .yaml configuration per module in the code
-  - Use secimport to compile that yml
-  - Create a single dcript policy
-  - Run an application with that policy using dtrace, without using `secure_import`
