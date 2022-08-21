@@ -29,7 +29,7 @@ curl -o Python-$PYTHON_VERSION.tgz https://www.python.org/ftp/python/$PYTHON_VER
 tar -xzf Python-$PYTHON_VERSION.tgz
 
 # If you want to use pip, you should also install openssl (above); 
-$ nano Modules/Setup
+$ nano Python-$PYTHON_VERSION/Modules/Setup
 
 # Edit the `OPENSSL` variable in Modules/Setup:
 OPENSSL=/path/to/openssl-1.1.1h/openssl
