@@ -1,5 +1,5 @@
 # secimport Examples
-To understand how to trace you process and create custom profiles for modules or applications, please see <a href="TRACING_PROCESSES.md">Tracing Processes</a>
+To understand how to trace your process and create custom profiles for modules or applications, please see <a href="TRACING_PROCESSES.md">Tracing Processes</a>
 
 # Prepared Examples
 1. Enter a root shell and `export PYTHONPATH=$(pwd)/src:$(pwd)/examples:$(pwd):$PYTHONPATH`<br>
