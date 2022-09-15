@@ -1,32 +1,47 @@
-"""Import python modules with dtrace supervision.
+"""
+Import python modules with dtrace supervision.
 
 Copyright (c) 2022 Avi Lumelsky
 """
 
 
+from argparse import ArgumentError
+from enum import Enum
 import importlib
 import os
+from sys import platform
 import time
 from pathlib import Path
 from typing import List
 
 import yaml
 
+class InstrumentationBackend(Enum):
+    DTRACE = "dtrace"
+    EBPF = "ebpf" # bpftrace
+
 BASE_DIR_NAME = Path("/tmp/.secimport")
 SECIMPORT_ROOT = Path(os.path.split(__file__)[:-1][0])
-TEMPLATES_DIR_NAME = SECIMPORT_ROOT / "templates"
-PROFILES_DIR_NAME = SECIMPORT_ROOT / "profiles"
+DEFAULT_BACKEND = None
+if 'linux' in platform.lower():
+    TEMPLATES_DIR_NAME = SECIMPORT_ROOT / "templates" / "bpftrace"
+    DEFAULT_BACKEND = InstrumentationBackend.EBPF
+    # TODO: verify bpftrace is installed, if not, link to the repo documentation on how to install.
+else:
+    TEMPLATES_DIR_NAME = SECIMPORT_ROOT / "templates" / "dtrace"
+    DEFAULT_BACKEND = InstrumentationBackend.DTRACE
 
+PROFILES_DIR_NAME = SECIMPORT_ROOT / "profiles"
 
 def secure_import(
     module_name: str,
     allow_shells: bool = False,
     allow_networking: bool = False,
     use_sudo: bool = True,
-    log_python_calls: bool = False,  # When True, the log file might reach GB in seconds.
-    log_syscalls: bool = False,  # When True, the log file might reach GB in seconds.
-    log_network: bool = False,  # When True, the log file might reach GB in seconds.
-    log_file_system: bool = False,  # When True, the log file might reach GB in seconds.
+    log_python_calls: bool = False, # When True, the log file might reach GB in seconds.
+    log_syscalls: bool = False,     
+    log_network: bool = False,      
+    log_file_system: bool = False,  
     destructive: bool = True,
     syscalls_allowlist: List[str] = None,
     syscalls_blocklist: List[str] = None,
@@ -47,7 +62,9 @@ def secure_import(
     Returns:
         _type_: A Python Module. The module is supervised by a dtrace process with destructive capabilities unless the 'destructive' argument is set to False.
     """
-    assert run_dtrace_script_for_module(
+
+    if DEFAULT_BACKEND == InstrumentationBackend.DTRACE:
+        assert run_dtrace_script_for_module(
         module_name=module_name,
         allow_shells=allow_shells,
         allow_networking=allow_networking,
@@ -60,8 +77,140 @@ def secure_import(
         syscalls_allowlist=syscalls_allowlist,
         syscalls_blocklist=syscalls_blocklist,
     )
+    elif DEFAULT_BACKEND == InstrumentationBackend.EBPF:
+        assert run_bpftrace_script_for_module(
+        module_name=module_name,
+        allow_shells=allow_shells,
+        allow_networking=allow_networking,
+        use_sudo=use_sudo,
+        log_python_calls=log_python_calls,
+        log_syscalls=log_syscalls,
+        log_network=log_network,
+        log_file_system=log_file_system,
+        destructive=destructive,
+        syscalls_allowlist=syscalls_allowlist,
+        syscalls_blocklist=syscalls_blocklist,
+    )
+    else:
+        raise ArgumentError(f"backend '{DEFAULT_BACKEND}' is not implemented.")
+    
     _module = __import__(module_name)
     return _module
+
+
+def run_bpftrace_script_for_module(
+    module_name: str,
+    allow_shells: bool,
+    allow_networking: bool,
+    use_sudo: bool,
+    log_python_calls: bool,
+    log_syscalls: bool,
+    log_network: bool,
+    log_file_system: bool,
+    destructive: bool,
+    syscalls_allowlist: List[str],
+    syscalls_blocklist: List[str],
+    templates_dir: Path = TEMPLATES_DIR_NAME,
+):
+    """
+    # Template components available at the moment:
+    
+    """
+    module_file_path = create_bpftrace_script_for_module(
+        module_name=module_name,
+        allow_shells=allow_shells,
+        allow_networking=allow_networking,
+        log_python_calls=log_python_calls,
+        log_syscalls=log_syscalls,
+        log_network=log_network,
+        log_file_system=log_file_system,
+        destructive=destructive,
+        syscalls_allowlist=syscalls_allowlist,
+        syscalls_blocklist=syscalls_blocklist,
+        templates_dir=templates_dir,
+    )
+    output_file = BASE_DIR_NAME / f"bpftrace_sandbox_{module_name}.log"
+    current_pid = os.getpid()
+
+    # TODO: chmod
+    bpftrace_command = f'{"sudo " if use_sudo else ""} {module_file_path} -p {current_pid} -o {output_file} &2>/dev/null'
+    print("(running bpftrace supervisor): ", bpftrace_command)
+    os.system(bpftrace_command)
+    time.sleep(2)
+    return True
+
+
+def create_bpftrace_script_for_module(
+    module_name: str,
+    allow_shells: bool,
+    allow_networking: bool,
+    log_python_calls: bool,
+    log_syscalls: bool,
+    log_network: bool,
+    log_file_system: bool,
+    destructive: bool,
+    syscalls_allowlist: List[str] = None,
+    syscalls_blocklist: List[str] = None,
+    templates_dir: Path = TEMPLATES_DIR_NAME,
+    instrumentation_backend: InstrumentationBackend = InstrumentationBackend.EBPF
+) -> str:
+    """
+    # Template components available at the moment:
+    # ###DESTRUCTIVE###
+    # ###FUNCTION_ENTRY###
+    # ###FUNCTION_EXIT###
+    # ###SYSCALL_ENTRY###
+    # ###MODULE_NAME###
+    """
+
+    module = importlib.machinery.PathFinder().find_spec(module_name)
+    if module is None:
+        raise ModuleNotFoundError(module)
+    module_traced_name = module.origin  # e.g this.py
+
+    assert not (
+        syscalls_allowlist is not None and syscalls_blocklist is not None
+    ), "Please specify either syscalls_allowlist OR syscalls_blocklist."
+
+    # If we have an allowlist
+    if syscalls_allowlist is not None:
+        script_template = render_allowlist_template(
+            syscalls_allowlist=syscalls_allowlist, templates_dir=templates_dir, instrumentation_backend=instrumentation_backend
+        )
+    elif syscalls_blocklist is not None:
+        script_template = render_blocklist_template(
+            syscalls_blocklist=syscalls_blocklist, templates_dir=templates_dir, instrumentation_backend=instrumentation_backend
+        )
+    else:
+        script_template = render_dscript_template(
+            module_traced_name=module_traced_name,
+            allow_shells=allow_shells,
+            allow_networking=allow_networking,
+            log_python_calls=log_python_calls,
+            log_syscalls=log_syscalls,
+            log_network=log_network,
+            log_file_system=log_file_system,
+            destructive=destructive,
+            templates_dir=templates_dir,
+        )
+
+    # Creating a dscript file with the modified template
+    if not os.path.exists(BASE_DIR_NAME):
+        os.mkdir(BASE_DIR_NAME)
+
+    module_file_name = os.path.join(BASE_DIR_NAME, f"bpftrace_sandbox_{module_name}.d")
+    with open(module_file_name, "w") as module_file:
+        module_file.write(script_template)
+
+    # TODO: FIGURE OUT A WAY TO COMPILE WITHOUT EXECUTING - MSKING SURE THE GENERATION WORKED SYNTAX-WISE.
+    # Making sure the script compiles
+    # dtrace_compile_command = f"bpftrace -q -e {module_file_name}"
+    # compile_exit_code = os.system(dtrace_compile_command)
+    # assert (
+        # compile_exit_code == 0
+    # ), f"Failed to compile the dtrace script at {module_file_name}"
+    # print("Successfully compiled dtrace profile: ", module_file_name)
+    return module_file_name
 
 
 def run_dtrace_script_for_module(
@@ -91,12 +240,12 @@ def run_dtrace_script_for_module(
         syscalls_blocklist=syscalls_blocklist,
         templates_dir=templates_dir,
     )
-    output_file = BASE_DIR_NAME / f"sandbox_{module_name}.log"
+    output_file = BASE_DIR_NAME / f"dtrace_sandbox_{module_name}.log"
     current_pid = os.getpid()
     dtrace_command = f'{"sudo " if use_sudo else ""} dtrace -q -s {module_file_path} -p {current_pid} -o {output_file} &2>/dev/null'
     print("(running dtrace supervisor): ", dtrace_command)
     os.system(dtrace_command)
-
+    
     # TODO: wait for dtrace to start explicitly using an event/fd, not time based - although 2 seconds is more than enough.
     # TODO: add startup logs for dropped packets without python modules (until the first python enter takes place in the syscalls probe, the python module is null).
     time.sleep(2)
@@ -115,6 +264,7 @@ def create_dtrace_script_for_module(
     syscalls_allowlist: List[str] = None,
     syscalls_blocklist: List[str] = None,
     templates_dir: Path = TEMPLATES_DIR_NAME,
+    instrumentation_backend: InstrumentationBackend = InstrumentationBackend.DTRACE
 ) -> str:
     """
     # Template components available at the moment:
@@ -137,11 +287,11 @@ def create_dtrace_script_for_module(
     # If we have an allowlist
     if syscalls_allowlist is not None:
         script_template = render_allowlist_template(
-            syscalls_allowlist=syscalls_allowlist, templates_dir=templates_dir
+            syscalls_allowlist=syscalls_allowlist, templates_dir=templates_dir, instrumentation_backend=instrumentation_backend
         )
     elif syscalls_blocklist is not None:
         script_template = render_blocklist_template(
-            syscalls_blocklist=syscalls_blocklist, templates_dir=templates_dir
+            syscalls_blocklist=syscalls_blocklist, templates_dir=templates_dir, instrumentation_backend=instrumentation_backend
         )
     else:
         script_template = render_dscript_template(
@@ -160,7 +310,7 @@ def create_dtrace_script_for_module(
     if not os.path.exists(BASE_DIR_NAME):
         os.mkdir(BASE_DIR_NAME)
 
-    module_file_name = os.path.join(BASE_DIR_NAME, f"sandbox_{module_name}.d")
+    module_file_name = os.path.join(BASE_DIR_NAME, f"dtrace_sandbox_{module_name}.d")
     with open(module_file_name, "w") as module_file:
         module_file.write(script_template)
 
@@ -175,33 +325,39 @@ def create_dtrace_script_for_module(
 
 
 def render_allowlist_template(
-    syscalls_allowlist: List[str], templates_dir: Path = TEMPLATES_DIR_NAME
+    syscalls_allowlist: List[str], templates_dir: Path = TEMPLATES_DIR_NAME, instrumentation_backend: InstrumentationBackend = InstrumentationBackend.DTRACE
 ):
-    print("Found syscall allowlist, ignoring other configurations")
-    script_template = open(
-        templates_dir / "default.allowlist.template.d",
-        "r",
-    ).read()
-    syscalls_filter = render_syscalls_filter(
-        syscalls_list=syscalls_allowlist, allow=True
-    )
-    script_template = script_template.replace("###SYSCALL_FILTER###", syscalls_filter)
-    return script_template
+    if instrumentation_backend == InstrumentationBackend.DTRACE:
+        print("Found syscall allowlist, ignoring other configurations")
+        script_template = open(
+            templates_dir / "default.allowlist.template.d",
+            "r",
+        ).read()
+        syscalls_filter = render_syscalls_filter(
+            syscalls_list=syscalls_allowlist, allow=True, instrumentation_backend=instrumentation_backend
+        )
+        script_template = script_template.replace("###SYSCALL_FILTER###", syscalls_filter)
+        return script_template
+    else:
+        raise NotImplementedError(f"render_blocklist_template is not supported for backend '{instrumentation_backend}'")
 
 
 def render_blocklist_template(
-    syscalls_blocklist: List[str], templates_dir: Path = TEMPLATES_DIR_NAME
+    syscalls_blocklist: List[str], templates_dir: Path = TEMPLATES_DIR_NAME, instrumentation_backend: InstrumentationBackend = InstrumentationBackend.DTRACE 
 ):
-    print("Found syscall allowlist, ignoring other configurations")
-    script_template = open(
-        templates_dir / "default.allowlist.template.d",
-        "r",
-    ).read()
-    syscalls_filter = render_syscalls_filter(
-        syscalls_list=syscalls_blocklist, allow=False
-    )
-    script_template = script_template.replace("###SYSCALL_FILTER###", syscalls_filter)
-    return script_template
+    if instrumentation_backend == InstrumentationBackend.DTRACE:
+        print("Found syscall allowlist, ignoring other configurations")
+        script_template = open(
+            templates_dir / "default.allowlist.template.d",
+            "r",
+        ).read()
+        syscalls_filter = render_syscalls_filter(
+            syscalls_list=syscalls_blocklist, allow=False, instrumentation_backend=instrumentation_backend
+        )
+        script_template = script_template.replace("###SYSCALL_FILTER###", syscalls_filter)
+        return script_template
+    else:
+        raise NotImplementedError(f"render_blocklist_template is not supported for backend '{instrumentation_backend}'")
 
 
 def render_dscript_template(
@@ -307,7 +463,7 @@ def render_dscript_template(
     return script_template
 
 
-def render_syscalls_filter(syscalls_list: List[str], allow: bool):
+def render_syscalls_filter(syscalls_list: List[str], allow: bool, instrumentation_backend: InstrumentationBackend):
     assert isinstance(allow, bool), '"allow" must be a bool value'
     # "=="" means the syscall matches (blocklist), while "!="" means allow only the following.
     match_sign = "!=" if allow else "=="
@@ -318,7 +474,14 @@ def render_syscalls_filter(syscalls_list: List[str], allow: bool):
         assert isinstance(
             _syscall, str
         ), f"The provided syscall it not a syscall string name: {_syscall}"
-        syscalls_filter += f'probefunc {match_sign} "{_syscall}"'
+
+        if instrumentation_backend == InstrumentationBackend.DTRACE:
+            syscalls_filter += f'probefunc {match_sign} "{_syscall}"'
+        elif instrumentation_backend == InstrumentationBackend.EBPF:
+            syscalls_filter += f'@sysname[args->id] {match_sign} "{_syscall}"'
+        else:
+            raise ArgumentError(f"backend '{instrumentation_backend}' is not supported")
+        
         print(f"Adding syscall {_syscall} to allowlist")
     return syscalls_filter
 
