@@ -1,9 +1,11 @@
 #!/usr/bin/env bpftrace
 
-
 BEGIN {
-    // Mapping all syscalls both ways
-    // sysname = ausyscall --dump | awk 'NR > 1 { printf("\t@sysname[%d] = \"%s\";\n", $1, $2); }';
+    // Mapping all syscalls both ways, based on https://github.com/iovisor/bpftrace/blob/2c7a7a598dbe1aa790db2dfe2db242aa69137d5b/tools/syscount.bt
+    // Generates using bash:
+    //   $ apt-get install auditd
+    //   $ ausyscall --dump | awk 'NR > 1 { printf("\t@sysname[%d] = \"%s\";\n", $1, $2); }';
+    printf("REGISTERING SYSCALLS...\n");
     @sysname[0] = "read";
     @sysname[1] = "write";
     @sysname[2] = "open";
@@ -677,33 +679,26 @@ BEGIN {
 	@sysnum["statx"] = 332;
 	@sysnum["io_pgetevents"] = 333;
 	@sysnum["rseq"] = 334;
+    printf("STARTED\n")
 }
 
 
-usdt:/work/Python-3.10.0/python:function__entry {
+usdt:/workspace/Python-3.10.0/python:function__entry {
         @["depth"]++;
-
-        // Memoizing the depth and the last 2 modules
         @entrypoints[str(arg0)] = @["depth"];
         @globals["previous_module"] = @globals["current_module"];
         @globals["current_module"] = str(arg0);
-
         printf("%s, %s, depth=%d\n", str(arg0), str(arg1), @["depth"]) ;
+        ###FUNCTION_ENTRY###
 }
 
-usdt:/work/Python-3.10.0/python:function__return {
+usdt:/workspace/Python-3.10.0/python:function__return {
         @["depth"]--;
+        ###FUNCTION_EXIT###
 }
 
 tracepoint:raw_syscalls:sys_enter /comm == "python"/ {
-        ###SYSCALL_FILTER###
-
-        if(args->id == 59){ // execve
-                system("pkill -9 python");
-                printf("Killing process %s - caught trying to execve;", str(pid));
-                exit();
-        }
-        printf("%s SYSCALL %ld %s depth=%d previous=%s current=%s \n", probe, args->id, @sysname[args->id], @["depth"], @globals["previous_module"], @globals["current_module"] );
+    ###SYSCALL_ENTRY###
 }
 
 END {

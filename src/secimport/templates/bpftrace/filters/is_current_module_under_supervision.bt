@@ -1,0 +1,1 @@
+if(@entrypoints["###MODULE_NAME###"] != 0 && @["depth"] >= @entrypoints["###MODULE_NAME###"] && @entrypoints["###MODULE_NAME###"] >= @entrypoints[@globals["previous_module"]])

@@ -1,10 +1,10 @@
 # secimport
 
 <p align="center">
- <a href="https://github.com/avilum/secimport"><img src="https://user-images.githubusercontent.com/19243302/177835749-6aec7200-718e-431a-9ab5-c83c6f68565e.png" alt="secimport"></a>
+
 </p>
 <p align="center">
-Secure import for python modules using dtrace under the hood.<br>
+Secure import for python modules using eBPF/DTrace under the hood.<br>
 <a href="https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26?source=friends_link&sk=5e9a2fa4d4921af0ec94f175f7ee49f9">Medium Article</a>
 </p>
 
@@ -25,10 +25,14 @@ Secure import for python modules using dtrace under the hood.<br>
     - Use this repository to:
         - Generate a YAML policy from your code
         - Compile that YAML to dscript.
-    - Use `dtrace` command to run your main python application, with your tailor-made sandbox.
+    - Use `dtrace` or `ebpf` to run your main python application, with your tailor-made sandbox.
         - No need for `secure_import`, you can keep using regular `import`s
 
 For the full list of examples, see <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
+
+# Docker
+A working environment is not easy to create.<br>
+To evaluate secimport, we have a custom <a href="docker/README.md">Docker for MacOS and Linux</a> that includes bpftrace and eBPF.
 
 # Pickle Example
 ### How pickle can be exploited in your 3rd party packages:
@@ -216,8 +220,9 @@ Not related for python, but for the sake of explanation (Equivilant Demo soon).
 - <a href="docs/TRACING_PROCESSES.md">Tracing Guides</a>
 - <a href="docs/FAQ.md">F.A.Q</a>
 - <a href="docs/INSTALL.md">Installation</a>
-- <a href="docs/MAC_OS_USERS.md">Mac OS Users</a> - Disabling SIP for dtrace
+- <a href="docs/MAC_OS_USERS.md">Mac OS Users</a> - Disabling SIP (System Intergity Protection)
 - https://www.brendangregg.com/DTrace/DTrace-cheatsheet.pdf
+- https://www.brendangregg.com/blog/2018-10-08/dtrace-for-linux-2018.html
 <br><br>
 
 ## TODO:
@@ -226,6 +231,7 @@ Not related for python, but for the sake of explanation (Equivilant Demo soon).
   - ✔️ Use secimport to compile that yml
   - ✔️ Create a single dcript policy
   - ✔️ Run an application with that policy using dtrace, without using `secure_import`
+- ✔️ <b>Add eBPF support using bpftrace (WIP)</b>
 - Node support (dtrace hooks)
 - Go support (dtrace hooks)
 - Use current_module_str together with thread ID
