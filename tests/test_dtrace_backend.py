@@ -1,4 +1,3 @@
-from unittest import TestCase
 import unittest
 from secimport.backends.dtrace_backend.dtrace_backend import (
     PROFILES_DIR_NAME,
@@ -8,7 +7,7 @@ from secimport.backends.dtrace_backend.dtrace_backend import (
 import os
 
 
-class TestDtraceBackend(TestCase):
+class TestDtraceBackend(unittest.TestCase):
     def test_create_dtrace_script_for_module(self):
         dtrace_script_file_path = create_dtrace_script_for_module(
             "this",
