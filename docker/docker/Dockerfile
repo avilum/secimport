@@ -34,5 +34,8 @@ COPY setup.sh .
 COPY sandbox.bt .
 COPY run_sandbox.sh .
 RUN chmod 755 sandbox.bt run_sandbox.sh
+RUN \
+   echo 'alias python="/workspace/Python-3.10.0/python"' >> /root/.bashrc && \
+   echo 'alias pip="/workspace/Python-3.10.0/bin/pip3"' >> /root/.bashrc
 
 ENTRYPOINT ["/bin/sh", "/workspace/setup.sh"]
