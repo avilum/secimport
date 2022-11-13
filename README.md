@@ -38,12 +38,12 @@ dtrace backend is not available in docker, and can be tried directly on the comp
 
 ### How pickle can be exploited in your 3rd party packages:
 ```python
->>> import pickle
->>> class Demo:
-...     def __reduce__(self):
-...         return (eval, ("__import__('os').system('echo Exploited!')",))
-... 
->>> pickle.dumps(Demo())
+import pickle
+class Demo:
+    def __reduce__(self):
+        return (eval, ("__import__('os').system('echo Exploited!')",))
+ 
+pickle.dumps(Demo())
 b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94."
 >>> pickle.loads(b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94.")
 Exploited!
@@ -88,21 +88,18 @@ modules:
     syscall_allowlist:
       - write
       - ioctl
-      ...
       - stat64
   fastapi:
     destructive: true
     syscall_allowlist:
       - bind
       - fchmod
-      ...
       - stat64
   uvicorn:
     destructive: true
     syscall_allowlist:
       - getpeername
       - getpgrp
-      ...
       - stat64
 
 ```
@@ -136,10 +133,10 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 When using secure_import, the following files are created:
 - The dtrace/bpftrace sandbox code for the module is saved under:
-  -  `/tmp/.secimport/sandbox_subprocess.d`
-      - when using dtrace
   -  `/tmp/.secimport/sandbox_subprocess.bt`:
       - when using bpftrace
+  -  `/tmp/.secimport/sandbox_subprocess.d`
+      - when using dtrace
 - The log file for this module is under
   -  `/tmp/.secimport/sandbox_subprocess.log`:
         ```shell
