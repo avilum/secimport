@@ -1,20 +1,19 @@
 # secimport
 
-<p align="center">
 
+<p align="center">
+ <a href="https://github.com/avilum/secimport"><img src="https://user-images.githubusercontent.com/19243302/177835749-6aec7200-718e-431a-9ab5-c83c6f68565e.png" alt="secimport"></a>
 </p>
 <p align="center">
-Secure import for python modules using eBPF/DTrace under the hood.<br>
+An easy way to constrain python modules in your code using backends like bpftrace (eBPF) and dtrace.<br>
 <a href="https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26?source=friends_link&sk=5e9a2fa4d4921af0ec94f175f7ee49f9">Medium Article</a>
 </p>
 
 `secimport` can be used to:
 - Confine/Restrict specific python modules inside your production environment.
-  - Open Source, 3rd party from unstrusted sources.
-  - Audit the flow of your python application at user-space/os/kernel level.
-- Run an entire python application under unified configuration
-  - Like `seccomp` but not limited to Linux kernels. Cross platform.
-
+  - Restrict 3rd party or open source modules in your code.
+- Audit the flow of your python application at user-space/os/kernel level.
+- Kill the process upon violoation of a profile.
 
 # Quick Start
 `secimport` can be used out of the box in the following ways:
@@ -238,8 +237,10 @@ Not related for python, but for the sake of explanation (Equivilant Demo soon).
   - ✔️ Create a single dcript policy
   - ✔️ Run an application with that policy using dtrace, without using `secure_import`
 - ✔️ <b>Add eBPF basic support using bpftrace</b>
-- bpftrace backend tests (WIP)
-- bpftrace whitelist/blacking implementation
+  - ✔️ bpftrace backend tests
+- <b>Extandible Language Template</b>
+  - Increase extandability for new languages tracing with bpftace/dtrace.
+    - Adding a new integration will be easy, in a single directory, using templates for filters, actions, etc.
 - <b>Node support</b> (bpftrace/dtrace hooks)
   - Implement a template for Node's call stack and event loop
 - <b>Go support</b> (bpftrace/dtrace hooks)
