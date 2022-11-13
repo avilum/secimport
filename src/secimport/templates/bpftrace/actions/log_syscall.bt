@@ -1,0 +1,1 @@
+printf("%s SYSCALL %ld %s depth=%d previous_module=%s current_module=%s \n", probe, args->id, @sysname[args->id], @["depth"], @globals["previous_module"], @globals["current_module"] );

@@ -1,0 +1,20 @@
+/* ###MODULE_NAME### START */
+if ((@entrypoints["###MODULE_NAME###"] != 0) && (@["depth"] >= @entrypoints["###MODULE_NAME###"])){
+	    if (@globals["latest_supervised_module"] == ""){
+			@globals["latest_supervised_module"] = "###MODULE_NAME###"
+		}
+		else{
+			if (@entrypoints["###MODULE_NAME###"] > @entrypoints[@globals["latest_supervised_module"]]){
+				@globals["latest_supervised_module"] = "###MODULE_NAME###"
+			}	
+		}
+		
+		if (@entrypoints["###MODULE_NAME###"] == @entrypoints[@globals["latest_supervised_module"]])
+			if (###SYSCALL_FILTER###){
+				printf("\n*SUPERVISED FLOW: syscall '%s' called in '%s' from '%s'; which entered at depth %d;\nThe supervised module is %s which entered the stack in depth %d;\r\n", @sysname[args->id], @globals["current_module"], "###MODULE_NAME###", @entrypoints["###MODULE_NAME###"],  @globals["latest_supervised_module"], @entrypoints[@globals["latest_supervised_module"]]);
+				###SUPERVISED_MODULES_FILTER###
+				###SUPERVISED_MODULES_ACTION###
+			}
+		}
+}
+/* ###MODULE_NAME### END */

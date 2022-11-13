@@ -1,36 +1,41 @@
 # secimport
 
+
 <p align="center">
  <a href="https://github.com/avilum/secimport"><img src="https://user-images.githubusercontent.com/19243302/177835749-6aec7200-718e-431a-9ab5-c83c6f68565e.png" alt="secimport"></a>
 </p>
 <p align="center">
-Secure import for python modules using dtrace under the hood.<br>
+An easy way to constrain python modules in your code using backends like bpftrace (eBPF) and dtrace.<br>
 <a href="https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26?source=friends_link&sk=5e9a2fa4d4921af0ec94f175f7ee49f9">Medium Article</a>
 </p>
 
 `secimport` can be used to:
 - Confine/Restrict specific python modules inside your production environment.
-  - Open Source, 3rd party from unstrusted sources.
-  - Audit the flow of your python application at user-space/os/kernel level.
-- Run an entire python application under unified configuration
-  - Like `seccomp` but not limited to Linux kernels. Cross platform.
-
+  - Restrict 3rd party or open source modules in your code.
+- Audit the flow of your python application at user-space/os/kernel level.
+- Kill the process upon violoation of a profile.
 
 # Quick Start
 `secimport` can be used out of the box in the following ways:
-1. Inside your code using `module = secimport.secure_import('module_name', ...)`.
-    - Replacing the regular `import` statement with `secure_import`
-    - Only modules that were imported with `secure_import` will be traced.
-2. As a sandbox, by specifying the modules and their policies.
-    - Use this repository to:
-        - Generate a YAML policy from your code
-        - Compile that YAML to dscript.
-    - Use `dtrace` command to run your main python application, with your tailor-made sandbox.
-        - No need for `secure_import`, you can keep using regular `import`s
+1. Modify your imports
+    - Inside your code using `module = secimport.secure_import('module_name', ...)`.
+      - Replacing the regular `import` statement with `secure_import`
+      - Only modules that were imported with `secure_import` will be traced.
+2. As a sandbox that runs your main code.
+      1. Generate a YAML policy from your code, by specifying the modules and the policy you want for each module you use.
+      2. Convert that YAML policy to dscript/bpftrace sandbox code.
+      3. Use `dtrace` or `ebpf` to run your main python application, with your tailor-made sandbox.
+          - No need for `secure_import`, you can keep using regular `import`s and not change your code at all.
 
 For the full list of examples, see <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
 
-# Pickle Example
+# Docker
+A working environment is not easy to create.<br>
+The easiest way to evaluate secimport, is by using our <a href="docker/README.md">Docker for MacOS and Linux</a> that includes secimport, bpftrace backend and eBPF libraries.<br>
+dtrace backend is not available in docker, and can be tried directly on the compatible hosts (MacOS, Solaris, Unix, some Linux distributions)
+
+# Use Cases
+
 ### How pickle can be exploited in your 3rd party packages:
 ```python
 >>> import pickle
@@ -72,7 +77,7 @@ $ less /tmp/.secimport/sandbox_pickle.log
 :
 ```
 
-## YAML Template Example
+## YAML Policy Example
 For a full tutorial, see <a href="docs/YAML_PROFILES.md">YAML Profiles Usage</a>
 ```shell
 # An example yaml template for a sandbox.
@@ -102,7 +107,7 @@ modules:
 
 ```
 
-## Python Processing Example
+## Blocking New Processes Example
 ```python
 Python 3.10.0 (default, May  2 2022, 21:43:20) [Clang 13.0.0 (clang-1300.0.27.3)] on darwin
 Type "help", "copyright", "credits" or "license" for more information.
@@ -129,8 +134,12 @@ Type "help", "copyright", "credits" or "license" for more information.
 # Damn! That's cool.
 ```
 
-- The dtrace profile for the module is saved under:
-  -  `/tmp/.secimport/sandbox_subprocess.d`:
+When using secure_import, the following files are created:
+- The dtrace/bpftrace sandbox code for the module is saved under:
+  -  `/tmp/.secimport/sandbox_subprocess.d`
+      - when using dtrace
+  -  `/tmp/.secimport/sandbox_subprocess.bt`:
+      - when using bpftrace
 - The log file for this module is under
   -  `/tmp/.secimport/sandbox_subprocess.log`:
         ```shell
@@ -216,8 +225,9 @@ Not related for python, but for the sake of explanation (Equivilant Demo soon).
 - <a href="docs/TRACING_PROCESSES.md">Tracing Guides</a>
 - <a href="docs/FAQ.md">F.A.Q</a>
 - <a href="docs/INSTALL.md">Installation</a>
-- <a href="docs/MAC_OS_USERS.md">Mac OS Users</a> - Disabling SIP for dtrace
+- <a href="docs/MAC_OS_USERS.md">Mac OS Users</a> - Disabling SIP (System Intergity Protection)
 - https://www.brendangregg.com/DTrace/DTrace-cheatsheet.pdf
+- https://www.brendangregg.com/blog/2018-10-08/dtrace-for-linux-2018.html
 <br><br>
 
 ## TODO:
@@ -226,6 +236,14 @@ Not related for python, but for the sake of explanation (Equivilant Demo soon).
   - ✔️ Use secimport to compile that yml
   - ✔️ Create a single dcript policy
   - ✔️ Run an application with that policy using dtrace, without using `secure_import`
-- Node support (dtrace hooks)
-- Go support (dtrace hooks)
-- Use current_module_str together with thread ID
+- ✔️ <b>Add eBPF basic support using bpftrace</b>
+  - ✔️ bpftrace backend tests
+- <b>Extandible Language Template</b>
+  - Increase extandability for new languages tracing with bpftace/dtrace.
+    - Adding a new integration will be easy, in a single directory, using templates for filters, actions, etc.
+- <b>Node support</b> (bpftrace/dtrace hooks)
+  - Implement a template for Node's call stack and event loop
+- <b>Go support</b> (bpftrace/dtrace hooks)
+   - Implement a template for golang's call stack
+- Multi Process support: Use current_module_str together with thread ID to distinguish between events in different processes
+- Update all linux syscalls in the templates (filesystem, networking, processing) to improve the sandbox blocking of unknowns.

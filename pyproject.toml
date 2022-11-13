@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "secimport"
-version = "0.4.2"
+version = "0.5.0"
 description = "A sandbox/supervisor for python modules."
 authors = ["Avi Lumelsky"]
 license = "MIT"
