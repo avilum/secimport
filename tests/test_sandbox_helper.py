@@ -1,4 +1,9 @@
 import unittest
+from secimport.backends.common.instrumentation_backend import InstrumentationBackend
+from secimport.backends.common.utils import (
+    PROFILES_DIR_NAME,
+    build_module_sandbox_from_yaml_template,
+)
 
 from secimport.sandbox_helper import secure_import
 
@@ -111,6 +116,24 @@ class TestSecImport(unittest.TestCase):
             destructive=False,
         )
         self.assertEqual(module.__name__, "http")
+
+    def test_build_module_sandbox_from_yaml_template(self):
+        profile_file_path = PROFILES_DIR_NAME / "example.yaml"
+        bpftrace_module_sandbox_code: str = build_module_sandbox_from_yaml_template(
+            profile_file_path, backend=InstrumentationBackend.EBPF
+        )
+        dtrace_module_sandbox_code: str = build_module_sandbox_from_yaml_template(
+            profile_file_path, backend=InstrumentationBackend.DTRACE
+        )
+        for module_sandbox_code in [
+            bpftrace_module_sandbox_code,
+            dtrace_module_sandbox_code,
+        ]:
+            self.assertTrue("fastapi" in module_sandbox_code)
+            self.assertTrue("requests" in module_sandbox_code)
+            self.assertTrue("uvicorn" in module_sandbox_code)
+            self.assertIsInstance(module_sandbox_code, str)
+            self.assertFalse("###SUPERVISED_MODULES_PROBES###" in module_sandbox_code)
 
 
 if __name__ == "__main__":

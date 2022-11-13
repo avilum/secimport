@@ -51,9 +51,9 @@ Exploited!
 ```
 With `secimport`, you can control such action to do whatever you want:
 ```python
-In [1]: import secimport
-In [2]: pickle = secimport.secure_import("pickle")
-In [3]: pickle.loads(b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94.")
+import secimport
+pickle = secimport.secure_import("pickle")
+pickle.loads(b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94.")
 
 [1]    28027 killed     ipython
 ```
@@ -162,7 +162,6 @@ import os;
 os.system('Hello World!');
 ```
 ```python
-# production.py - Your production code
 from secimport import secure_import 
 
 example = secure_import('example', allow_shells=False)

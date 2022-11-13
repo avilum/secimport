@@ -277,6 +277,7 @@ def render_bpftrace_probe_for_module(
     syscalls_list: List[str],
     syscalls_allow: bool,
     templates_dir: Path = TEMPLATES_DIR_NAME,
+    interpreter_path: str = PYTHON_EXECUTABLE,
 ) -> str:
     # Loading the probe allowlist template
     probe_template = open(
@@ -324,7 +325,8 @@ def render_bpftrace_probe_for_module(
 
     # Updating the destructive behavior
     probe_template = probe_template.replace(
-        "###DESTRUCTIVE###", "true" if destructive else "false"
+        "###DESTRUCTIVE###", "1" if destructive else "0"
     )
 
+    probe_template = probe_template.replace("###INTERPRETER_PATH###", interpreter_path)
     return probe_template

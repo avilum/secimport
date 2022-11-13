@@ -274,7 +274,7 @@ def render_dscript_template(
     return script_template
 
 
-def _render_probe_for_module(
+def render_dtrace_probe_for_module(
     module_name: str,
     destructive: bool,
     syscalls_allowlist: List[str],
@@ -324,74 +324,3 @@ def _render_probe_for_module(
     )
     probe_template = probe_template.replace("###MODULE_NAME###", module_name)
     return probe_template
-
-
-def build_module_sandbox_from_yaml_template(
-    template_path: Path, templates_dir: Path = TEMPLATES_DIR_NAME
-):
-    """Generated dscript sandbox code for secure imports based on a YAML file.
-
-    Args:
-        template_path (Path): The path to the YAML file, describing the policies.
-        templates_dir (Path, optional): The directory of the templates. Defaults to TEMPLATES_DIR_NAME.
-
-    Raises:
-        ModuleNotFoundError: _description_
-
-    Returns:
-        _type_: _description_
-    """
-    assert template_path.exists(), f"The template does not exist at {template_path}"
-    import yaml
-
-    safe_yaml = yaml.safe_load(open(template_path, "r").read())
-    parsed_probes = []
-    for module_name, module_config in safe_yaml.get("modules", {}).items():
-        # Finding the module without loading
-        module = importlib.machinery.PathFinder().find_spec(module_name)
-        if module is None:
-            raise ModuleNotFoundError(module)
-
-        # Tracing module entrypoint
-        module_traced_name = module.origin
-        # module_traced_name = os.path.split(module_traced_name)[:-1][0]
-
-        _destructive = module_config.get("destructive")
-        assert isinstance(_destructive, bool), ValueError(
-            f'The "destructive" field for module {module_name} is empty.'
-        )
-
-        _syscall_allowlist = module_config.get("syscall_allowlist")
-        assert _syscall_allowlist, ValueError(
-            f'The "syscall_allowlist" for module {module_name} is empty.'
-        )
-        for _ in _syscall_allowlist:
-            assert isinstance(_, str), ValueError(
-                f'The "syscall_allowlist" field for module {module_name} contains invalid string: {_}'
-            )
-
-        module_sandbox_probe = _render_probe_for_module(
-            module_name=module_traced_name,
-            destructive=_destructive,
-            syscalls_allowlist=_syscall_allowlist,
-        )
-        assert module_sandbox_probe, ValueError(
-            f"Failed to create a probe for module {module_name}"
-        )
-        parsed_probes.append(module_sandbox_probe)
-
-    if not parsed_probes:
-        print(f"The profile does not contain any modules: {template_path}")
-        return
-
-    ###SUPERVISED_MODULES_PROBES###
-    script_template = open(
-        templates_dir / "default.yaml.template.d",
-        "r",
-    ).read()
-
-    probes_code = ("\n" * 2).join(parsed_probes)
-    script_template = script_template.replace(
-        "###SUPERVISED_MODULES_PROBES###", probes_code
-    )
-    return script_template

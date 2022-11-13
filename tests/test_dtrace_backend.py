@@ -1,7 +1,5 @@
 import unittest
 from secimport.backends.dtrace_backend.dtrace_backend import (
-    PROFILES_DIR_NAME,
-    build_module_sandbox_from_yaml_template,
     create_dtrace_script_for_module,
 )
 import os
@@ -20,7 +18,9 @@ class TestDtraceBackend(unittest.TestCase):
             destructive=True,
             syscalls_allowlist=None,
         )
-        self.assertEqual(dtrace_script_file_path, "/tmp/.secimport/dtrace_sandbox_this.d")
+        self.assertEqual(
+            dtrace_script_file_path, "/tmp/.secimport/dtrace_sandbox_this.d"
+        )
         self.assertTrue(os.path.exists(dtrace_script_file_path))
         dtrace_file_content = open(dtrace_script_file_path).read()
         self.assertTrue("#pragma D option destructive" in dtrace_file_content)
@@ -106,20 +106,6 @@ class TestDtraceBackend(unittest.TestCase):
         self.assertTrue("#pragma D option destructive" in dtrace_file_content)
         self.assertTrue("__mac_syscall" in dtrace_file_content)
         self.assertTrue("read_nocancel" in dtrace_file_content)
-
-    def test_build_module_sandbox_from_yaml_template(self):
-        profile_file_path = PROFILES_DIR_NAME / "example.yaml"
-        module_sandbox_code: str = build_module_sandbox_from_yaml_template(
-            profile_file_path
-        )
-        self.assertTrue("fastapi" in module_sandbox_code)
-        self.assertTrue("requests" in module_sandbox_code)
-        self.assertTrue("uvicorn" in module_sandbox_code)
-        # with open("/tmp/.secimport/example_sandbox.d", "w") as example_sandbox:
-        #     example_sandbox.write(module_sandbox_code)
-
-        self.assertIsInstance(module_sandbox_code, str)
-        self.assertFalse("###SUPERVISED_MODULES_PROBES###" in module_sandbox_code)
 
 
 if __name__ == "__main__":
