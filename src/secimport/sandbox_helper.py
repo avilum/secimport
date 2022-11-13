@@ -19,7 +19,7 @@ def secure_import(
     module_name: str,
     allow_shells: bool = False,
     allow_networking: bool = False,
-    use_sudo: bool = True,
+    use_sudo: bool = False,
     log_python_calls: bool = False,  # When True, the log file might reach GB in seconds.
     log_syscalls: bool = False,
     log_network: bool = False,
@@ -61,7 +61,6 @@ def secure_import(
             syscalls_blocklist=syscalls_blocklist,
         )
     elif backend == InstrumentationBackend.DTRACE:
-
         assert run_dtrace_script_for_module(
             module_name=module_name,
             allow_shells=allow_shells,

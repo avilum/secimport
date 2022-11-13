@@ -10,12 +10,14 @@ There are several ways to create a secimport profile for your modules.
     -  `sudo dtrace -s src/secimport/templates/default.allowlist.template.d -c "python -m http.server"`
     - CTRL+C
     - Create a secure import based on that log.
-  - Using simple `dtrace`
+  - Using `bpftrace`
+    - See https://github.com/iovisor/bpftrace/tree/master/tools
+  - Using `dtrace`
     - Tracing the syscalls of a process with pid `12345`
       - `dtrace -n 'syscall::: /pid == ($1)/ {@[pid,execname,probefunc]=count()}' 12345`
     - Tracing the syscalls of a docker container with pid `12345`
       - `dtrace -n 'syscall::: /progenyof($1)/ {@[pid,execname,probefunc]=count()}' 12345`
-  - Using `strace`
+  - Using an `strace` script I contributed to FireJail
     -  A script to list all your application's syscalls using `strace`.<br> I contributed it to `firejail` a few years ago:
       - https://github.com/netblue30/firejail/blob/master/contrib/syscalls.sh
       - ```

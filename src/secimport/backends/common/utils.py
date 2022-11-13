@@ -50,5 +50,6 @@ def render_syscalls_filter(
                 f"backend '{instrumentation_backend}' is not supported"
             )
 
-        print(f"Adding syscall {_syscall} to allowlist")
+        filter_name = "allowlist" if allow else "blocklist"
+        print(f"Adding syscall {_syscall} to {filter_name}")
     return syscalls_filter

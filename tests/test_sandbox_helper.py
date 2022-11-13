@@ -96,7 +96,19 @@ class TestSecImport(unittest.TestCase):
 
     def test_syscall_allowlist_secure_import(self):
         module = secure_import(
-            module_name="http", syscalls_allowlist=EXAMPLE_SYSCALL_LIST
+            module_name="http",
+            syscalls_allowlist=EXAMPLE_SYSCALL_LIST,
+            log_file_system=True,
+            log_python_calls=True,
+        )
+        self.assertEqual(module.__name__, "http")
+
+    def test_syscall_blocklist_secure_import(self):
+        # Only log violations
+        module = secure_import(
+            module_name="http",
+            syscalls_blocklist=EXAMPLE_SYSCALL_LIST,
+            destructive=False,
         )
         self.assertEqual(module.__name__, "http")
 

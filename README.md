@@ -18,23 +18,25 @@ Secure import for python modules using eBPF/DTrace under the hood.<br>
 
 # Quick Start
 `secimport` can be used out of the box in the following ways:
-1. Inside your code using `module = secimport.secure_import('module_name', ...)`.
-    - Replacing the regular `import` statement with `secure_import`
-    - Only modules that were imported with `secure_import` will be traced.
-2. As a sandbox, by specifying the modules and their policies.
-    - Use this repository to:
-        - Generate a YAML policy from your code
-        - Compile that YAML to dscript.
-    - Use `dtrace` or `ebpf` to run your main python application, with your tailor-made sandbox.
-        - No need for `secure_import`, you can keep using regular `import`s
+1. Modify your imports
+    - Inside your code using `module = secimport.secure_import('module_name', ...)`.
+      - Replacing the regular `import` statement with `secure_import`
+      - Only modules that were imported with `secure_import` will be traced.
+2. As a sandbox that runs your main code.
+      1. Generate a YAML policy from your code, by specifying the modules and the policy you want for each module you use.
+      2. Convert that YAML policy to dscript/bpftrace sandbox code.
+      3. Use `dtrace` or `ebpf` to run your main python application, with your tailor-made sandbox.
+          - No need for `secure_import`, you can keep using regular `import`s and not change your code at all.
 
 For the full list of examples, see <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
 
 # Docker
 A working environment is not easy to create.<br>
-To evaluate secimport, we have a custom <a href="docker/README.md">Docker for MacOS and Linux</a> that includes bpftrace and eBPF.
+The easiest way to evaluate secimport, is by using our <a href="docker/README.md">Docker for MacOS and Linux</a> that includes secimport, bpftrace backend and eBPF libraries.<br>
+dtrace backend is not available in docker, and can be tried directly on the compatible hosts (MacOS, Solaris, Unix, some Linux distributions)
 
-# Pickle Example
+# Use Cases
+
 ### How pickle can be exploited in your 3rd party packages:
 ```python
 >>> import pickle
@@ -76,7 +78,7 @@ $ less /tmp/.secimport/sandbox_pickle.log
 :
 ```
 
-## YAML Template Example
+## YAML Policy Example
 For a full tutorial, see <a href="docs/YAML_PROFILES.md">YAML Profiles Usage</a>
 ```shell
 # An example yaml template for a sandbox.
@@ -106,7 +108,7 @@ modules:
 
 ```
 
-## Python Processing Example
+## Blocking New Processes Example
 ```python
 Python 3.10.0 (default, May  2 2022, 21:43:20) [Clang 13.0.0 (clang-1300.0.27.3)] on darwin
 Type "help", "copyright", "credits" or "license" for more information.
@@ -133,8 +135,12 @@ Type "help", "copyright", "credits" or "license" for more information.
 # Damn! That's cool.
 ```
 
-- The dtrace profile for the module is saved under:
-  -  `/tmp/.secimport/sandbox_subprocess.d`:
+When using secure_import, the following files are created:
+- The dtrace/bpftrace sandbox code for the module is saved under:
+  -  `/tmp/.secimport/sandbox_subprocess.d`
+      - when using dtrace
+  -  `/tmp/.secimport/sandbox_subprocess.bt`:
+      - when using bpftrace
 - The log file for this module is under
   -  `/tmp/.secimport/sandbox_subprocess.log`:
         ```shell
@@ -231,7 +237,12 @@ Not related for python, but for the sake of explanation (Equivilant Demo soon).
   - ✔️ Use secimport to compile that yml
   - ✔️ Create a single dcript policy
   - ✔️ Run an application with that policy using dtrace, without using `secure_import`
-- ✔️ <b>Add eBPF support using bpftrace (WIP)</b>
-- Node support (dtrace hooks)
-- Go support (dtrace hooks)
-- Use current_module_str together with thread ID
+- ✔️ <b>Add eBPF basic support using bpftrace</b>
+- bpftrace backend tests (WIP)
+- bpftrace whitelist/blacking implementation
+- <b>Node support</b> (bpftrace/dtrace hooks)
+  - Implement a template for Node's call stack and event loop
+- <b>Go support</b> (bpftrace/dtrace hooks)
+   - Implement a template for golang's call stack
+- Multi Process support: Use current_module_str together with thread ID to distinguish between events in different processes
+- Update all linux syscalls in the templates (filesystem, networking, processing) to improve the sandbox blocking of unknowns.

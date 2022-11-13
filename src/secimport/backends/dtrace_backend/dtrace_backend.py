@@ -4,7 +4,7 @@ Import python modules with dtrace supervision.
 Copyright (c) 2022 Avi Lumelsky
 """
 import importlib
-import importlib.machinery # important for importlib to work for our use case
+import importlib.machinery  # important for importlib to work for our use case
 import os
 import stat
 import time

@@ -683,7 +683,7 @@ BEGIN {
 }
 
 
-usdt:/workspace/Python-3.10.0/python:function__entry {
+usdt:###INTERPRETER_PATH###:function__entry {
         @["depth"]++;
         @entrypoints[str(arg0)] = @["depth"];
         @globals["previous_module"] = @globals["current_module"];
@@ -692,9 +692,9 @@ usdt:/workspace/Python-3.10.0/python:function__entry {
         ###FUNCTION_ENTRY###
 }
 
-usdt:/workspace/Python-3.10.0/python:function__return {
-        @["depth"]--;
-        ###FUNCTION_EXIT###
+usdt:###INTERPRETER_PATH###:function__return {
+    @["depth"]--;
+    ###FUNCTION_EXIT###
 }
 
 tracepoint:raw_syscalls:sys_enter /comm == "python"/ {
