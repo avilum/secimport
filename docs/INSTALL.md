@@ -1,6 +1,12 @@
 # Installation
 We're about to install dtrace and compile a python interpreter with dtrace enabled.
 
+# Using Docker: bpftrace (Linux, Mac)
+the `docker/` folder includes everything in the following guide.
+To build and run using docker, see <a href="../docker/">Docker</a>,
+
+# From Source: dtrace (Mac, Solaris, Windows)
+
 ## Install dtrace
 Some distributions include dtrace. check the `dtrace` command. If it is not installed:
 ```shell
@@ -9,7 +15,7 @@ yum install dtrace-utils
 
 ## Install Python with dtrace and openssl
 
-### OpenSSL
+### Install OpenSSL from source
 ```shell
 wget https://www.openssl.org/source/openssl-1.1.1h.tar.gz
 tar -xvf openssl-1.1.1h.tar.gz
