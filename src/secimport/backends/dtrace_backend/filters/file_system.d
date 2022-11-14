@@ -1,0 +1,1 @@
+    if (probefunc == "open" || probefunc == "write")

@@ -1,0 +1,5 @@
+            printf("\nKILLING PROCESS %s - EXECUTED execve;\n", str(pid));
+            printf("\t\tKILLING...\r\n");
+            system("pkill -9 python"); // optional
+            printf("\t\tKILLED.\r\n");
+            exit(); // optional
