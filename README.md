@@ -45,7 +45,7 @@ class Demo:
  
 pickle.dumps(Demo())
 b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94."
->>> pickle.loads(b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94.")
+pickle.loads(b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94.")
 Exploited!
 0
 ```
@@ -110,12 +110,12 @@ Python 3.10.0 (default, May  2 2022, 21:43:20) [Clang 13.0.0 (clang-1300.0.27.3)
 Type "help", "copyright", "credits" or "license" for more information.
 
 # Let's import subprocess module, limiting it's syscall access.
->>> import secimport
->>> subprocess = secimport.secure_import("subprocess")
+import secimport
+subprocess = secimport.secure_import("subprocess")
 
 # Let's import os 
->>> import os
->>> os.system("ps")
+import os
+os.system("ps")
   PID TTY           TIME CMD
  2022 ttys000    0:00.61 /bin/zsh -l
 50092 ttys001    0:04.66 /bin/zsh -l
@@ -125,7 +125,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 
 # Now, let's try to invoke the same logic using a different module, "subprocess", that was imported using secure_import:
->>> subprocess.check_call('ps')
+subprocess.check_call('ps')
 [1]    75860 killed     python
 
 # Damn! That's cool.
@@ -179,17 +179,17 @@ Killed: 9
 
 ## Network Blocking Example
 ```
->>> import requests
->>> requests.get('https://google.com')
+import requests
+requests.get('https://google.com')
 <Response [200]>
   
 
->>> from secimport import secure_import
->>> requests = secure_import('requests', allow_networking=False)
+from secimport import secure_import
+requests = secure_import('requests', allow_networking=False)
 
 # The next call should kill the process,
 # because we disallowed networking for the requests module.
->>> requests.get('https://google.com')
+requests.get('https://google.com')
 [1]    86664 killed
 ```
 ### Requirements
