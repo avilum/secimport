@@ -21,7 +21,7 @@ from secimport.backends.common.utils import (
     render_syscalls_filter,
 )
 
-TEMPLATES_DIR_NAME = SECIMPORT_ROOT / "templates" / "bpftrace"
+TEMPLATES_DIR_NAME = SECIMPORT_ROOT / "backends" / "bpftrace_backend"
 
 
 def create_bpftrace_script_for_module(

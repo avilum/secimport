@@ -19,7 +19,7 @@ from secimport.backends.common.utils import (
     render_syscalls_filter,
 )
 
-TEMPLATES_DIR_NAME = SECIMPORT_ROOT / "templates" / "dtrace"
+TEMPLATES_DIR_NAME = SECIMPORT_ROOT / "backends" / "dtrace_backend"
 DEFAULT_BACKEND = InstrumentationBackend.DTRACE
 PROFILES_DIR_NAME = SECIMPORT_ROOT / "profiles"
 
