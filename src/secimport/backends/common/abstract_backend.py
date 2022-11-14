@@ -1,8 +1,5 @@
 """
-Import python modules with bpftrace supervision.
-This is a direct copy/pase from dtrace backend,
-TODO: abstract base class for backend, inclusing this supervisor/sandbox backend API.
-
+An abstract backend for language runtime instrumentation.
 Copyright (c) 2022 Avi Lumelsky
 """
 
