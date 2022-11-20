@@ -74,7 +74,7 @@ def build_module_sandbox_from_yaml_template(
     Returns:
         _type_: _description_
     """
-    assert template_path.exists(), f"The template does not exist at {template_path}"
+    assert Path(template_path).exists(), f"The template does not exist at {template_path}"
     import yaml
 
     safe_yaml = yaml.safe_load(open(template_path, "r").read())
@@ -83,7 +83,7 @@ def build_module_sandbox_from_yaml_template(
         # Finding the module without loading
         module = importlib.machinery.PathFinder().find_spec(module_name)
         if module is None:
-            raise ModuleNotFoundError(module)
+            raise ModuleNotFoundError(module_name)
 
         # Tracing module entrypoint
         module_traced_name = module.origin

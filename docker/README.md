@@ -3,17 +3,15 @@
 ## How to Use
 
 1. Install Docker: https://docs.docker.com/get-docker
-2. ./build.sh
+2. `./build.sh`
     - will build a docker image with
         - python with dtrace static USDT instrumentations
         - bpftrace
         - secimport code
     - ~1GB in size
-3. ./run.sh
-    - Runs temporary example sandbox using bpftrace
-    - Then, it will execute os.system('ps').
-      -  the process should be killed.
-    - Once the process is killed, it prints the logs of the sandbox.
+3. `./run.sh` will start a new docker container.
+    - `run_sandbox.sh` will start a temporary example sandbox using bpftrace.
+      -   It will execute `os.system('ps')`, and the process will be killed.
 
 
 ## FAQ

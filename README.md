@@ -24,15 +24,14 @@ An easy way to constrain python modules in your code using backends like bpftrac
 2. As a sandbox that runs your main code.
       1. Generate a YAML policy from your code, by specifying the modules and the policy you want for each module you use.
       2. Convert that YAML policy to dscript/bpftrace sandbox code.
-      3. Use `dtrace` or `ebpf` to run your main python application, with your tailor-made sandbox.
+      3. Use `dtrace` or `bpftrace` to run your main python application, with your tailor-made sandbox.
           - No need for `secure_import`, you can keep using regular `import`s and not change your code at all.
 
 For the full list of examples, see <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
 
 # Docker
-A working environment is not easy to create.<br>
-The easiest way to evaluate secimport, is by using our <a href="docker/README.md">Docker for MacOS and Linux</a> that includes secimport, bpftrace backend and eBPF libraries.<br>
-dtrace backend is not available in docker, and can be tried directly on the compatible hosts (MacOS, Solaris, Unix, some Linux distributions)
+The easiest way to try secimport is by using our <a href="docker/README.md">Docker for MacOS and Linux</a>. It includes python, secimport and bpftrace backend.<br>
+`dtrace` backend is not available in docker, and can be tried directly on the compatible hosts ( <a href="docs/MAC_OS_USERS.md">Mac OS</a> , Solaris, Unix, some Linux distributions).
 
 # Use Cases
 

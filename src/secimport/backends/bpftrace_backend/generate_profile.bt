@@ -682,29 +682,19 @@ BEGIN {
     printf("STARTED\n")
 }
 
-
-usdt:###INTERPRETER_PATH###:function__entry {
-        @["depth"]++;
-        @entrypoints[str(arg0)] = @["depth"];
-        @globals["previous_module"] = @globals["current_module"];
-        @globals["current_module"] = str(arg0);
-        printf("%s, %s, depth=%d\n", str(arg0), str(arg1), @["depth"]) ;
-        ###FUNCTION_ENTRY###
-}
-
-usdt:###INTERPRETER_PATH###:function__return {
-    @["depth"]--;
-    ###FUNCTION_EXIT###
-}
-
 tracepoint:raw_syscalls:sys_enter /comm == "python"/ {
-    @calls[execname, "syscall", sysname[args->id]] = count();
-    ###SUPERVISED_MODULES_PROBES###
+    @syscalls[@sysname[args->id]] = count();
 }
+
 
 END {
-    clear(@calls);
+    printf("Summary:");
+	printf(" %-32s %-10s %-22s %8s\r\n", "FILE", "TYPE", "NAME", "COUNT");
+	printf("\r\nAll syscalls (count):\r\n");
+	print(@syscalls);
+    print(@syscalls, -1, 0);
+	printf("\r\nDone.\r\n");
     clear(@sysname);
     clear(@sysnum);
-    clear(@entrypoints);
+    clear(@syscalls);
 }

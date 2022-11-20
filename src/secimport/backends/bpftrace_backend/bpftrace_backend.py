@@ -121,12 +121,14 @@ def run_bpftrace_script_for_module(
     )
     output_file = BASE_DIR_NAME / f"bpftrace_sandbox_{module_name}.log"
     current_pid = os.getpid()
-    bpftrace_command = f'{"sudo " if use_sudo else ""} {module_file_path} --unsafe -p {current_pid} -o {output_file} &2>/dev/null'
+    bpftrace_command = f'{"sudo " if use_sudo else ""} {module_file_path} --unsafe -q -p {current_pid} -o {output_file} &2>/dev/null'
     st = os.stat(module_file_path)
     os.chmod(module_file_path, st.st_mode | stat.S_IEXEC)
-    print("(running bpftrace supervisor): ", bpftrace_command)
+    print("(sandbox command): ", bpftrace_command)
+    print()
+    print("Waiting for bpftrace.... ")
     os.system(bpftrace_command)
-    time.sleep(5)  # TODO: change from 5 seconds (wait) to fd creation (event)
+    time.sleep(10)  # TODO: change to fd creation (event)
     return True
 
 

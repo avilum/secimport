@@ -26,6 +26,9 @@ make test
 make install
 ```
 
+### Or, Install openssl
+
+
 ### Install python
 ```shell
 PYTHON_VERSION="3.10.0"
@@ -74,4 +77,6 @@ source ~/venvs/dtrace/bin/activate
 You can proceed to <a href="EXAMPLES.md">EXAMPLES.md</a>
 
 # Tests
-`python -m pytest`
+`python3 -m pytest`
+or 
+`python3 -m pytest tests`
