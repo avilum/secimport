@@ -2,8 +2,8 @@
 It is very convenient to specify all of you policies, for all of your 3rd party and open source modules, in a single YAML file. 
 
 # Create a custom sandbox
-1. Generate a profile for your application using dtrace
-2. Save the YAML output of step 1 into a file
+1. Generate a profile for your application using the tracing script.
+2. Create a YAML security profile from your trace.
 3. Build a sandbox (dtrace script) from the yaml file
 1. Run your app in your sandbox!
 

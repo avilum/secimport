@@ -679,6 +679,10 @@ BEGIN {
 	@sysnum["statx"] = 332;
 	@sysnum["io_pgetevents"] = 333;
 	@sysnum["rseq"] = 334;
+
+    // Defining the syscalls supervisions for all the modules
+    // @syscalls_filters[@globals["current_module"], @sysname[args->id]]
+    ###SYSCALL_FILTER###
     printf("STARTED\n")
 }
 
@@ -705,4 +709,5 @@ END {
     clear(@sysname);
     clear(@sysnum);
     clear(@entrypoints);
+    clear(@syscalls_filters);
 }

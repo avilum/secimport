@@ -10,10 +10,11 @@ An easy way to constrain python modules in your code using backends like bpftrac
 </p>
 
 `secimport` can be used to:
-- Confine/Restrict specific python modules inside your production environment.
-  - Restrict 3rd party or open source modules in your code.
+- Trace which syscalls are called by each module in your code.
+- Restrict specific python modules inside your production environment.
+  - 3rd party, open source or unsafe modules in your code.
 - Audit the flow of your python application at user-space/os/kernel level.
-- Kill the process upon violoation of a profile.
+- Kill or audit upon violoation of your specified behavior. Killing is optional.
 
 # Quick Start
 `secimport` can be used out of the box in the following ways:
@@ -154,6 +155,32 @@ When using secure_import, the following files are created:
         ```
 
 ## Shell Blocking Example
+You can try it yourself with docker, locally.
+```
+./docker/build.sh
+./docker/run.sh
+$ /workspace/run_sandbox.sh
+```
+```
+Starting secimport sandbox with bpftrace backend, the sandbox should kill the python process...
+WARNING: Addrspace is not set
+  PID TTY          TIME CMD
+    1 pts/0    00:00:00 sh
+   10 pts/0    00:00:00 bash
+  114 pts/0    00:00:00 bpftrace
+  118 pts/0    00:00:00 python
+  121 pts/0    00:00:00 ps
+  122 pts/0    00:00:00 pkill
+
+
+The process was killed, as expected.
+The sandbox bpftrace code is at sandbox.bt
+The sandbox log is at sandbox.log
+```
+
+The following code will open a new bash shell using os.system.
+In this sandbox we disallow such behavior, by disabling the fork/exec/spawn syscalls.
+
 ```python
 # example.py - Executes code upon import;
 import os;
@@ -200,21 +227,6 @@ The only requirement is a Python interpreter that was built with --with-dtrace.
   - `python3 -m pip install poetry && python3 -m poetry build`
 <br>
 
-### Tests
-`python -m pytest`
-
-
-### Log4Shell as an example
-Not related for python, but for the sake of explanation (Equivilant Demo soon).
-- <a href="https://cve.mitre.org/cgi-bin/cvename.cgi?name=cve-2021-44228">Log4Shell - CVE-2021-44228</a>
-  - Let's say we want to block `log4j` from doing crazy things.
-  - In the following import we deny `log4j` from opening an LDAP connection / shell:
-    - `log4j = secure_import('log4j', allow_shells=False, allow_networking=False)`
-  - This would disable `log4j` from opening sockets and execute commands, IN THE KERNEL.
-  - You can choose any policy you like for any module.
-<br><br>
-
-
 # Useful References
 - <a href="docs/EXAMPLES.md">Examples</a>
 - <a href="docs/TRACING_PROCESSES.md">Tracing Guides</a>
@@ -234,11 +246,10 @@ Not related for python, but for the sake of explanation (Equivilant Demo soon).
 - ✔️ <b>Add eBPF basic support using bpftrace</b>
   - ✔️ bpftrace backend tests
 - <b>Extandible Language Template</b>
-  - Increase extandability for new languages tracing with bpftace/dtrace.
-    - Adding a new integration will be easy, in a single directory, using templates for filters, actions, etc.
+  - Implement bpftrace probes for new languages
+- <b>Go support</b> (bpftrace/dtrace hooks)
+  - Implement a template for golang's call stack
 - <b>Node support</b> (bpftrace/dtrace hooks)
   - Implement a template for Node's call stack and event loop
-- <b>Go support</b> (bpftrace/dtrace hooks)
-   - Implement a template for golang's call stack
 - Multi Process support: Use current_module_str together with thread ID to distinguish between events in different processes
 - Update all linux syscalls in the templates (filesystem, networking, processing) to improve the sandbox blocking of unknowns.

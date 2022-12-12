@@ -1,20 +1,25 @@
 /* ###MODULE_NAME### START */
 if ((@entrypoints["###MODULE_NAME###"] != 0) && (@["depth"] >= @entrypoints["###MODULE_NAME###"])){
-	    if (@globals["latest_supervised_module"] == ""){
-			@globals["latest_supervised_module"] = "###MODULE_NAME###"
+		// Updating latest supervised module
+	    if (strncmp("###MODULE_NAME###", @latest_supervised_module, 24)  != 0){
+			@latest_supervised_module = "###MODULE_NAME###";
 		}
 		else{
-			if (@entrypoints["###MODULE_NAME###"] > @entrypoints[@globals["latest_supervised_module"]]){
-				@globals["latest_supervised_module"] = "###MODULE_NAME###"
-			}	
+			if (@entrypoints["###MODULE_NAME###"] > @entrypoints[@latest_supervised_module]){
+				@latest_supervised_module = "###MODULE_NAME###";
+			}
 		}
-		
-		if (@entrypoints["###MODULE_NAME###"] == @entrypoints[@globals["latest_supervised_module"]])
-			if (###SYSCALL_FILTER###){
-				printf("\n*SUPERVISED FLOW: syscall '%s' called in '%s' from '%s'; which entered at depth %d;\nThe supervised module is %s which entered the stack in depth %d;\r\n", @sysname[args->id], @globals["current_module"], "###MODULE_NAME###", @entrypoints["###MODULE_NAME###"],  @globals["latest_supervised_module"], @entrypoints[@globals["latest_supervised_module"]]);
+
+		// Applying the syscalls filters
+		if (@entrypoints["###MODULE_NAME###"] == @entrypoints[@latest_supervised_module]){
+			// If the current module syscall is allowed/disallowed, the value is 1 or 2.
+			// 0 means we should not do anything with the current call.
+			// This is a variable in the template called SYSCALL_FILTER.
+			if (@syscalls_filters[@globals["current_module"], @sysname[args->id]] != 0){
+				printf("\n*SUPERVISED FLOW: syscall '%s' called in '%s' from '%s'; which entered at depth %d;\nThe supervised module is %s which entered the stack in depth %d;\r\n", @sysname[args->id], @globals["current_module"], "###MODULE_NAME###", @entrypoints["###MODULE_NAME###"],  @latest_supervised_module, @entrypoints[@latest_supervised_module]);
 				###SUPERVISED_MODULES_FILTER###
 				###SUPERVISED_MODULES_ACTION###
 			}
 		}
 }
-/* ###MODULE_NAME### END */
+/* ###MODULE_NAME### END */	

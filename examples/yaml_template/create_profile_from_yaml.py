@@ -25,7 +25,7 @@ def main():
 
     print("The dtrace sandbox script is ready at ", dtrace_sandbox_filename)
     print("The bpftrace sandbox script is ready at ", bpftrace_sandbox_filename)
-    print('Done.')
+    print("Done.")
 
 
 if __name__ == "__main__":

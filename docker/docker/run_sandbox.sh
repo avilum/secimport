@@ -5,9 +5,9 @@
 #            You can remove this argument.
 
 echo "Starting secimport sandbox with bpftrace backend, the sandbox should kill the python process..."
-bpftrace -c "/workspace/Python-3.10.0/python -c __import__('os').system('ps')" -o sandbox.log sandbox.bt --unsafe
+bpftrace -c "/workspace/Python-3.10.0/python -c __import__('os').system('ps')" -o sandbox.log secimport/profiles/processing_sandbox.bt --unsafe
 echo "The process was killed, as expected."
 echo "The sandbox bpftrace code is at sandbox.bt"
-echo "The sandbox log is at sandbox.log"
+echo "The sandbox log is at sandbox.log."
 # tail -n 20 sandbox.log
 # less +G sandbox.log
