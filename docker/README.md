@@ -9,10 +9,13 @@
         - bpftrace
         - secimport code
     - ~1GB in size
-3. `./run.sh` will start a new docker container.
-    - `run_sandbox.sh` will start a temporary example sandbox using bpftrace.
+3. `./run.sh` will start a new docker container with secimport.
+    - `secimport-shell` or `./trace.sh` will open a syscall-tracing python shell.
+        - All syscalls and modules will be logged to traced_modules.json once you hit CTRL+D.
+    - `./run_sandbox.sh` will start a temporary example sandbox using `sandbox.bt`.
       -   It will execute `os.system('ps')`, and the process will be killed.
-
+        - Logs will be written to `sandbox.log`
+    - You can use `-v` in docker run to mount your code into the container and trace it. See `./run.sh`
 
 ## FAQ
 

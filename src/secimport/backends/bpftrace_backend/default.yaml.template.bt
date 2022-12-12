@@ -679,6 +679,8 @@ BEGIN {
 	@sysnum["statx"] = 332;
 	@sysnum["io_pgetevents"] = 333;
 	@sysnum["rseq"] = 334;
+    
+    ###SYSCALL_FILTER###
     printf("STARTED\n")
 }
 
@@ -688,23 +690,22 @@ usdt:###INTERPRETER_PATH###:function__entry {
         @entrypoints[str(arg0)] = @["depth"];
         @globals["previous_module"] = @globals["current_module"];
         @globals["current_module"] = str(arg0);
-        printf("%s, %s, depth=%d\n", str(arg0), str(arg1), @["depth"]) ;
-        ###FUNCTION_ENTRY###
+        @latest_supervised_module =  str(arg0);
+        // printf("%s, %s, depth=%d\n", str(arg0), str(arg1), @["depth"]);
 }
 
 usdt:###INTERPRETER_PATH###:function__return {
     @["depth"]--;
-    ###FUNCTION_EXIT###
 }
 
 tracepoint:raw_syscalls:sys_enter /comm == "python"/ {
-    @calls[execname, "syscall", sysname[args->id]] = count();
     ###SUPERVISED_MODULES_PROBES###
 }
 
 END {
-    clear(@calls);
     clear(@sysname);
     clear(@sysnum);
     clear(@entrypoints);
+    clear(@syscalls_filters);
+    clear(@globals);
 }

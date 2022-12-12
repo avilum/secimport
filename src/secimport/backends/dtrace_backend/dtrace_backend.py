@@ -89,7 +89,7 @@ def create_dtrace_script_for_module(
 
     module = importlib.machinery.PathFinder().find_spec(module_name)
     if module is None:
-        raise ModuleNotFoundError(module)
+        raise ModuleNotFoundError(module_name)
     module_traced_name = module.origin  # e.g this.py
 
     assert not (

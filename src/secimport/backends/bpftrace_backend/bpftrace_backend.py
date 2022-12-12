@@ -45,7 +45,7 @@ def create_bpftrace_script_for_module(
 
     module = importlib.machinery.PathFinder().find_spec(module_name)
     if module is None:
-        raise ModuleNotFoundError(module)
+        raise ModuleNotFoundError(module_name)
     module_traced_name = module.origin  # e.g this.py
 
     assert not (
@@ -54,19 +54,38 @@ def create_bpftrace_script_for_module(
 
     # If we have an allowlist
     if syscalls_allowlist is not None:
-        script_template = render_allowlist_template(
+        script_template = render_bpftrace_probe_for_module(
             module_name=module_name,
             destructive=destructive,
-            syscalls_allowlist=syscalls_allowlist,
             templates_dir=templates_dir,
         )
+        syscalls_filter = render_syscalls_filter(
+            syscalls_list=syscalls_allowlist,
+            allow=True,
+            instrumentation_backend=InstrumentationBackend.EBPF,
+            module_name=module_traced_name,
+        )
+        script_template = script_template.replace(
+            "###SYSCALL_FILTER###", syscalls_filter
+        )
+
     elif syscalls_blocklist is not None:
-        script_template = render_blocklist_template(
+        # If we have a blocklist
+        script_template = render_bpftrace_probe_for_module(
             module_name=module_name,
             destructive=destructive,
-            syscalls_blocklist=syscalls_blocklist,
             templates_dir=templates_dir,
         )
+        syscalls_filter = render_syscalls_filter(
+            syscalls_list=syscalls_allowlist,
+            allow=True,
+            instrumentation_backend=InstrumentationBackend.EBPF,
+            module_name=module_traced_name,
+        )
+        script_template = script_template.replace(
+            "###SYSCALL_FILTER###", syscalls_filter
+        )
+
     else:
         script_template = render_bpftrace_template(
             module_traced_name=module_traced_name,
@@ -130,36 +149,6 @@ def run_bpftrace_script_for_module(
     os.system(bpftrace_command)
     time.sleep(10)  # TODO: change to fd creation (event)
     return True
-
-
-def render_allowlist_template(
-    module_name: str,
-    destructive: bool,
-    syscalls_allowlist: List[str],
-    templates_dir: Path = TEMPLATES_DIR_NAME,
-):
-    return render_bpftrace_probe_for_module(
-        module_name=module_name,
-        destructive=destructive,
-        syscalls_list=syscalls_allowlist,
-        syscalls_allow=True,
-        templates_dir=templates_dir,
-    )
-
-
-def render_blocklist_template(
-    module_name: str,
-    destructive: bool,
-    syscalls_blocklist: List[str],
-    templates_dir: Path = TEMPLATES_DIR_NAME,
-):
-    return render_bpftrace_probe_for_module(
-        module_name=module_name,
-        destructive=destructive,
-        syscalls_list=syscalls_blocklist,
-        syscalls_allow=False,
-        templates_dir=templates_dir,
-    )
 
 
 def render_bpftrace_template(
@@ -273,8 +262,6 @@ def render_bpftrace_template(
 def render_bpftrace_probe_for_module(
     module_name: str,
     destructive: bool,
-    syscalls_list: List[str],
-    syscalls_allow: bool,
     templates_dir: Path = TEMPLATES_DIR_NAME,
     interpreter_path: str = PYTHON_EXECUTABLE,
 ) -> str:
@@ -283,14 +270,6 @@ def render_bpftrace_probe_for_module(
         templates_dir / "probes/module_syscalls_allowlist_template.bt",
         "r",
     ).read()
-
-    # Adding a syscalls filter
-    syscalls_filter = render_syscalls_filter(
-        syscalls_list=syscalls_list,
-        allow=syscalls_allow,
-        instrumentation_backend=InstrumentationBackend.EBPF,
-    )
-    probe_template = probe_template.replace("###SYSCALL_FILTER###", syscalls_filter)
 
     # Adding a probe filter for the specified python module
     supervision_filter = open(

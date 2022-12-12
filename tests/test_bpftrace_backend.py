@@ -150,5 +150,6 @@ class TestEBPFBackend(unittest.TestCase):
         self.assertTrue("system(" in bpftrace_file_content)
         self.assertTrue("http" in bpftrace_file_content)
 
+
 if __name__ == "__main__":
     unittest.main()
