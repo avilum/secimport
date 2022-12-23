@@ -52,15 +52,60 @@ The easiest way to try secimport is by using our <a href="docker/README.md">Dock
 
 
 # Example Use Cases
+<a href="docs/EXAMPLES.md">EXAMPLES.md</a> contains advanced usage and many interactive session examples: YAML profies, networking, filesystem, processing blocking & more.
 
 ## Simple Usage
 - <a href="examples/python_imports/">Running Sandbox Using Python Imports</a>
 - <a href="docs/CLI.md">`secimport` CLI usage</a>
     - The easiest option to start with inside docker.
     - `python -m secimport.cli --help`
-- See <a href="YAML_PROFILES.md">YAML Profiles Usage</a>
+- See <a href="YAML_PROFILES.md">YAML Profiles Usage</a>>
 <br><br>
-For the advanced usage and other examples (networking, filesystem, processing blocking & more) see <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
+### How pickle can be exploited in your 3rd party packages (and how to block it)
+```python
+# Not your code, but you load and run it frmo 3rd some party package.
+
+import pickle
+class Demo:
+    def __reduce__(self):
+        return (eval, ("__import__('os').system('echo Exploited!')",))
+ 
+pickle.dumps(Demo())
+b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94."
+
+# Your code, at some day...
+pickle.loads(b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94.")
+Exploited!
+0
+```
+With `secimport`, you can control such action to do whatever you want:
+```python
+import secimport
+pickle = secimport.secure_import("pickle")
+pickle.loads(b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94.")
+
+[1]    28027 killed     ipython
+```
+A log file is automatically created, containing everything you need to know:
+```
+$ less /tmp/.secimport/sandbox_pickle.log
+
+  @posix_spawn from /Users/avilumelsky/Downloads/Python-3.10.0/Lib/threading.py
+    DETECTED SHELL:
+        depth=8
+        sandboxed_depth=0
+        sandboxed_module=/Users/avilumelsky/Downloads/Python-3.10.0/Lib/pickle.py  
+
+    TERMINATING SHELL:
+        libsystem_kernel.dylib`__posix_spawn+0xa
+        ...
+                libsystem_kernel.dylib`__posix_spawn+0xa
+                libsystem_c.dylib`system+0x18b
+                python.exe`os_system+0xb3
+    KILLED
+:
+```
+More examples are available at <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
 
 <br><br>
 # Roadmap
