@@ -344,7 +344,7 @@ BEGIN {
 
     // Reverse mapping
     // ausyscall --dump | awk 'NR > 1 { printf("\t@sysnum[\"%s\"] = %d;\n", $2, $1); }';
-    @sysnum["read"] = 0;
+	@sysnum["read"] = 0;
 	@sysnum["write"] = 1;
 	@sysnum["open"] = 2;
 	@sysnum["close"] = 3;
@@ -680,26 +680,127 @@ BEGIN {
 	@sysnum["io_pgetevents"] = 333;
 	@sysnum["rseq"] = 334;
     
-    ###SYSCALL_FILTER###
-    printf("STARTED\n");
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/codecs.py", " close"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/codecs.py", " dup"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/codecs.py", " fstat"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/codecs.py", " ioctl"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/codecs.py", " lseek"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/codecs.py", " read"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/codecs.py", " rt_sigaction"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/collections/__init__.py", " brk"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/genericpath.py", " stat"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/os.py", " read"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/posixpath.py", " close"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/posixpath.py", " fstat"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/posixpath.py", " getcwd"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/posixpath.py", " getdents64"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/posixpath.py", " ioctl"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/posixpath.py", " openat"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/posixpath.py", " pselect6"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/posixpath.py", " read"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/posixpath.py", " rt_sigaction"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/posixpath.py", " rt_sigprocmask"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/posixpath.py", " rt_sigreturn"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/posixpath.py", " select"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/posixpath.py", " write"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/site.py", " fstat"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/site.py", " getegid"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/site.py", " geteuid"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/site.py", " getgid"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/site.py", " getuid"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/site.py", " ioctl"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/site.py", " lseek"] = 1;
+	@syscalls_filters["/workspace/Python-3.10.0/Lib/site.py", " openat"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " access"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " brk"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " close"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " dup"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " fcntl"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " fstat"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " futex"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " getcwd"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " ioctl"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " lseek"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " mmap"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " mprotect"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " munmap"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " openat"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " read"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " readlink"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " rt_sigaction"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " stat"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " sysinfo"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap>", " write"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap_external>", " brk"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap_external>", " close"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap_external>", " fstat"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap_external>", " getcwd"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap_external>", " getdents64"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap_external>", " ioctl"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap_external>", " lseek"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap_external>", " mmap"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap_external>", " openat"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap_external>", " read"] = 1;
+	@syscalls_filters["<frozen importlib._bootstrap_external>", " stat"] = 1;
+	@syscalls_filters["<frozen zipimport>", " close"] = 1;
+	@syscalls_filters["<frozen zipimport>", " fcntl"] = 1;
+	@syscalls_filters["<frozen zipimport>", " fstat"] = 1;
+	@syscalls_filters["<frozen zipimport>", " ioctl"] = 1;
+	@syscalls_filters["<frozen zipimport>", " lseek"] = 1;
+	@syscalls_filters["<frozen zipimport>", " openat"] = 1;
+	@syscalls_filters["<frozen zipimport>", " read"] = 1;
+	@syscalls_filters["<string>", " brk"] = 1;
+	@syscalls_filters["general_requirements", " access"] = 1;
+	@syscalls_filters["general_requirements", " arch_prctl"] = 1;
+	@syscalls_filters["general_requirements", " brk"] = 1;
+	@syscalls_filters["general_requirements", " close"] = 1;
+	@syscalls_filters["general_requirements", " fstat"] = 1;
+	@syscalls_filters["general_requirements", " futex"] = 1;
+	@syscalls_filters["general_requirements", " getrandom"] = 1;
+	@syscalls_filters["general_requirements", " mmap"] = 1;
+	@syscalls_filters["general_requirements", " mprotect"] = 1;
+	@syscalls_filters["general_requirements", " munmap"] = 1;
+	@syscalls_filters["general_requirements", " openat"] = 1;
+	@syscalls_filters["general_requirements", " pread"] = 1;
+	@syscalls_filters["general_requirements", " prlimit64"] = 1;
+	@syscalls_filters["general_requirements", " read"] = 1;
+	@syscalls_filters["general_requirements", " rt_sigaction"] = 1;
+	@syscalls_filters["general_requirements", " rt_sigprocmask"] = 1;
+	@syscalls_filters["general_requirements", " set_robust_list"] = 1;
+	@syscalls_filters["general_requirements", " set_tid_address"] = 1;	
+	printf("STARTED\n");
 }
 
 
-usdt:###INTERPRETER_PATH###:function__entry {
+usdt:/workspace/Python-3.10.0/python:function__entry {
         @["depth"]++;
         @entrypoints[str(arg0)] = @["depth"];
         @globals["previous_module"] = @globals["current_module"];
         @globals["current_module"] = str(arg0);
-        @latest_supervised_module =  str(arg0);
+        // @latest_supervised_module =  str(arg0);
         // printf("%s, %s, depth=%d\n", str(arg0), str(arg1), @["depth"]);
 }
 
-usdt:###INTERPRETER_PATH###:function__return {
+usdt:/workspace/Python-3.10.0/python:function__return {
     @["depth"]--;
 }
 
 tracepoint:raw_syscalls:sys_enter /comm == "python"/ {
-    ###SUPERVISED_MODULES_PROBES###
+			// Unspecified syscalls will be 0
+			if (strncmp(@globals["current_module"], "", 1) != 0){
+			printf("%s is flagged %d\n", @globals["current_module"], @syscalls_filters[@globals["current_module"], @sysname[args->id]]);
+
+			// TODO: create allow template
+			if (@syscalls_filters[@globals["current_module"], @sysname[args->id]] != 1) {
+				printf("\n*SUPERVISED FLOW: syscall '%s' called in '%s', flagged %d\r\n", @sysname[args->id], @globals["current_module"], @syscalls_filters[@globals["current_module"], @sysname[args->id]]);
+				printf("\nKILLING PROCESS %s\n", str(pid));
+                                printf("\t\tKILLING...\r\n");
+                                system("pkill -9 python"); // optional. Please use "bpftrace --unsafe" or remove this line.
+                                printf("\t\tKILLED.\r\n");
+                                exit(); // optional
+			}
+			}
+
 }
 
 END {

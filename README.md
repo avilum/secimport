@@ -1,43 +1,77 @@
 # secimport
+`secimport` is a sandbox toolkit, that traces your application and grants privilleges <b>per module</b> in your code.<br>
+By doing so, `secimport` enhances runtime security, giving you the ability to choose the privilleges for:
+  - All of your code - global privilleges (like seccomp, apparmor, firejail, etc.)
+  - 3rd party dependencies 
+    - That can be added/modified without you knowing, to avoid supply chain attacks.
+  - Open-Source packages
+    - You don't have control over them, and keeping it up-to-date cannot be guaranteed.
 
-
+It uses backends like bpftrace <b>(eBPF)</b> and <b>dtrace</b> under the hood, making it cross-platform.<br>
 <p align="center">
- <a href="https://github.com/avilum/secimport"><img src="https://user-images.githubusercontent.com/19243302/177835749-6aec7200-718e-431a-9ab5-c83c6f68565e.png" alt="secimport"></a>
-</p>
-<p align="center">
-An easy way to constrain python modules in your code using backends like bpftrace (eBPF) and dtrace.<br>
 <a href="https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26?source=friends_link&sk=5e9a2fa4d4921af0ec94f175f7ee49f9">Medium Article</a>
 </p>
+<p align="center">
+ <a href="https://github.com/avilum/secimport"><img style="max-height: 100px" src="https://user-images.githubusercontent.com/19243302/177835749-6aec7200-718e-431a-9ab5-c83c6f68565e.png" alt="secimport"></a>
+</p>
 
-`secimport` can be used to:
-- Trace which syscalls are called by each module in your code.
-- Restrict specific python modules inside your production environment.
-  - 3rd party, open source or unsafe modules in your code.
+# How is works?
+`secimport` uses USDT (Userland Statically Defined Tracing) probes in the runtime (Python interpreter for example) using eBPF and dtrace instrumentation scripts.<br>
+You can use `secimport` to:
+- Trace which syscalls are called by each module in your code, or by your entire application.
+- Restrict specific modules/packages inside your production environment like 3rd party, open source or code from untrusted source.
 - Audit the flow of your python application at user-space/os/kernel level.
 - Kill or audit upon violoation of your specified behavior. Killing is optional.
-
+<br><br>
 # Quick Start
-`secimport` can be used out of the box in the following ways:
-1. Modify your imports
+There are several methods to create and run a sandbox:
+1. By modifying your imports
     - Inside your code using `module = secimport.secure_import('module_name', ...)`.
       - Replacing the regular `import` statement with `secure_import`
       - Only modules that were imported with `secure_import` will be traced.
-2. As a sandbox that runs your main code.
-      1. Generate a YAML policy from your code, by specifying the modules and the policy you want for each module you use.
-      2. Convert that YAML policy to dscript/bpftrace sandbox code.
-      3. Use `dtrace` or `bpftrace` to run your main python application, with your tailor-made sandbox.
+2. By running it as a parent process for your application
+      -  Generate a YAML policy from your code, by specifying the modules and the policy you want, for every module that you would like to restrict in any way.
+         - Convert that YAML policy to dscript/bpftrace sandbox code.
+      - Run you tailor-made sandbox
+          - Use `dtrace` or `bpftrace` to run your main python application, with your tailor-made sandbox.
           - No need for `secure_import`, you can keep using regular `import`s and not change your code at all.
-
-For the full list of examples, see <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
-
+<br><br>
 # Docker
 The easiest way to try secimport is by using our <a href="docker/README.md">Docker for MacOS and Linux</a>. It includes python, secimport and bpftrace backend.<br>
-`dtrace` backend is not available in docker, and can be tried directly on the compatible hosts ( <a href="docs/MAC_OS_USERS.md">Mac OS</a> , Solaris, Unix, some Linux distributions).
+`dtrace` backend is not available in docker, and can be tried directly on the compatible hosts ( <a href="docs/MAC_OS_USERS.md">Mac OS</a> , Windows, Solaris, Unix, some Linux distributions).
+<br><br>
 
-# Use Cases
+# References:
+- Read about the available backends in secimport:
+  - https://www.brendangregg.com/DTrace/DTrace-cheatsheet.pdf
+    - `dtrace`
+  - https://www.brendangregg.com/blog/2018-10-08/dtrace-for-linux-2018.html
+    - `bpftrace` (dtrace 2.0) that uses LLVM and compiled our script to BCC.
+       - https://github.com/iovisor/bpftrace
+- <a href="docs/EXAMPLES.md">Examples</a>
 
-### How pickle can be exploited in your 3rd party packages:
+- Guides
+  - <a href="docs/TRACING_PROCESSES.md">Tracing Processes Guide</a>
+  - <a href="docs/INSTALL.md">Installation</a>
+  - <a href="docs/MAC_OS_USERS.md">Mac OS Users</a> - Disabling SIP (System Intergity Protection)
+  - <a href="docs/FAQ.md">F.A.Q</a>
+  <br><br>
+
+
+# Example Use Cases
+<a href="docs/EXAMPLES.md">EXAMPLES.md</a> contains advanced usage and many interactive session examples: YAML profies, networking, filesystem, processing blocking & more.
+
+## Simple Usage
+- <a href="examples/python_imports/">Running Sandbox Using Python Imports</a>
+- <a href="docs/CLI.md">`secimport` CLI usage</a>
+    - The easiest option to start with inside docker.
+    - `python -m secimport.cli --help`
+- See <a href="YAML_PROFILES.md">YAML Profiles Usage</a>>
+<br><br>
+### How pickle can be exploited in your 3rd party packages (and how to block it)
 ```python
+# Not your code, but you load and run it frmo 3rd some party package.
+
 import pickle
 class Demo:
     def __reduce__(self):
@@ -45,6 +79,8 @@ class Demo:
  
 pickle.dumps(Demo())
 b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94."
+
+# Your code, at some day...
 pickle.loads(b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94.")
 Exploited!
 0
@@ -76,168 +112,10 @@ $ less /tmp/.secimport/sandbox_pickle.log
     KILLED
 :
 ```
+More examples are available at <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
 
-## YAML Policy Example
-For a full tutorial, see <a href="docs/YAML_PROFILES.md">YAML Profiles Usage</a>
-```shell
-# An example yaml template for a sandbox.
-
-modules:
-  requests:
-    destructive: true
-    syscall_allowlist:
-      - write
-      - ioctl
-      - stat64
-  fastapi:
-    destructive: true
-    syscall_allowlist:
-      - bind
-      - fchmod
-      - stat64
-  uvicorn:
-    destructive: true
-    syscall_allowlist:
-      - getpeername
-      - getpgrp
-      - stat64
-
-```
-
-## Blocking New Processes Example
-```python
-Python 3.10.0 (default, May  2 2022, 21:43:20) [Clang 13.0.0 (clang-1300.0.27.3)] on darwin
-Type "help", "copyright", "credits" or "license" for more information.
-
-# Let's import subprocess module, limiting it's syscall access.
-import secimport
-subprocess = secimport.secure_import("subprocess")
-
-# Let's import os 
-import os
-os.system("ps")
-  PID TTY           TIME CMD
- 2022 ttys000    0:00.61 /bin/zsh -l
-50092 ttys001    0:04.66 /bin/zsh -l
-75860 ttys001    0:00.13 python
-0
-# It worked as expected, returning exit code 0.
-
-
-# Now, let's try to invoke the same logic using a different module, "subprocess", that was imported using secure_import:
-subprocess.check_call('ps')
-[1]    75860 killed     python
-
-# Damn! That's cool.
-```
-
-When using secure_import, the following files are created:
-- The dtrace/bpftrace sandbox code for the module is saved under:
-  -  `/tmp/.secimport/sandbox_subprocess.bt`:
-      - when using bpftrace
-  -  `/tmp/.secimport/sandbox_subprocess.d`
-      - when using dtrace
-- The log file for this module is under
-  -  `/tmp/.secimport/sandbox_subprocess.log`:
-        ```shell
-        ...
-
-        (OPENING SHELL using posix_spawn): (pid 75860) (thread 344676) (user 501) (python module: <stdin>) (probe mod=, name=entry, prov=syscall func=posix_spawn) /bin/sh 
-            #posix_spawn,
-
-        (TOUCHING FILESYSTEM): write(140339021606912) from thread 344676
-                    libsystem_kernel.dylib`__fork+0xb
-                    _posixsubprocess.cpython-310-darwin.so`do_fork_exec+0x29
-                    _posixsubprocess.cpython-310-darwin.so`subprocess_fork_exec+0x71f
-                    python.exe`cfunction_call+0x86
-        killing...
-        killed.
-        ```
-
-## Shell Blocking Example
-You can try it yourself with docker, locally.
-```
-./docker/build.sh
-./docker/run.sh
-$ /workspace/run_sandbox.sh
-```
-```
-Starting secimport sandbox with bpftrace backend, the sandbox should kill the python process...
-WARNING: Addrspace is not set
-  PID TTY          TIME CMD
-    1 pts/0    00:00:00 sh
-   10 pts/0    00:00:00 bash
-  114 pts/0    00:00:00 bpftrace
-  118 pts/0    00:00:00 python
-  121 pts/0    00:00:00 ps
-  122 pts/0    00:00:00 pkill
-
-
-The process was killed, as expected.
-The sandbox bpftrace code is at sandbox.bt
-The sandbox log is at sandbox.log
-```
-
-The following code will open a new bash shell using os.system.
-In this sandbox we disallow such behavior, by disabling the fork/exec/spawn syscalls.
-
-```python
-# example.py - Executes code upon import;
-import os;
-
-os.system('Hello World!');
-```
-```python
-from secimport import secure_import 
-
-example = secure_import('example', allow_shells=False)
-```
-Let's run the  and see what happens:
-```
-(root) sh-3.2#  export PYTHONPATH=$(pwd)/src:$(pwd)/examples:$(pwd):$PYTHONPATH
-(root) sh-3.2#  python examples/production.py 
-Successfully compiled dtrace profile:  /tmp/.secimport/sandbox_example.d
-Killed: 9
-```
-- We imported `example` with limited capabilities.
-- If a syscall like `spawn/exec/fork/forkexec` will be executed
-  - The process will be `kill`ed with `-9` signal.
-
-## Network Blocking Example
-```
-import requests
-requests.get('https://google.com')
-<Response [200]>
-  
-
-from secimport import secure_import
-requests = secure_import('requests', allow_networking=False)
-
-# The next call should kill the process,
-# because we disallowed networking for the requests module.
-requests.get('https://google.com')
-[1]    86664 killed
-```
-### Requirements
-The only requirement is a Python interpreter that was built with --with-dtrace.
-  - See <a href="docs/INSTALL.md">INSTALL.md</a> for a detailed setup from scratch.
-- pip
-  - `python3 -m pip install secimport`
-- Poetry
-  - `python3 -m pip install poetry && python3 -m poetry build`
-<br>
-
-# Useful References
-- <a href="docs/EXAMPLES.md">Examples</a>
-- <a href="docs/TRACING_PROCESSES.md">Tracing Guides</a>
-- <a href="docs/FAQ.md">F.A.Q</a>
-- <a href="docs/INSTALL.md">Installation</a>
-- <a href="docs/MAC_OS_USERS.md">Mac OS Users</a> - Disabling SIP (System Intergity Protection)
-- https://www.brendangregg.com/DTrace/DTrace-cheatsheet.pdf
-- https://www.brendangregg.com/blog/2018-10-08/dtrace-for-linux-2018.html
 <br><br>
-
-## TODO:
+# Roadmap
 - ✔️ Allow/Block list configuration
 - ✔️ Create a .yaml configuration per module in the code
   - ✔️ Use secimport to compile that yml

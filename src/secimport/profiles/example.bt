@@ -680,32 +680,285 @@ BEGIN {
 	@sysnum["io_pgetevents"] = 333;
 	@sysnum["rseq"] = 334;
     
-    ###SYSCALL_FILTER###
-    printf("STARTED\n");
+    @syscalls_filters["requests", "fchmod"] = 1;
+	@syscalls_filters["requests", "getentropy"] = 1;
+	@syscalls_filters["requests", "getpgrp"] = 1;
+	@syscalls_filters["requests", "getrlimit"] = 1;
+	@syscalls_filters["requests", "shm_open"] = 1;
+	@syscalls_filters["requests", "sysctlbyname"] = 1;
+	@syscalls_filters["requests", "access"] = 1;
+	@syscalls_filters["requests", "munmap"] = 1;
+	@syscalls_filters["requests", "issetugid"] = 1;
+	@syscalls_filters["requests", "readlink"] = 1;
+	@syscalls_filters["requests", "write"] = 1;
+	@syscalls_filters["requests", "fcntl"] = 1;
+	@syscalls_filters["requests", "fstatfs64"] = 1;
+	@syscalls_filters["requests", "getdirentries64"] = 1;
+	@syscalls_filters["requests", "mprotect"] = 1;
+	@syscalls_filters["requests", "fcntl_nocancel"] = 1;
+	@syscalls_filters["requests", "madvise"] = 1;
+	@syscalls_filters["requests", "mmap"] = 1;
+	@syscalls_filters["requests", "read_nocancel"] = 1;
+	@syscalls_filters["requests", "select"] = 1;
+	@syscalls_filters["requests", "sigprocmask"] = 1;
+	@syscalls_filters["requests", "close_nocancel"] = 1;
+	@syscalls_filters["requests", "write_nocancel"] = 1;
+	@syscalls_filters["requests", "open_nocancel"] = 1;
+	@syscalls_filters["requests", "close"] = 1;
+	@syscalls_filters["requests", "open"] = 1;
+	@syscalls_filters["requests", "sigaction"] = 1;
+	@syscalls_filters["requests", "lseek"] = 1;
+	@syscalls_filters["requests", "fstat64"] = 1;
+	@syscalls_filters["requests", "read"] = 1;
+	@syscalls_filters["requests", "ioctl"] = 1;
+	@syscalls_filters["requests", "stat64"] = 1;
+	@syscalls_filters["fastapi", "bind"] = 1;
+	@syscalls_filters["fastapi", "fchmod"] = 1;
+	@syscalls_filters["fastapi", "getentropy"] = 1;
+	@syscalls_filters["fastapi", "getpgrp"] = 1;
+	@syscalls_filters["fastapi", "getrlimit"] = 1;
+	@syscalls_filters["fastapi", "shm_open"] = 1;
+	@syscalls_filters["fastapi", "sysctlbyname"] = 1;
+	@syscalls_filters["fastapi", "access"] = 1;
+	@syscalls_filters["fastapi", "munmap"] = 1;
+	@syscalls_filters["fastapi", "issetugid"] = 1;
+	@syscalls_filters["fastapi", "readlink"] = 1;
+	@syscalls_filters["fastapi", "write"] = 1;
+	@syscalls_filters["fastapi", "fcntl"] = 1;
+	@syscalls_filters["fastapi", "fstatfs64"] = 1;
+	@syscalls_filters["fastapi", "getdirentries64"] = 1;
+	@syscalls_filters["fastapi", "mprotect"] = 1;
+	@syscalls_filters["fastapi", "fcntl_nocancel"] = 1;
+	@syscalls_filters["fastapi", "madvise"] = 1;
+	@syscalls_filters["fastapi", "mmap"] = 1;
+	@syscalls_filters["fastapi", "read_nocancel"] = 1;
+	@syscalls_filters["fastapi", "select"] = 1;
+	@syscalls_filters["fastapi", "sigprocmask"] = 1;
+	@syscalls_filters["fastapi", "close_nocancel"] = 1;
+	@syscalls_filters["fastapi", "write_nocancel"] = 1;
+	@syscalls_filters["fastapi", "open_nocancel"] = 1;
+	@syscalls_filters["fastapi", "close"] = 1;
+	@syscalls_filters["fastapi", "open"] = 1;
+	@syscalls_filters["fastapi", "sigaction"] = 1;
+	@syscalls_filters["fastapi", "lseek"] = 1;
+	@syscalls_filters["fastapi", "fstat64"] = 1;
+	@syscalls_filters["fastapi", "read"] = 1;
+	@syscalls_filters["fastapi", "ioctl"] = 1;
+	@syscalls_filters["fastapi", "stat64"] = 1;
+	@syscalls_filters["fastapi", "read"] = 1;
+	@syscalls_filters["fastapi", "pipe"] = 1;
+	@syscalls_filters["fastapi", "listen"] = 1;
+	@syscalls_filters["fastapi", "poll"] = 1;
+	@syscalls_filters["fastapi", "sigreturn"] = 1;
+	@syscalls_filters["fastapi", "getsockname"] = 1;
+	@syscalls_filters["fastapi", "kqueue"] = 1;
+	@syscalls_filters["fastapi", "kevent"] = 1;
+	@syscalls_filters["fastapi", "getpeername"] = 1;
+	@syscalls_filters["fastapi", "getpgrp"] = 1;
+	@syscalls_filters["fastapi", "listen"] = 1;
+	@syscalls_filters["fastapi", "pipe"] = 1;
+	@syscalls_filters["fastapi", "poll"] = 1;
+	@syscalls_filters["fastapi", "setsockopt"] = 1;
+	@syscalls_filters["fastapi", "shm_open"] = 1;
+	@syscalls_filters["fastapi", "socket"] = 1;
+	@syscalls_filters["fastapi", "socketpair"] = 1;
+	@syscalls_filters["fastapi", "sysctlbyname"] = 1;
+	@syscalls_filters["fastapi", "accept"] = 1;
+	@syscalls_filters["fastapi", "access"] = 1;
+	@syscalls_filters["fastapi", "getrlimit"] = 1;
+	@syscalls_filters["fastapi", "kqueue"] = 1;
+	@syscalls_filters["fastapi", "readlink"] = 1;
+	@syscalls_filters["fastapi", "recvfrom"] = 1;
+	@syscalls_filters["fastapi", "getsockname"] = 1;
+	@syscalls_filters["fastapi", "issetugid"] = 1;
+	@syscalls_filters["fastapi", "sendto"] = 1;
+	@syscalls_filters["fastapi", "write"] = 1;
+	@syscalls_filters["fastapi", "read_nocancel"] = 1;
+	@syscalls_filters["fastapi", "getentropy"] = 1;
+	@syscalls_filters["fastapi", "sigprocmask"] = 1;
+	@syscalls_filters["fastapi", "fstatfs64"] = 1;
+	@syscalls_filters["fastapi", "getdirentries64"] = 1;
+	@syscalls_filters["fastapi", "munmap"] = 1;
+	@syscalls_filters["fastapi", "madvise"] = 1;
+	@syscalls_filters["fastapi", "select"] = 1;
+	@syscalls_filters["fastapi", "write_nocancel"] = 1;
+	@syscalls_filters["fastapi", "sigaction"] = 1;
+	@syscalls_filters["fastapi", "fcntl_nocancel"] = 1;
+	@syscalls_filters["fastapi", "fcntl"] = 1;
+	@syscalls_filters["fastapi", "close_nocancel"] = 1;
+	@syscalls_filters["fastapi", "open_nocancel"] = 1;
+	@syscalls_filters["fastapi", "mprotect"] = 1;
+	@syscalls_filters["fastapi", "mmap"] = 1;
+	@syscalls_filters["fastapi", "kevent"] = 1;
+	@syscalls_filters["fastapi", "open"] = 1;
+	@syscalls_filters["fastapi", "close"] = 1;
+	@syscalls_filters["fastapi", "lseek"] = 1;
+	@syscalls_filters["fastapi", "ioctl"] = 1;
+	@syscalls_filters["fastapi", "read"] = 1;
+	@syscalls_filters["fastapi", "fstat64"] = 1;
+	@syscalls_filters["fastapi", "stat64"] = 1;
+	@syscalls_filters["uvicorn", "getpeername"] = 1;
+	@syscalls_filters["uvicorn", "getpgrp"] = 1;
+	@syscalls_filters["uvicorn", "listen"] = 1;
+	@syscalls_filters["uvicorn", "pipe"] = 1;
+	@syscalls_filters["uvicorn", "poll"] = 1;
+	@syscalls_filters["uvicorn", "setsockopt"] = 1;
+	@syscalls_filters["uvicorn", "shm_open"] = 1;
+	@syscalls_filters["uvicorn", "socket"] = 1;
+	@syscalls_filters["uvicorn", "socketpair"] = 1;
+	@syscalls_filters["uvicorn", "sysctlbyname"] = 1;
+	@syscalls_filters["uvicorn", "accept"] = 1;
+	@syscalls_filters["uvicorn", "access"] = 1;
+	@syscalls_filters["uvicorn", "getrlimit"] = 1;
+	@syscalls_filters["uvicorn", "kqueue"] = 1;
+	@syscalls_filters["uvicorn", "readlink"] = 1;
+	@syscalls_filters["uvicorn", "recvfrom"] = 1;
+	@syscalls_filters["uvicorn", "getsockname"] = 1;
+	@syscalls_filters["uvicorn", "issetugid"] = 1;
+	@syscalls_filters["uvicorn", "sendto"] = 1;
+	@syscalls_filters["uvicorn", "write"] = 1;
+	@syscalls_filters["uvicorn", "read_nocancel"] = 1;
+	@syscalls_filters["uvicorn", "getentropy"] = 1;
+	@syscalls_filters["uvicorn", "sigprocmask"] = 1;
+	@syscalls_filters["uvicorn", "fstatfs64"] = 1;
+	@syscalls_filters["uvicorn", "getdirentries64"] = 1;
+	@syscalls_filters["uvicorn", "munmap"] = 1;
+	@syscalls_filters["uvicorn", "madvise"] = 1;
+	@syscalls_filters["uvicorn", "select"] = 1;
+	@syscalls_filters["uvicorn", "write_nocancel"] = 1;
+	@syscalls_filters["uvicorn", "sigaction"] = 1;
+	@syscalls_filters["uvicorn", "fcntl_nocancel"] = 1;
+	@syscalls_filters["uvicorn", "fcntl"] = 1;
+	@syscalls_filters["uvicorn", "close_nocancel"] = 1;
+	@syscalls_filters["uvicorn", "open_nocancel"] = 1;
+	@syscalls_filters["uvicorn", "mprotect"] = 1;
+	@syscalls_filters["uvicorn", "mmap"] = 1;
+	@syscalls_filters["uvicorn", "kevent"] = 1;
+	@syscalls_filters["uvicorn", "open"] = 1;
+	@syscalls_filters["uvicorn", "close"] = 1;
+	@syscalls_filters["uvicorn", "lseek"] = 1;
+	@syscalls_filters["uvicorn", "ioctl"] = 1;
+	@syscalls_filters["uvicorn", "read"] = 1;
+	@syscalls_filters["uvicorn", "fstat64"] = 1;
+	@syscalls_filters["uvicorn", "stat64"] = 1;
+	
+    printf("STARTED\n")
 }
 
 
-usdt:###INTERPRETER_PATH###:function__entry {
+usdt:/workspace/Python-3.10.0/python:function__entry {
         @["depth"]++;
         @entrypoints[str(arg0)] = @["depth"];
         @globals["previous_module"] = @globals["current_module"];
         @globals["current_module"] = str(arg0);
         @latest_supervised_module =  str(arg0);
-        // printf("%s, %s, depth=%d\n", str(arg0), str(arg1), @["depth"]);
+        printf("%s, %s, depth=%d\n", str(arg0), str(arg1), @["depth"]);
 }
 
-usdt:###INTERPRETER_PATH###:function__return {
+usdt:/workspace/Python-3.10.0/python:function__return {
     @["depth"]--;
 }
 
 tracepoint:raw_syscalls:sys_enter /comm == "python"/ {
-    ###SUPERVISED_MODULES_PROBES###
+    /* requests START */
+if ((@entrypoints["requests"] != 0) && (@["depth"] >= @entrypoints["requests"])){
+		// Updating latest supervised module
+	    if (strncmp("requests", @latest_supervised_module, 24)  != 0){
+			@latest_supervised_module = "requests";
+		}
+		else{
+			if (@entrypoints["requests"] > @entrypoints[@latest_supervised_module]){
+				@latest_supervised_module = "requests";
+			}
+		}
+
+		// Applying the syscalls filters
+		if (@entrypoints["requests"] == @entrypoints[@latest_supervised_module]){
+			// If the current module syscall is allowed/disallowed, the value is 1 or 2.
+			// 0 means we should not do anything with the current call.
+			// This is a variable in the template called SYSCALL_FILTER.
+			if (@syscalls_filters[@globals["current_module"], @sysname[args->id]] != 0){
+				printf("\n*SUPERVISED FLOW: syscall '%s' called in '%s' from '%s'; which entered at depth %d;\nThe supervised module is %s which entered the stack in depth %d;\r\n", @sysname[args->id], @globals["current_module"], "requests", @entrypoints["requests"],  @latest_supervised_module, @entrypoints[@latest_supervised_module]);
+				if(@entrypoints["requests"] != 0 && @["depth"] >= @entrypoints["requests"] && @entrypoints["requests"] >= @entrypoints[@globals["previous_module"]])
+				{                                printf("\nKILLING PROCESS %s\n", str(pid));
+                                printf("\t\tKILLING...\r\n");
+                                system("pkill -9 python"); // optional. Please use "bpftrace --unsafe" or remove this line.
+                                printf("\t\tKILLED.\r\n");
+                                exit(); // optional
+}
+
+			}
+		}
+}
+/* requests END */	
+
+/* fastapi START */
+if ((@entrypoints["fastapi"] != 0) && (@["depth"] >= @entrypoints["fastapi"])){
+		// Updating latest supervised module
+	    if (strncmp("fastapi", @latest_supervised_module, 24)  != 0){
+			@latest_supervised_module = "fastapi";
+		}
+		else{
+			if (@entrypoints["fastapi"] > @entrypoints[@latest_supervised_module]){
+				@latest_supervised_module = "fastapi";
+			}
+		}
+
+		// Applying the syscalls filters
+		if (@entrypoints["fastapi"] == @entrypoints[@latest_supervised_module]){
+			// If the current module syscall is allowed/disallowed, the value is 1 or 2.
+			// 0 means we should not do anything with the current call.
+			// This is a variable in the template called SYSCALL_FILTER.
+			if (@syscalls_filters[@globals["current_module"], @sysname[args->id]] != 0){
+				printf("\n*SUPERVISED FLOW: syscall '%s' called in '%s' from '%s'; which entered at depth %d;\nThe supervised module is %s which entered the stack in depth %d;\r\n", @sysname[args->id], @globals["current_module"], "fastapi", @entrypoints["fastapi"],  @latest_supervised_module, @entrypoints[@latest_supervised_module]);
+				if(@entrypoints["fastapi"] != 0 && @["depth"] >= @entrypoints["fastapi"] && @entrypoints["fastapi"] >= @entrypoints[@globals["previous_module"]])
+				{                                printf("\nKILLING PROCESS %s\n", str(pid));
+                                printf("\t\tKILLING...\r\n");
+                                system("pkill -9 python"); // optional. Please use "bpftrace --unsafe" or remove this line.
+                                printf("\t\tKILLED.\r\n");
+                                exit(); // optional
+}
+
+			}
+		}
+}
+/* fastapi END */	
+
+/* uvicorn START */
+if ((@entrypoints["uvicorn"] != 0) && (@["depth"] >= @entrypoints["uvicorn"])){
+		// Updating latest supervised module
+	    if (strncmp("uvicorn", @latest_supervised_module, 24)  != 0){
+			@latest_supervised_module = "uvicorn";
+		}
+		else{
+			if (@entrypoints["uvicorn"] > @entrypoints[@latest_supervised_module]){
+				@latest_supervised_module = "uvicorn";
+			}
+		}
+
+		// Applying the syscalls filters
+		if (@entrypoints["uvicorn"] == @entrypoints[@latest_supervised_module]){
+			// If the current module syscall is allowed/disallowed, the value is 1 or 2.
+			// 0 means we should not do anything with the current call.
+			// This is a variable in the template called SYSCALL_FILTER.
+			if (@syscalls_filters[@globals["current_module"], @sysname[args->id]] != 0){
+				printf("\n*SUPERVISED FLOW: syscall '%s' called in '%s' from '%s'; which entered at depth %d;\nThe supervised module is %s which entered the stack in depth %d;\r\n", @sysname[args->id], @globals["current_module"], "uvicorn", @entrypoints["uvicorn"],  @latest_supervised_module, @entrypoints[@latest_supervised_module]);
+				if(@entrypoints["uvicorn"] != 0 && @["depth"] >= @entrypoints["uvicorn"] && @entrypoints["uvicorn"] >= @entrypoints[@globals["previous_module"]])
+				{                                printf("\nKILLING PROCESS %s\n", str(pid));
+                                printf("\t\tKILLING...\r\n");
+                                system("pkill -9 python"); // optional. Please use "bpftrace --unsafe" or remove this line.
+                                printf("\t\tKILLED.\r\n");
+                                exit(); // optional
+}
+
+			}
+		}
+}
+/* uvicorn END */	
 }
 
 END {
     clear(@sysname);
     clear(@sysnum);
     clear(@entrypoints);
-    clear(@syscalls_filters);
-    clear(@globals);
 }

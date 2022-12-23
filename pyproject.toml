@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "secimport"
-version = "0.5.0"
+version = "0.6.0"
 description = "A sandbox/supervisor for python modules."
 authors = ["Avi Lumelsky"]
 license = "MIT"
@@ -10,6 +10,9 @@ packages = [
     { include = "secimport", from = "src" },
 ]
 include = ["src/secimport/templates/**/*.d","src/secimport/profiles/*",]
+
+[tool.poetry.scripts]
+secimport = 'secimport.cli:main'
 
 [tool.poetry.dependencies]
 python = "^3.6"

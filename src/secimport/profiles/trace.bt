@@ -1,5 +1,11 @@
 #!/usr/bin/env bpftrace
 
+// A profiling script that logs all the syscalls, per python module.
+// It can be attached to a running process using -p or can be used to trace a python shell interactively.
+// 
+// Usage:
+// ./trace.bt -c Python-3.10.0/python
+
 BEGIN {
     // Mapping all syscalls both ways, based on https://github.com/iovisor/bpftrace/blob/2c7a7a598dbe1aa790db2dfe2db242aa69137d5b/tools/syscount.bt
     // Generates using bash:
@@ -679,33 +685,42 @@ BEGIN {
 	@sysnum["statx"] = 332;
 	@sysnum["io_pgetevents"] = 333;
 	@sysnum["rseq"] = 334;
-    
-    ###SYSCALL_FILTER###
-    printf("STARTED\n");
+    printf("Tracing Modules - Exit gracefully with Ctrl+D\n")
 }
 
-
-usdt:###INTERPRETER_PATH###:function__entry {
+usdt:/workspace/Python-3.10.0/python:function__entry {
         @["depth"]++;
         @entrypoints[str(arg0)] = @["depth"];
         @globals["previous_module"] = @globals["current_module"];
         @globals["current_module"] = str(arg0);
-        @latest_supervised_module =  str(arg0);
-        // printf("%s, %s, depth=%d\n", str(arg0), str(arg1), @["depth"]);
+
+        // To trace python calls in the console, uncomment:
+        // printf("%s, %s, depth=%d\n", str(arg0), str(arg1), @["depth"]) ;
 }
 
-usdt:###INTERPRETER_PATH###:function__return {
-    @["depth"]--;
+usdt:/workspace/Python-3.10.0/python:function__return {
+        @["depth"]--;
 }
 
 tracepoint:raw_syscalls:sys_enter /comm == "python"/ {
-    ###SUPERVISED_MODULES_PROBES###
+    // @modules_syscalls[@globals["current_module"], @sysname[args->id], @["depth"]] = count();
+    @modules_syscalls[@globals["current_module"], @sysname[args->id]] = count();
+    @syscalls[@sysname[args->id]] = count();
 }
 
+
 END {
+    printf("Summary:");
+	printf(" %-32s %-10s %-22s %8s\r\n", "FILE", "TYPE", "NAME", "COUNT");
+	printf("\r\nAll syscalls (count):\r\n");
+	print(@syscalls);
+    printf("\r\nSyscalls Per Python Module:\r\n");
+    print(@modules_syscalls);
+	printf("\r\nDone.\r\n");
     clear(@sysname);
     clear(@sysnum);
+    clear(@syscalls);
+    clear(@modules_syscalls);
     clear(@entrypoints);
-    clear(@syscalls_filters);
-    clear(@globals);
+    clear(@globals)
 }

@@ -1,0 +1,36 @@
+#!/usr/bin/env bpftrace
+/*
+A very simple python sandbox. 
+It kills a python process if it calls the "execve" syscall (No. 59).
+*/
+
+BEGIN {
+    printf("STARTED\n");
+}
+
+
+usdt:/workspace/Python-3.10.0/python:function__entry {
+        @["depth"]++;
+        @entrypoints[str(arg0)] = @["depth"];
+        @globals["previous_module"] = @globals["current_module"];
+        @globals["current_module"] = str(arg0);
+        printf("%s, %s, depth=%d\n", str(arg0), str(arg1), @["depth"]) ;
+}
+
+usdt:/workspace/Python-3.10.0/python:function__return {
+        @["depth"]--;
+}
+
+tracepoint:raw_syscalls:sys_enter /comm == "python"/ {
+        if(args->id == 59){
+            printf("KILLING PROCESS %s - EXECUTED execve;\n", str(pid));
+                system("pkill -9 args"); // optional
+                printf("Killed process %s", str(pid));
+                exit(); // optional
+        }
+        printf("%s SYSCALL %ld depth=%d previous=%s current=%s \n", probe, args->id, @["depth"], @globals["previous_module"], @globals["current_module"] );
+}
+
+END {
+    clear(@entrypoints);
+}
