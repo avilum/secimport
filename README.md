@@ -1,6 +1,14 @@
 # secimport
-A sandbox that grants privilleges per module in your code, making 3rd pary and open source and untrusted code to run in trusted environments.<br>
-It does using backends like bpftrace (eBPF) and dtrace under the hood.<br>
+`secimport` is a sandbox toolkit, that traces your application and grants privilleges <b>per module</b> in your code.<br>
+By doing so, `secimport` enhances runtime security, giving you the ability to choose WHAT to allow:
+  - 3rd party dependencies 
+    - That can be added/modified without you knowing, to avoid supply chain attacks.
+  - Open-Source imported code
+    - That does god knows what.
+  - Untrusted code
+    - When the source is unknown
+
+It uses backends like bpftrace (eBPF) and dtrace under the hood, making it multi-platform.<br>
 <p align="center">
 <a href="https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26?source=friends_link&sk=5e9a2fa4d4921af0ec94f175f7ee49f9">Medium Article</a>
 </p>
