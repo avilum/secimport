@@ -1,14 +1,13 @@
 # secimport
 `secimport` is a sandbox toolkit, that traces your application and grants privilleges <b>per module</b> in your code.<br>
-By doing so, `secimport` enhances runtime security, giving you the ability to choose WHAT to allow:
+By doing so, `secimport` enhances runtime security, giving you the ability to choose the privilleges for:
+  - All of your code - global privilleges (like seccomp, apparmor, firejail, etc.)
   - 3rd party dependencies 
     - That can be added/modified without you knowing, to avoid supply chain attacks.
-  - Open-Source imported code
-    - That does god knows what.
-  - Untrusted code
-    - When the source is unknown
+  - Open-Source packages
+    - You don't have control over them, and keeping it up-to-date cannot be guaranteed.
 
-It uses backends like bpftrace (eBPF) and dtrace under the hood, making it multi-platform.<br>
+It uses backends like bpftrace <b>(eBPF)</b> and <b>dtrace</b> under the hood, making it cross-platform.<br>
 <p align="center">
 <a href="https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26?source=friends_link&sk=5e9a2fa4d4921af0ec94f175f7ee49f9">Medium Article</a>
 </p>
@@ -17,7 +16,7 @@ It uses backends like bpftrace (eBPF) and dtrace under the hood, making it multi
 </p>
 
 # How is works?
-`secimport` uses USDT (Userland Statically Defined Tracing) probes in the runtime (Python interpreter for example). OS kernel using eBPF and dtrace instrumentation scripts.<br>
+`secimport` uses USDT (Userland Statically Defined Tracing) probes in the runtime (Python interpreter for example) using eBPF and dtrace instrumentation scripts.<br>
 You can use `secimport` to:
 - Trace which syscalls are called by each module in your code, or by your entire application.
 - Restrict specific modules/packages inside your production environment like 3rd party, open source or code from untrusted source.
