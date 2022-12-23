@@ -1,21 +1,43 @@
-# Installation
-We're about to install dtrace and compile a python interpreter with dtrace enabled.
 
-# Using Docker: bpftrace (Linux, Mac)
-the `docker/` folder includes everything in the following guide.
-To build and run using docker, see <a href="../docker/">Docker</a>,
+# Python Interpreter Requirements
+The only runtime requirement is a Python interpreter that was built with --with-dtrace (USDT probes).<br>
+You can check if your current interpreter supported by running `readelf` on your python interpreter:
+```python
+readelf -n Python-3.10.0/python | grep -i function__entry
+``` 
+You should be able to see the following output:
+```
+    Name: function__entry
+```
+If your current interpreter is not supported (empty output):
+- Using `pip`
+  - `python3 -m pip install secimport`
+- Using `poetry`
+  - `python3 -m pip install poetry && python3 -m poetry build`
+<br><br>
 
-# From Source: dtrace (Mac, Solaris, Windows)
+# OS requirements
+## Install `bpftrace` (for Linux)
+Install bpftrace toolkit from https://github.com/iovisor/bpftrace/blob/master/INSTALL.md .
+Then, proceed to the python interpreter.
 
-## Install dtrace
+## Install `dtrace` (for Mac, Solaris, Windows)
 Some distributions include dtrace. check the `dtrace` command. If it is not installed:
 ```shell
 yum install dtrace-utils
-```  
+```
 
-## Install Python with dtrace and openssl
+### Using Docker: bpftrace (Linux, Mac)
+the `docker/` folder includes everything in the following guide.
+To build and run using docker, see <a href="../docker/">Docker</a>,
+<br><br>
 
-### Install OpenSSL from source
+# Install Python with USDT probes and openssl (from source): ~5 minutes
+If you want to use pip to work properly with pypi, you should also install openssl.
+To support ssl in this interpreter, One can simply install openssl pacakge using apt/yum/apk and it will use it automatically.<br>
+If you wish to build openssl from source
+
+Download and build openssl
 ```shell
 wget https://www.openssl.org/source/openssl-1.1.1h.tar.gz
 tar -xvf openssl-1.1.1h.tar.gz
@@ -26,21 +48,20 @@ make test
 make install
 ```
 
-### Or, Install openssl
-
-
-### Install python
+Download python
 ```shell
 PYTHON_VERSION="3.10.0"
 
 cd /tmp
 curl -o Python-$PYTHON_VERSION.tgz https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz
 tar -xzf Python-$PYTHON_VERSION.tgz
+```
 
-# If you want to use pip, you should also install openssl (above); 
+If you want to use a custom OpenSSL version/installation, edit the `OPENSSL` variable in Modules/Setup:<br>
+
+```shell
 $ nano Python-$PYTHON_VERSION/Modules/Setup
 
-# Edit the `OPENSSL` variable in Modules/Setup:
 OPENSSL=/path/to/openssl-1.1.1h/openssl
 _ssl _ssl.c \
     -I$(OPENSSL)/include -L$(OPENSSL)/lib \
@@ -55,28 +76,25 @@ make test
 
 # Optional: Install alongside your existing python without replacing it.
 make altinstall
-
 ```
 
-# Test the interpreter
+<br><br>
+## Test the interpreter
 ```shell
-➜  Python-3.10.0 ./python.exe
+➜  Python-3.10.0 ./python
 
 Python 3.10.0 (default, Jul  6 2022, 09:21:12) [Clang 13.0.0 (clang-1300.0.27.3)] on darwin
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import ssl
 >>> # You're good to go!
-
 ```
+<br><br>
 
-## Creating a virtual environment
+## Run `secimport` Tests
 ```shell
-./python3.exe -m venv ~/venvs/dtrace
-source ~/venvs/dtrace/bin/activate
+python3 -m pytest
 ```
-You can proceed to <a href="EXAMPLES.md">EXAMPLES.md</a>
 
-# Tests
-`python3 -m pytest`
-or 
-`python3 -m pytest tests`
+<br><br>
+# What's Next?
+You can proceed to <a href="EXAMPLES.md">EXAMPLES.md</a>

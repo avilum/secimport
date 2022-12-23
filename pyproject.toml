@@ -11,6 +11,9 @@ packages = [
 ]
 include = ["src/secimport/templates/**/*.d","src/secimport/profiles/*",]
 
+[tool.poetry.scripts]
+secimport = 'secimport.cli:main'
+
 [tool.poetry.dependencies]
 python = "^3.6"
 PyYAML = "^6.0"

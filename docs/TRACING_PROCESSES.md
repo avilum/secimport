@@ -1,5 +1,5 @@
 # Tracing processes for syscalls
-There are several ways to create a secimport profile for your modules.
+There are several methods to create a secimport profile for your modules.
   - Using a YAML build
     - See <a href="YAML_PROFILES.md">YAML Profiles Usage</a>
   - Using `secure_import` from python:

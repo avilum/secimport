@@ -31,14 +31,13 @@ RUN Python-3.10.0/python -m pip install --no-cache fire pyyaml
 
 ENV BPFTRACE_KERNEL_SOURCE=/kernel/usr/src/linux-headers
 COPY setup.sh .
-COPY sandbox.bt .
-COPY trace.bt .
 COPY trace.sh .
 COPY run_sandbox.sh .
-RUN chmod 755 sandbox.bt run_sandbox.sh trace.bt  trace.sh
+RUN chmod 755 run_sandbox.sh trace.sh
 RUN \
    echo 'export PYTHONPATH="/workspace/Python-3.10.0/python:$PYTHONPATH"' >> /root/.bashrc && \
    echo 'alias python="/workspace/Python-3.10.0/python"' >> /root/.bashrc && \
+   echo 'alias python3="/workspace/Python-3.10.0/python"' >> /root/.bashrc && \
    echo 'alias pip="/workspace/Python-3.10.0/bin/pip3"' >> /root/.bashrc && \
    echo 'alias secimport-shell="/workspace/trace.sh"' >> /root/.bashrc
 
