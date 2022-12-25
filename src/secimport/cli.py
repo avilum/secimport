@@ -20,6 +20,12 @@ class SecImportCLI:
         python_interpreter: str = sys.executable,
         trace_log_file: str = "trace.log",
     ):
+        """Generate snippets for trace command line usage.
+
+        Args:
+            python_interpreter (str, optional): The path of the python executable interpreter to trace. Defaults to sys.executable.
+            trace_log_file (str, optional): The log file to write the trace into. Defaults to "trace.log".
+        """
         print("To start a trace, please run the following command:")
         print(
             f"{SECIMPORT_ROOT}/profiles/trace.bt -c '{python_interpreter}' -o {trace_log_file}"
@@ -38,14 +44,14 @@ class SecImportCLI:
         """
         assert isinstance(pid, int), f"pid must be an int, got: {pid}"
         cmd = [
-            SECIMPORT_ROOT + "/profiles/trace.bt",
+            str(SECIMPORT_ROOT) + "/profiles/trace.bt",
             "-p",
-            "{pid}",
+            f"{pid}",
             "-o",
             f"{trace_log_file}",
         ]
         print("Running trace command:")
-        print("".join(cmd))
+        print(" ".join(cmd))
         process = subprocess.run(cmd)
         print(process)
         input("Press CTRL+D or CTRL+C to exit the trace...")

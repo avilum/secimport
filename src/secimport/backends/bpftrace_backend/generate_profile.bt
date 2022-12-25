@@ -721,13 +721,6 @@ usdt:###INTERPRETER_PATH###:import__find__load__done{
     printf('imported %s with result %d', arg0, arg1);
 }
 
-// Invoked when a new line is entered
-// line(str filename, str funcname, int lineno)
-usdt:###INTERPRETER_PATH###:line {
-
-}
-
-
 END {
     printf("Summary:");
 	printf(" %-32s %-10s %-22s %8s\r\n", "FILE", "TYPE", "NAME", "COUNT");

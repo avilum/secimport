@@ -12,6 +12,7 @@ RUN tar xf kernel-dev.tar
 
 WORKDIR /workspace
 ARG DEBIAN_FRONTEND=noninteractive
+ARG SECIMPORT_VERSION="0.6.2"
 
 # TODO: add openssl (longer build time, but pip will work for our interpreter)
 RUN echo "Installing prerequisites" && \
@@ -27,7 +28,7 @@ RUN echo "Installing bpftrace" && \
     echo "Done building bpftrace" && \
     mv /kernel/usr/src/linux-headers* /kernel/usr/src/linux-headers && \
     rm /workspace/Python-3.10.0.tgz
-RUN Python-3.10.0/python -m pip install secimport --user && Python-3.10.0/python -m pip cache purge
+RUN Python-3.10.0/python -m pip install secimport==${SECIMPORT_VERSION} --user -U && Python-3.10.0/python -m pip cache purge
 
 ENV BPFTRACE_KERNEL_SOURCE=/kernel/usr/src/linux-headers
 COPY setup.sh .
