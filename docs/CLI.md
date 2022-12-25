@@ -8,25 +8,34 @@ $ secimport --help
 ```
 ```shell
 NAME
-    secimport
+    secimport - Secure Import CLI
 
 SYNOPSIS
     secimport COMMAND
 
+DESCRIPTION
+    Secure Import CLI
+
 COMMANDS
     COMMAND is one of the following:
 
-     profile_from_trace
+     compile_sandbox
+       Converts a trace log into sandbox. It uses `secimport create_profile_from_trace ...` and `secimport sandbox_from_profile...` under the hood.
+
+     create_profile_from_trace
        Creates a yaml policy file from a given trace log. default: "trace.log".
 
-     sandbox_from_profile
-       Generates a tailor-made sandbox code for a given yaml policy file.
-
-     sandbox_from_trace
-       Converts a trace log into sandbox.
+     create_sandbox_from_profile
+       Generates a tailor-made sandbox code for a given yaml profile.
 
      secure_import
        Run a secure import for a python module and then exit. A log will be automatically generated at /tmp/.secimport
+
+     trace
+       Generate snippets for trace command line usage.
+
+     trace_pid
+       Traces a running process by pid. It might require sudo privilleges on some hosts.
 ```
 
 
@@ -109,7 +118,7 @@ The bpftrace sandbox script is ready at traced_modules.bt
 Done.
 ```
 
-4. Run the sandbox:
+4. Run the sandbox as a parent process:
 ```shell
 ./traced_modules.bt -c python main.py
 # or
