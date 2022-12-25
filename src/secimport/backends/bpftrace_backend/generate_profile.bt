@@ -734,6 +734,5 @@ END {
     clear(@syscalls);
     clear(@modules_syscalls);
     clear(@entrypoints);
-    clear(@globals)
-    clear(@imports)
+    clear(@globals);
 }
