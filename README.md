@@ -123,6 +123,10 @@ More examples are available at <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
   - ✔️ Run an application with that policy using dtrace, without using `secure_import`
 - ✔️ <b>Add eBPF basic support using bpftrace</b>
   - ✔️ bpftrace backend tests
+- ✔️ Implement all python supported USDT probes:
+  - ✔️ import__find__load__start
+  - ✔️ import__find__load__done
+  - ✔️ line
 - <b>Extandible Language Template</b>
   - Implement bpftrace probes for new languages
 - <b>Go support</b> (bpftrace/dtrace hooks)

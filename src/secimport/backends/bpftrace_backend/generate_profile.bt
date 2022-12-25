@@ -685,6 +685,7 @@ BEGIN {
     printf("Tracing Modules - Exit gracefully with Ctrl+D\n")
 }
 
+// function__entry(str filename, str funcname, int lineno)
 usdt:/workspace/Python-3.10.0/python:function__entry {
         @["depth"]++;
         @entrypoints[str(arg0)] = @["depth"];
@@ -695,6 +696,7 @@ usdt:/workspace/Python-3.10.0/python:function__entry {
         // printf("%s, %s, depth=%d\n", str(arg0), str(arg1), @["depth"]) ;
 }
 
+// function__return(str filename, str funcname, int lineno)
 usdt:/workspace/Python-3.10.0/python:function__return {
         @["depth"]--;
 }
@@ -705,6 +707,19 @@ tracepoint:raw_syscalls:sys_enter /comm == "python"/ {
     @syscalls[@sysname[args->id]] = count();
 }
 
+
+// Invoked before importlib imports a module
+// import__find__load__start(str modulename)
+usdt:###INTERPRETER_PATH###:import__find__load__start {
+    // @imports[arg0] = count();
+    // printf('importing %s', arg0);
+}
+
+// Invoked after importlib imports a module 
+// import__find__load__done(str modulename, int found)
+usdt:###INTERPRETER_PATH###:import__find__load__done{
+    // printf('imported %s with result %d', arg0, arg1);
+}
 
 END {
     printf("Summary:");
@@ -719,5 +734,5 @@ END {
     clear(@syscalls);
     clear(@modules_syscalls);
     clear(@entrypoints);
-    clear(@globals)
+    clear(@globals);
 }

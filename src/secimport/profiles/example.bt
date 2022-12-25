@@ -842,7 +842,7 @@ BEGIN {
 	@syscalls_filters["uvicorn", "fstat64"] = 1;
 	@syscalls_filters["uvicorn", "stat64"] = 1;
 	
-    printf("STARTED\n")
+    printf("STARTED\n");
 }
 
 

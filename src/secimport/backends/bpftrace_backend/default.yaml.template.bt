@@ -702,6 +702,21 @@ tracepoint:raw_syscalls:sys_enter /comm == "python"/ {
     ###SUPERVISED_MODULES_PROBES###
 }
 
+// Invoked before importlib imports a module ('__import__()' or 'import')
+usdt:###INTERPRETER_PATH###:import__find__load__start {
+    
+}
+
+// Invoked after importlib imports a module 
+usdt:###INTERPRETER_PATH###:import__find__load__done{
+
+}
+
+// Invoked when a new line is entered
+usdt:###INTERPRETER_PATH###:line {
+
+}
+
 END {
     clear(@sysname);
     clear(@sysnum);

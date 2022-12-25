@@ -705,6 +705,20 @@ tracepoint:raw_syscalls:sys_enter /comm == "python"/ {
     ###SYSCALL_ENTRY###
 }
 
+
+// Invoked before importlib imports a module
+// import__find__load__start(str modulename)
+usdt:###INTERPRETER_PATH###:import__find__load__start {
+    // @imports[arg0] = count();
+    // printf('importing %s', arg0);
+}
+
+// Invoked after importlib imports a module 
+// import__find__load__done(str modulename, int found)
+usdt:###INTERPRETER_PATH###:import__find__load__done{
+    // printf('imported %s with result %d', arg0, arg1);
+}
+
 END {
     clear(@sysname);
     clear(@sysnum);
