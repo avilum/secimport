@@ -52,25 +52,25 @@ The easiest way to try secimport is by using our <a href="docker/README.md">Dock
   - https://www.brendangregg.com/blog/2018-10-08/dtrace-for-linux-2018.html
     - `bpftrace` (dtrace 2.0) that uses LLVM and compiled our script to BCC.
        - https://github.com/iovisor/bpftrace
-- <a href="docs/EXAMPLES.md">Examples</a>
+- <a href="https://github.com/avilum/secimport/wiki/Sandbox-Examples">Examples</a>
 
 - Guides
-  - <a href="docs/TRACING_PROCESSES.md">Tracing Processes Guide</a>
-  - <a href="docs/INSTALL.md">Installation</a>
-  - <a href="docs/MAC_OS_USERS.md">Mac OS Users</a> - Disabling SIP (System Intergity Protection)
-  - <a href="docs/FAQ.md">F.A.Q</a>
+  - <a href="https://github.com/avilum/secimport/wiki/Tracing-Processes">Tracing Processes Guide</a>
+  - <a href="https://github.com/avilum/secimport/wiki/Installation">Installation</a>
+  - <a href="https://github.com/avilum/secimport/wiki/MacOS-Users">Mac OS Users</a> - Disabling SIP (System Intergity Protection)
+  - <a href="https://github.com/avilum/secimport/wiki/F.A.Q">F.A.Q</a>
   <br><br>
 
 
 # Example Use Cases
-<a href="docs/EXAMPLES.md">EXAMPLES.md</a> contains advanced usage and many interactive session examples: YAML profies, networking, filesystem, processing blocking & more.
+<a href="https://github.com/avilum/secimport/wiki/Sandbox-Examples">Sandbox Examples</a> contains advanced usage and many interactive session examples: YAML profies, networking, filesystem, processing blocking & more.
 
 ## Simple Usage
 - <a href="examples/python_imports/">Running Sandbox Using Python Imports</a>
-- <a href="docs/CLI.md">`secimport` CLI usage</a>
+- <a href="https://github.com/avilum/secimport/wiki/Command-Line-Usage">`secimport` Command Line Usage</a>
     - The easiest option to start with inside docker.
     - `python -m secimport.cli --help`
-- See <a href="YAML_PROFILES.md">YAML Profiles Usage</a>>
+- See <a href="https://github.com/avilum/secimport/wiki/YAML-Profiles">YAML Profiles Usage</a>>
 <br><br>
 ### How pickle can be exploited in your 3rd party packages (and how to block it)
 ```python
@@ -116,7 +116,7 @@ $ less /tmp/.secimport/sandbox_pickle.log
     KILLED
 :
 ```
-More examples are available at <a href="docs/EXAMPLES.md">EXAMPLES.md</a>.
+More examples are available at <a href="https://github.com/avilum/secimport/wiki/Sandbox-Examples">Sandbox Examples</a>.
 
 <br><br>
 # Roadmap
