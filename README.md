@@ -36,6 +36,10 @@ There are several methods to create and run a sandbox:
           - Use `dtrace` or `bpftrace` to run your main python application, with your tailor-made sandbox.
           - No need for `secure_import`, you can keep using regular `import`s and not change your code at all.
 <br><br>
+
+# Documentation
+<a href="https://github.com/avilum/secimport/wiki">`secimport` Wiki on GitHub</a>
+
 # Docker
 The easiest way to try secimport is by using our <a href="docker/README.md">Docker for MacOS and Linux</a>. It includes python, secimport and bpftrace backend.<br>
 `dtrace` backend is not available in docker, and can be tried directly on the compatible hosts ( <a href="docs/MAC_OS_USERS.md">Mac OS</a> , Windows, Solaris, Unix, some Linux distributions).
