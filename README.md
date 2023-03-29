@@ -74,7 +74,7 @@ The easiest way to try secimport is by using our <a href="docker/README.md">Dock
 <br><br>
 ### How pickle can be exploited in your 3rd party packages (and how to block it)
 ```python
-# Not your code, but you load and run it frmo 3rd some party package.
+# Not your code, but you load and run it from 3rd some party package.
 
 import pickle
 class Demo:

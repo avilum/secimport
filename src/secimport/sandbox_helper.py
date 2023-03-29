@@ -28,6 +28,7 @@ def secure_import(
     syscalls_allowlist: List[str] = None,
     syscalls_blocklist: List[str] = None,
     backend=DEFAULT_BACKEND,
+    **kwargs
 ):
     """Import a python module in confined settings.
 
@@ -77,5 +78,5 @@ def secure_import(
     else:
         raise NotImplementedError(f"backend '{backend}' is not implemented.")
 
-    _module = __import__(module_name)
+    _module = __import__(module_name, **kwargs)
     return _module
