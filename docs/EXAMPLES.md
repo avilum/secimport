@@ -8,7 +8,7 @@ We have a Zero-To-One with Docker that goes through <a href="../docker/README.md
 ## Simple Usage
 - <a href="CLI.md">`secimport` CLI usage</a>
     - The easiest option to start with inside docker.
-    - `python -m secimport.cli --help`
+    - `secimport --help` or `python3 -m secimport.cli`
 - <a href="../examples/python_imports/">Running Sandbox Using Python Imports</a>
 - See <a href="YAML_PROFILES.md">YAML Profiles Usage</a>
 <br><br>

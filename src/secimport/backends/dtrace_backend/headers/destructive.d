@@ -1,1 +1,1 @@
-#pragma D option destructive
+# pragma D option destructive

@@ -34,24 +34,16 @@ def create_bpftrace_script_for_module(
     syscalls_blocklist: List[str] = None,
     templates_dir: Path = TEMPLATES_DIR_NAME,
 ) -> Path:
-    """
-    # Template components available at the moment:
-    # ###DESTRUCTIVE###
-    # ###FUNCTION_ENTRY###
-    # ###FUNCTION_EXIT###
-    # ###SYSCALL_ENTRY###
-    # ###MODULE_NAME###
-    """
-
     module = importlib.machinery.PathFinder().find_spec(module_name)
     if module is None:
         raise ModuleNotFoundError(module_name)
     module_traced_name = module.origin  # e.g this.py
-
     assert not (
         syscalls_allowlist is not None and syscalls_blocklist is not None
     ), "Please specify either syscalls_allowlist OR syscalls_blocklist."
-
+    
+    script_template = ""
+    syscalls_filter = ""
     # If we have an allowlist
     if syscalls_allowlist is not None:
         script_template = render_bpftrace_probe_for_module(
@@ -64,9 +56,6 @@ def create_bpftrace_script_for_module(
             allow=True,
             instrumentation_backend=InstrumentationBackend.EBPF,
             module_name=module_traced_name,
-        )
-        script_template = script_template.replace(
-            "###SYSCALL_FILTER###", syscalls_filter
         )
 
     elif syscalls_blocklist is not None:
@@ -82,9 +71,6 @@ def create_bpftrace_script_for_module(
             instrumentation_backend=InstrumentationBackend.EBPF,
             module_name=module_traced_name,
         )
-        script_template = script_template.replace(
-            "###SYSCALL_FILTER###", syscalls_filter
-        )
 
     else:
         script_template = render_bpftrace_template(
@@ -99,6 +85,10 @@ def create_bpftrace_script_for_module(
             templates_dir=templates_dir,
         )
 
+    script_template = script_template.replace(
+        "###SYSCALL_FILTER###", syscalls_filter
+    )
+
     # Creating a dscript file with the modified template
     if not os.path.exists(BASE_DIR_NAME):
         os.mkdir(BASE_DIR_NAME)
@@ -106,6 +96,8 @@ def create_bpftrace_script_for_module(
     module_file_name = os.path.join(BASE_DIR_NAME, f"bpftrace_sandbox_{module_name}.bt")
     with open(module_file_name, "w") as module_file:
         module_file.write(script_template)
+
+    os.chmod(module_file_name, 0o644)
 
     # TODO: FIGURE OUT A WAY TO COMPILE WITHOUT EXECUTING - MSKING SURE THE GENERATION WORKED SYNTAX-WISE.
     return module_file_name
@@ -147,7 +139,7 @@ def run_bpftrace_script_for_module(
     print()
     print("Waiting for bpftrace.... ")
     os.system(bpftrace_command)
-    time.sleep(10)  # TODO: change to fd creation (event)
+    time.sleep(10)  # TODO: change to fd creation / event
     return True
 
 

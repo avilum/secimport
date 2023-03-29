@@ -23,9 +23,8 @@ def main():
     with open(bpftrace_sandbox_filename, "w") as f:
         f.write(bpftrace_rendered_profile)
 
-    print("The dtrace sandbox script is ready at ", dtrace_sandbox_filename)
-    print("The bpftrace sandbox script is ready at ", bpftrace_sandbox_filename)
-    print("Done.")
+    print("\nDTRACE SANDBOX: ", dtrace_sandbox_filename)
+    print("BPFTRCE SANDBOX: ", bpftrace_sandbox_filename)
 
 
 if __name__ == "__main__":

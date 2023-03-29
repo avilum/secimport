@@ -40,6 +40,7 @@ def render_syscalls_filter(
     match_sign = "!=" if allow else "=="
     syscalls_filter = ""
     for i, _syscall in enumerate(syscalls_list):
+        _syscall = _syscall.strip()
         if i > 0:
             if instrumentation_backend == InstrumentationBackend.DTRACE:
                 syscalls_filter += " && "
@@ -63,7 +64,7 @@ def render_syscalls_filter(
                 if module_name is not None
                 else '@globals["current_module"]'
             )
-            syscalls_filter += f"@syscalls_filters[{_module_name}, \"{_syscall}\"] = {expected_output_value};"
+            syscalls_filter += f'@syscalls_filters[{_module_name}, "{_syscall}"] = {expected_output_value};'
             syscalls_filter += "\n\t"
         else:
             raise NotImplementedError(
@@ -71,7 +72,7 @@ def render_syscalls_filter(
             )
 
         filter_name = "allowlist" if allow else "blocklist"
-        print(f"Adding syscall {_syscall} to {filter_name} for module {module_name}")
+        print(f"[debug] adding syscall {_syscall} to {filter_name} for module {module_name}")
     return syscalls_filter
 
 
@@ -103,7 +104,7 @@ def build_module_sandbox_from_yaml_template(
         # Finding the module without loading
         module = importlib.machinery.PathFinder().find_spec(module_name)
         if module is None:
-            msg = f"Warning: {module_name} is not present in the current environment. It is required in order to generate a sandbox with correct a import name."
+            pass
             # raise ModuleNotFoundError(msg)
 
         # Tracing module entrypoint
@@ -134,7 +135,7 @@ def build_module_sandbox_from_yaml_template(
                 destructive=_destructive,
                 syscalls_allowlist=_syscall_allowlist,
             )
-            sandbox_file_name = f"default.yaml.template.d"
+            sandbox_file_name = "default.yaml.template.d"
             script_template = open(
                 DTRACE_TEMPLATES_DIR_NAME / sandbox_file_name,
                 "r",
@@ -155,7 +156,7 @@ def build_module_sandbox_from_yaml_template(
                 instrumentation_backend=InstrumentationBackend.EBPF,
                 module_name=module_traced_name,
             )
-            sandbox_file_name = f"default.yaml.template.bt"
+            sandbox_file_name = "default.yaml.template.bt"
             script_template = open(
                 BPFTRACE_TEMPLATES_DIR_NAME / sandbox_file_name,
                 "r",

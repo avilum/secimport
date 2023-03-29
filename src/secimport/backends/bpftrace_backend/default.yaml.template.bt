@@ -699,23 +699,30 @@ usdt:###INTERPRETER_PATH###:function__return {
 }
 
 tracepoint:raw_syscalls:sys_enter /comm == "python"/ {
-    ###SUPERVISED_MODULES_PROBES###
+    // Allowing global requirements ("general requirements") to be used by all syscalls.
+    if (@syscalls_filters["general_requirements", @sysname[args->id]] != 1){
+        // Logging every syscall that was not confirmed by the user at compile time.
+        if (@syscalls_filters[@latest_supervised_module, @sysname[args->id]] != 1){
+            printf("\033[91m[SECIMPORT VIOLATION]: %s called syscall %s at depth %d\r\n\033[91m", @latest_supervised_module, @sysname[args->id], @["depth"]);
+        }
+    }
 }
 
-// Invoked before importlib imports a module ('__import__()' or 'import')
-usdt:###INTERPRETER_PATH###:import__find__load__start {
-    
-}
+
+// Invoked before importlib imports a module
+// import__find__load__start(str modulename)
+// usdt:###INTERPRETER_PATH###:import__find__load__start {
+    // TODO: verify that the module is allowed in the syscall filter.
+    // @imports[arg0] = count();
+    // printf("importing %d", arg0);
+// }
 
 // Invoked after importlib imports a module 
-usdt:###INTERPRETER_PATH###:import__find__load__done{
+// import__find__load__done(str modulename, int found)
+// usdt:###INTERPRETER_PATH###:import__find__load__done{
+    // printf("imported %d", arg0);
+// }
 
-}
-
-// Invoked when a new line is entered
-usdt:###INTERPRETER_PATH###:line {
-
-}
 
 END {
     clear(@sysname);
@@ -723,4 +730,5 @@ END {
     clear(@entrypoints);
     clear(@syscalls_filters);
     clear(@globals);
+    clear(@);
 }

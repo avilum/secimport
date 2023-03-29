@@ -8,7 +8,6 @@ from sys import executable as PYTHON_EXECUTABLE
 from pathlib import Path
 from typing import List
 
-from secimport.backends.common.instrumentation_backend import InstrumentationBackend
 from secimport.backends.common.utils import TEMPLATES_DIR_NAME
 
 

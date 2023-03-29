@@ -1,6 +1,5 @@
 from secimport.backends.common.instrumentation_backend import InstrumentationBackend
 from secimport.backends.common.utils import (
-    DEFAULT_BACKEND,
     build_module_sandbox_from_yaml_template,
 )
 from secimport.sandbox_helper import secure_import

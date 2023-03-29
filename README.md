@@ -127,15 +127,15 @@ More examples are available at <a href="https://github.com/avilum/secimport/wiki
   - ✔️ Run an application with that policy using dtrace, without using `secure_import`
 - ✔️ <b>Add eBPF basic support using bpftrace</b>
   - ✔️ bpftrace backend tests
-- ✔️ Implement all python supported USDT probes:
+- ✔️ Implement python USDT probes:
   - ✔️ import__find__load__start
   - ✔️ import__find__load__done
   - ✔️ line
+- ✔️ CLI for bpftrace backend usage
 - <b>Extandible Language Template</b>
-  - Implement bpftrace probes for new languages
-- <b>Go support</b> (bpftrace/dtrace hooks)
-  - Implement a template for golang's call stack
-- <b>Node support</b> (bpftrace/dtrace hooks)
-  - Implement a template for Node's call stack and event loop
+  - Create a miminal template that will support instrumenting different artifacts for different languages easily.
+    - <b>Go support</b> (bpftrace/dtrace hooks)
+      - Implement a template for golang's call stack
+    - <b>Node support</b> (bpftrace/dtrace hooks)
+      - Implement a template for Node's call stack and event loop
 - Multi Process support: Use current_module_str together with thread ID to distinguish between events in different processes
-- Update all linux syscalls in the templates (filesystem, networking, processing) to improve the sandbox blocking of unknowns.

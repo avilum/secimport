@@ -5,7 +5,7 @@ BEGIN {
     // Generates using bash:
     //   $ apt-get install auditd
     //   $ ausyscall --dump | awk 'NR > 1 { printf("\t@sysname[%d] = \"%s\";\n", $1, $2); }';
-    printf("REGISTERING SYSCALLS...\n");
+    printf("REGISTERING SYSCALLS P...\n");
     @sysname[0] = "read";
     @sysname[1] = "write";
     @sysname[2] = "open";
@@ -788,17 +788,17 @@ usdt:/workspace/Python-3.10.0/python:function__return {
 tracepoint:raw_syscalls:sys_enter /comm == "python"/ {
 			// Unspecified syscalls will be 0
 			if (strncmp(@globals["current_module"], "", 1) != 0){
-			printf("%s is flagged %d\n", @globals["current_module"], @syscalls_filters[@globals["current_module"], @sysname[args->id]]);
-
-			// TODO: create allow template
-			if (@syscalls_filters[@globals["current_module"], @sysname[args->id]] != 1) {
-				printf("\n*SUPERVISED FLOW: syscall '%s' called in '%s', flagged %d\r\n", @sysname[args->id], @globals["current_module"], @syscalls_filters[@globals["current_module"], @sysname[args->id]]);
-				printf("\nKILLING PROCESS %s\n", str(pid));
-                                printf("\t\tKILLING...\r\n");
-                                system("pkill -9 python"); // optional. Please use "bpftrace --unsafe" or remove this line.
-                                printf("\t\tKILLED.\r\n");
-                                exit(); // optional
-			}
+				printf("%s is flagged %d\n", @globals["current_module"], @syscalls_filters[@globals["current_module"], @sysname[args->id]]);
+				if (@syscalls_filters["general_requirements", @sysname[args->id]] != 1){
+					if (@syscalls_filters[@globals["current_module"], @sysname[args->id]] != 1) {
+						printf("\n*SUPERVISED FLOW: syscall '%s' called in '%s', flagged %d\r\n", @sysname[args->id], @globals["current_module"], @syscalls_filters[@globals["current_module"], @sysname[args->id]]);
+						printf("\nKILLING PROCESS %s\n", str(pid));
+										printf("\t\tKILLING...\r\n");
+										system("pkill -9 python"); // optional. Please use "bpftrace --unsafe" or remove this line.
+										printf("\t\tKILLED.\r\n");
+										exit(); // optional
+					}
+				}
 			}
 
 }

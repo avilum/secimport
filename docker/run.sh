@@ -2,7 +2,7 @@
 
 if [[ "$PWD" =~ docker$ ]]
 then
-    echo "Running secimport docker container...";
+    echo "Running temporary container...";
 else
     echo "Please run this script from the secimport/docker directory.";
     exit 1;
