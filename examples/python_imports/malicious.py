@@ -1,7 +1,8 @@
 """An example module that uses os.system for shell spawning, executing 5 commands in a row.
 """
 
-import os, random
+import os
+import random
 
 
 def malicious():

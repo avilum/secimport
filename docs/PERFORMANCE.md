@@ -1,3 +1,15 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Performance Benchmarks](#performance-benchmarks)
+- [Numpy specific benchmark (compute and not IO bound)](#numpy-specific-benchmark-compute-and-not-io-bound)
+  - [Python 3.10 without dtrace](#python-310-without-dtrace)
+  - [DTrace interpreter without secimport](#dtrace-interpreter-without-secimport)
+  - [DTrace interpreter with secimport](#dtrace-interpreter-with-secimport)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Performance Benchmarks
 - ./python -m pyperformance run
 

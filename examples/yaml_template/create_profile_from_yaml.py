@@ -1,6 +1,5 @@
 from pathlib import Path
 import sys
-from turtle import back
 from secimport.backends.common.instrumentation_backend import InstrumentationBackend
 
 from secimport.backends.common.utils import build_module_sandbox_from_yaml_template

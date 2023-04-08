@@ -1,0 +1,56 @@
+#!/usr/bin/env bpftrace
+
+/*
+
+Example:
+    sudo bpftrace --unsafe -c "Python-3.10.0/python main.py" secimport/backends/bpftrace_backend/new_template.bt
+
+*/
+
+BEGIN
+{
+  @depth=0;
+}
+
+usdt:/workspace/Python-3.10.0/python:function__entry
+{
+        @depth++;
+        @module = str(arg0);
+        @funcname = str(arg1);
+        @lineno = arg2;
+        @vstack[pid, tid, @module] = @depth;
+        // printf("(%d/%d) %s\n", pid, tid, @module);
+}
+
+usdt:/workspace/Python-3.10.0/python:function__return
+{
+        // @vstack[pid,tid,@module] = 0;
+        // @module = "main";
+        @depth--;
+}
+
+tracepoint:raw_syscalls:sys_enter  /comm == "python"  && @vstack[pid,tid,"/workspace/Python-3.10.0/Lib/this.py"] != 0 /
+{
+    printf("\n\n(%d/%d) Not allowed to call 'this';\n", pid, tid);
+    exit();
+}
+
+tracepoint:raw_syscalls:sys_enter  /comm == "python" && args->id == 59/
+{
+    printf("\n\n(%d/%d) Not allowed to call EXECVE.\n", pid, tid);
+    exit();
+    system("exit 0");
+}
+
+tracepoint:raw_syscalls:sys_enter / comm == "python" /
+{
+   printf("(%d/%d) executing syscall %d from '%s' in %s:%d;\n", pid, tid, args->id, @module, @funcname, @lineno);
+}
+
+
+END
+{
+  clear(@depth);
+  clear(@vstack);
+  clear(@module);
+}

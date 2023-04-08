@@ -1,3 +1,21 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Sandbox Examples](#sandbox-examples)
+- [Docker examples](#docker-examples)
+- [Secure Import Examples](#secure-import-examples)
+  - [Simple Usage](#simple-usage)
+  - [Advanced Usage](#advanced-usage)
+- [Interactive Examples](#interactive-examples)
+    - [How pickle can be exploited in your 3rd party packages:](#how-pickle-can-be-exploited-in-your-3rd-party-packages)
+  - [Creating a YAML policy file](#creating-a-yaml-policy-file)
+  - [Blocking New Processes Example](#blocking-new-processes-example)
+  - [Shell Blocking Example](#shell-blocking-example)
+  - [Network Blocking Example](#network-blocking-example)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Sandbox Examples
 To understand how to trace your process and create custom profiles for modules or applications, please see <a href="TRACING_PROCESSES.md">Tracing Processes</a>
 
@@ -27,7 +45,7 @@ import pickle
 class Demo:
     def __reduce__(self):
         return (eval, ("__import__('os').system('echo Exploited!')",))
- 
+
 pickle.dumps(Demo())
 b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94."
 pickle.loads(b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94.")
@@ -50,7 +68,7 @@ $ less /tmp/.secimport/sandbox_pickle.log
     DETECTED SHELL:
         depth=8
         sandboxed_depth=0
-        sandboxed_module=/Users/avilumelsky/Downloads/Python-3.10.0/Lib/pickle.py  
+        sandboxed_module=/Users/avilumelsky/Downloads/Python-3.10.0/Lib/pickle.py
 
     TERMINATING SHELL:
         libsystem_kernel.dylib`__posix_spawn+0xa
@@ -98,7 +116,7 @@ Type "help", "copyright", "credits" or "license" for more information.
 import secimport
 subprocess = secimport.secure_import("subprocess")
 
-# Let's import os 
+# Let's import os
 import os
 os.system("ps")
   PID TTY           TIME CMD
@@ -127,7 +145,7 @@ When using secure_import, the following files are created:
         ```shell
         ...
 
-        (OPENING SHELL using posix_spawn): (pid 75860) (thread 344676) (user 501) (python module: <stdin>) (probe mod=, name=entry, prov=syscall func=posix_spawn) /bin/sh 
+        (OPENING SHELL using posix_spawn): (pid 75860) (thread 344676) (user 501) (python module: <stdin>) (probe mod=, name=entry, prov=syscall func=posix_spawn) /bin/sh
             #posix_spawn,
 
         (TOUCHING FILESYSTEM): write(140339021606912) from thread 344676
@@ -144,23 +162,24 @@ You can try it yourself with docker, locally.
 ```
 ./docker/build.sh
 ./docker/run.sh
-$ /workspace/run_sandbox.sh
-```
-```
-Starting secimport sandbox with bpftrace backend, the sandbox should kill the python process...
+root@d57458518cbf:/workspace$ ./run_sandbox.sh
+🚀 Starting secimport sandbox with bpftrace backend, the sandbox should kill the python process...
 WARNING: Addrspace is not set
   PID TTY          TIME CMD
     1 pts/0    00:00:00 sh
    10 pts/0    00:00:00 bash
-  114 pts/0    00:00:00 bpftrace
-  118 pts/0    00:00:00 python
-  121 pts/0    00:00:00 ps
-  122 pts/0    00:00:00 pkill
+   18 pts/0    00:00:00 bash
+   19 pts/0    00:00:00 bpftrace
+   23 pts/0    00:00:00 python
+   24 pts/0    00:00:00 sh
+   25 pts/0    00:00:00 sh
+   26 pts/0    00:00:00 pkill
+   27 pts/0    00:00:00 ps
 
 
-The process was killed, as expected.
-The sandbox bpftrace code is at sandbox.bt
-The sandbox log is at sandbox.log
+🛑 The process was killed, as expected.
+🚀 The sandbox bpftrace code is at sandbox.bt
+🚀 The sandbox log is at sandbox.log.
 ```
 
 The following code will open a new bash shell using os.system.
@@ -173,14 +192,14 @@ import os;
 os.system('Hello World!');
 ```
 ```python
-from secimport import secure_import 
+from secimport import secure_import
 
 example = secure_import('example', allow_shells=False)
 ```
 Let's run the  and see what happens:
 ```
-(root) sh-3.2#  export PYTHONPATH=$(pwd)/src:$(pwd)/examples:$(pwd):$PYTHONPATH
-(root) sh-3.2#  python examples/production.py 
+(root) sh-3.2#  export PYTHONPATH=$(pwd):$(pwd)/examples:$(pwd):$PYTHONPATH
+(root) sh-3.2#  python examples/production.py
 Successfully compiled dtrace profile:  /tmp/.secimport/sandbox_example.d
 Killed: 9
 ```
@@ -193,7 +212,7 @@ Killed: 9
 import requests
 requests.get('https://google.com')
 <Response [200]>
-  
+
 
 from secimport import secure_import
 requests = secure_import('requests', allow_networking=False)

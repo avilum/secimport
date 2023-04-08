@@ -1,0 +1,7 @@
+            if (###DESTRUCTIVE###){
+                printf("\nKILLING PROCESS %s - EXECUTED execve;\n", str(pid));
+                printf("\t\tKILLING...\r\n");
+                system("pkill -9 python"); // optional. Please use "bpftrace --unsafe" or remove this line.
+                printf("\t\tKILLED.\r\n");
+                exit(); // optional
+            }

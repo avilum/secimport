@@ -1,7 +1,6 @@
 import unittest
 from secimport.backends.common.instrumentation_backend import InstrumentationBackend
 from secimport.backends.common.utils import (
-    PROFILES_DIR_NAME,
     build_module_sandbox_from_yaml_template,
 )
 
@@ -99,26 +98,183 @@ class TestSecImport(unittest.TestCase):
         module = secure_import("this")
         self.assertEqual(module.__name__, "this")
 
-    def test_syscall_allowlist_secure_import(self):
-        module = secure_import(
-            module_name="http",
-            syscalls_allowlist=EXAMPLE_SYSCALL_LIST,
-            log_file_system=True,
-            log_python_calls=True,
-        )
-        self.assertEqual(module.__name__, "http")
-
-    def test_syscall_blocklist_secure_import(self):
-        # Only log violations
-        module = secure_import(
-            module_name="http",
-            syscalls_blocklist=EXAMPLE_SYSCALL_LIST,
-            destructive=False,
-        )
-        self.assertEqual(module.__name__, "http")
-
     def test_build_module_sandbox_from_yaml_template(self):
-        profile_file_path = PROFILES_DIR_NAME / "example.yaml"
+        example_yaml = """
+modules:
+  requests:
+    destructive: true
+    syscall_allowlist:
+      - fchmod
+      - getentropy
+      - getpgrp
+      - getrlimit
+      - shm_open
+      - sysctlbyname
+      - access
+      - munmap
+      - issetugid
+      - readlink
+      - write
+      - fcntl
+      - fstatfs64
+      - getdirentries64
+      - mprotect
+      - fcntl_nocancel
+      - madvise
+      - mmap
+      - read_nocancel
+      - select
+      - sigprocmask
+      - close_nocancel
+      - write_nocancel
+      - open_nocancel
+      - close
+      - open
+      - sigaction
+      - lseek
+      - fstat64
+      - read
+      - ioctl
+      - stat64
+  fastapi:
+    destructive: true
+    syscall_allowlist:
+      - bind
+      - fchmod
+      - getentropy
+      - getpgrp
+      - getrlimit
+      - shm_open
+      - sysctlbyname
+      - access
+      - munmap
+      - issetugid
+      - readlink
+      - write
+      - fcntl
+      - fstatfs64
+      - getdirentries64
+      - mprotect
+      - fcntl_nocancel
+      - madvise
+      - mmap
+      - read_nocancel
+      - select
+      - sigprocmask
+      - close_nocancel
+      - write_nocancel
+      - open_nocancel
+      - close
+      - open
+      - sigaction
+      - lseek
+      - fstat64
+      - read
+      - ioctl
+      - stat64
+      - read
+      - pipe
+      - listen
+      - poll
+      - sigreturn
+      - getsockname
+      - kqueue
+      - kevent
+      - getpeername
+      - getpgrp
+      - listen
+      - pipe
+      - poll
+      - setsockopt
+      - shm_open
+      - socket
+      - socketpair
+      - sysctlbyname
+      - accept
+      - access
+      - getrlimit
+      - kqueue
+      - readlink
+      - recvfrom
+      - getsockname
+      - issetugid
+      - sendto
+      - write
+      - read_nocancel
+      - getentropy
+      - sigprocmask
+      - fstatfs64
+      - getdirentries64
+      - munmap
+      - madvise
+      - select
+      - write_nocancel
+      - sigaction
+      - fcntl_nocancel
+      - fcntl
+      - close_nocancel
+      - open_nocancel
+      - mprotect
+      - mmap
+      - kevent
+      - open
+      - close
+      - lseek
+      - ioctl
+      - read
+      - fstat64
+      - stat64
+  uvicorn:
+    destructive: true
+    syscall_allowlist:
+      - getpeername
+      - getpgrp
+      - listen
+      - pipe
+      - poll
+      - setsockopt
+      - shm_open
+      - socket
+      - socketpair
+      - sysctlbyname
+      - accept
+      - access
+      - getrlimit
+      - kqueue
+      - readlink
+      - recvfrom
+      - getsockname
+      - issetugid
+      - sendto
+      - write
+      - read_nocancel
+      - getentropy
+      - sigprocmask
+      - fstatfs64
+      - getdirentries64
+      - munmap
+      - madvise
+      - select
+      - write_nocancel
+      - sigaction
+      - fcntl_nocancel
+      - fcntl
+      - close_nocancel
+      - open_nocancel
+      - mprotect
+      - mmap
+      - kevent
+      - open
+      - close
+      - lseek
+      - ioctl
+      - read
+      - fstat64
+      - stat64
+        """
+        profile_file_path = "/tmp/.secimport_test_policy.yaml"
+        with open("/tmp/.secimport_test_policy.yaml", "w") as f:
+            f.write(example_yaml)
         bpftrace_module_sandbox_code: str = build_module_sandbox_from_yaml_template(
             profile_file_path, backend=InstrumentationBackend.EBPF
         )

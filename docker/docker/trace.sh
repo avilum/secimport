@@ -18,4 +18,4 @@
 
 # Run the sandbox
 # secimport/profiles/example.bt -c Python-3.10.0/python --unsafe
-./traced_modules.bt -c /workspace/Python-3.10.0/python --unsafe
+./sandbox.bt -c /workspace/Python-3.10.0/python --unsafe

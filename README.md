@@ -1,141 +1,167 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [secimport](#secimport)
+  - [Why It's Awesome](#why-its-awesome)
+  - [Examples](#examples)
+  - [Quick Start - Using the CLI](#quick-start---using-the-cli)
+  - [Alternative Usage: Python Imports](#alternative-usage-python-imports)
+  - [Docker](#docker)
+  - [Installation](#installation)
+  - [Documentation](#documentation)
+  - [References](#references)
+- [Contributing](#contributing)
+    - [Roadmap](#roadmap)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # secimport
-`secimport` is a sandbox toolkit, that traces your application and grants privilleges <b>per module</b> in your code.<br>
-By doing so, `secimport` enhances runtime security, giving you the ability to choose the privilleges for:
-  - All of your code - global privilleges (like seccomp, apparmor, firejail, etc.)
-  - 3rd party dependencies 
-    - That can be added/modified without you knowing, to avoid supply chain attacks.
-  - Open-Source packages
-    - You don't have control over them, and keeping it up-to-date cannot be guaranteed.
+`secimport` is a sandbox toolkit that traces your application and enforces privileges per module in your code in runtime.<br>
+It uses backends like bpftrace (eBPF) and dtrace under the hood, making it cross-platform.
 
-It uses backends like bpftrace <b>(eBPF)</b> and <b>dtrace</b> under the hood, making it cross-platform.<br>
-<p align="center">
-<a href="https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26?source=friends_link&sk=5e9a2fa4d4921af0ec94f175f7ee49f9">Medium Article</a>
-</p>
-<p align="center">
- <a href="https://github.com/avilum/secimport"><img style="max-height: 100px" src="https://user-images.githubusercontent.com/19243302/177835749-6aec7200-718e-431a-9ab5-c83c6f68565e.png" alt="secimport"></a>
-</p>
+[Medium Article](https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26?source=friends_link&sk=5e9a2fa4d4921af0ec94f175f7ee49f9)
 
-# How is works?
-`secimport` uses USDT (Userland Statically Defined Tracing) probes in the runtime (Python interpreter for example) using eBPF and dtrace instrumentation scripts.<br>
-You can use `secimport` to:
-- Trace which syscalls are called by each module in your code, or by your entire application.
-- Restrict specific modules/packages inside your production environment like 3rd party, open source or code from untrusted source.
-- Audit the flow of your python application at user-space/os/kernel level.
-- Kill or audit upon violoation of your specified behavior. Killing is optional.
-<br><br>
-# Quick Start
-There are several methods to create and run a sandbox:
-1. By modifying your imports
-    - Inside your code using `module = secimport.secure_import('module_name', ...)`.
-      - Replacing the regular `import` statement with `secure_import`
-      - Only modules that were imported with `secure_import` will be traced.
-2. By running it as a parent process for your application
-      -  Generate a YAML policy from your code, by specifying the modules and the policy you want, for every module that you would like to restrict in any way.
-         - Convert that YAML policy to dscript/bpftrace sandbox code.
-      - Run you tailor-made sandbox
-          - Use `dtrace` or `bpftrace` to run your main python application, with your tailor-made sandbox.
-          - No need for `secure_import`, you can keep using regular `import`s and not change your code at all.
-<br><br>
+## Why It's Awesome
+- Trace which syscalls are called by each module in your code.
+  - Like seccomp, apparmor, firejail, etc.
+  - Audit the flow of your python application at user-space/os/kernel level.
+- Reduce supply chain attack and RCE vectors.
+  - Restrict modules/packages inside your production environment
+  - It is hard to keep 3rd party and open source up-to-date.
+  - Vulnerabilities are inevitable.
+- No performance impact (see )
+- Don't change the way you code!
 
-# Documentation
-<a href="https://github.com/avilum/secimport/wiki">`secimport` Wiki on GitHub</a>
+## Examples
+<a href="https://github.com/avilum/secimport/wiki/Sandbox-Examples">Sandbox Examples</a> contains basic and advanced usage with many interactive examples.
 
-# Docker
-The easiest way to try secimport is by using our <a href="docker/README.md">Docker for MacOS and Linux</a>. It includes python, secimport and bpftrace backend.<br>
-`dtrace` backend is not available in docker, and can be tried directly on the compatible hosts ( <a href="docs/MAC_OS_USERS.md">Mac OS</a> , Windows, Solaris, Unix, some Linux distributions).
-<br><br>
+## Quick Start - Using the <a href="https://github.com/avilum/secimport/wiki/Command-Line-Usage">CLI</a><br>
+  - `secimport` or `python -m secimport.cli --help`
+Let's trace some logic we would like to trace.
+```shell
+root@e28bf0ec63d4:/workspace# secimport trace
+ >>> secimport trace
 
-# References:
-- Read about the available backends in secimport:
-  - https://www.brendangregg.com/DTrace/DTrace-cheatsheet.pdf
-    - `dtrace`
-  - https://www.brendangregg.com/blog/2018-10-08/dtrace-for-linux-2018.html
-    - `bpftrace` (dtrace 2.0) that uses LLVM and compiled our script to BCC.
-       - https://github.com/iovisor/bpftrace
-- <a href="https://github.com/avilum/secimport/wiki/Sandbox-Examples">Examples</a>
+TRACING: ['/workspace/secimport/profiles/trace.bt', '-c', '/workspace/Python-3.10.0/python', '-o', 'trace.log']
 
+                        Press CTRL+D to stop the trace;
+
+Python 3.10.0 (default, Mar 19 2023, 08:34:46) [GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import os
+>>> os.cpu_count()
+
+CTRL+D
+ TRACING DONE;
+```
+Create a sandbox from the trace, it should allow only running os.num_cpus() and no syscalls;
+```shell
+root@e28bf0ec63d4:/workspace# secimport build
+ >>> secimport build
+
+SECIMPORT COMPILING...
+
+CREATED JSON TEMPLATE:  traced_modules.json
+CREATED YAML TEMPLATE:  traced_modules.yaml
+
+
+compiling template traced_modules.yaml
+...
+[debug] adding syscall openat to allowlist for module /workspace/Python-3.10.0/Lib/ast.py
+[debug] adding syscall close to allowlist for module /workspace/Python-3.10.0/Lib/codecs.py
+...
+
+ SANDBOX READY: sandbox.bt
+```
+Try to violate the behavior by running os.system, we expect it to be logged / kill the process:
+```shell
+root@e28bf0ec63d4:/workspace# secimport run
+ >>> secimport run
+ RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', '/workspace/Python-3.10.0/python']
+Attaching 5 probes...
+REGISTERING SYSCALLS...
+STARTED
+Python 3.10.0 (default, Mar 19 2023, 08:34:46) [GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import os
+>>> os.cpu_count()
+6
+>>> os.system('echo pwned')
+[SECIMPORT VIOLATION]: <stdin> called syscall clone at depth 1
+[SECIMPORT VIOLATION]: <stdin> called syscall execve at depth 1
+[SECIMPORT VIOLATION]: <stdin> called syscall wait4 at depth 1
+pwned
+0
+```
+
+## Alternative Usage: <a href="examples/python_imports/">Python Imports</a>
+  - Works by replacing `import` with `secimort.secure_import` for selected modules.
+
+## Docker
+The quickest method to evaluate secimport is using our [Docker for MacOS and Linux](docker/README.md). The container includes `bpftrace`, python and secimport.<br> `dtrace` can be used in Mac OS, Windows, Solaris, Unix, some Linux distributions.<br>
+
+```python
+root@d57458518cbf:/workspace$ ./run_sandbox.sh
+🚀 Starting secimport sandbox with bpftrace backend, the sandbox should kill the python process...
+
+  PID TTY          TIME CMD
+    1 pts/0    00:00:00 sh
+   18 pts/0    00:00:00 bash
+   19 pts/0    00:00:00 bpftrace
+   23 pts/0    00:00:00 python
+
+
+🛑 The process was killed, as expected.
+🚀 The sandbox bpftrace code is at sandbox.bt
+🚀 The sandbox log is at sandbox.log.
+```
+## Installation
+To install yourself, please see <a href="https://github.com/avilum/secimport/wiki/Installation">Installation</a>.
+
+## Documentation
+[Our documentation center is Wiki on GitHub](https://github.com/avilum/secimport/wiki)
+
+## References
+- Read more about the primitives of secimport:
+  - `bpftrace` - https://github.com/iovisor/bpftrace
+  - `dtrace` - [DTrace Cheatsheet](https://www.brendangregg.com/DTrace/DTrace-cheatsheet.pdf)
+    - [DTrace for Linux (2018)](https://www.brendangregg.com/blog/2018-10-08/dtrace-for-linux-2018.html)
+- <a href="https://github.com/avilum/secimport/wiki/Sandbox-Examples">Sandbox Examples</a>
 - Guides
   - <a href="https://github.com/avilum/secimport/wiki/Tracing-Processes">Tracing Processes Guide</a>
   - <a href="https://github.com/avilum/secimport/wiki/Installation">Installation</a>
-  - <a href="https://github.com/avilum/secimport/wiki/MacOS-Users">Mac OS Users</a> - Disabling SIP (System Intergity Protection)
+  - <a href="https://github.com/avilum/secimport/wiki/YAML-Profiles">Create a Sandbox from YAML file</a>
+  - <a href="https://github.com/avilum/secimport/wiki/MacOS-Users">Mac OS Users</a>
   - <a href="https://github.com/avilum/secimport/wiki/F.A.Q">F.A.Q</a>
-  <br><br>
 
+# Contributing
+1. Fork this repo ^
+2. Install `poetry`, `pre-commit`, `doctoc` (Run `python3 -m pip install poetry pre-commit doctoc`)
+3. Run `poetry install`
+4. Add your feature/bugfixes/changes (see [Roadmap](#roadmap) if your are looking for Ideas)
+5. Run ./scripts/lint to correct the code styling and lint using pre-commit hooks
+6. Create a pull request with a desriptive title :)
 
-# Example Use Cases
-<a href="https://github.com/avilum/secimport/wiki/Sandbox-Examples">Sandbox Examples</a> contains advanced usage and many interactive session examples: YAML profies, networking, filesystem, processing blocking & more.
+### Roadmap
+- <b>Extandible Language Template</b>
+  - Create a miminal template that will support instrumenting different artifacts for different languages easily.
+    - <b>JS support</b> (bpftrace/dtrace hooks)
+      - Implement a template for JS event loop (V8 or alt.)
+    - <b>Go support</b>
+      - Implement a template for golang's call stack
+    - <b>Node support</b>
+      - Implement a template for Node's call stack and event loop
 
-## Simple Usage
-- <a href="examples/python_imports/">Running Sandbox Using Python Imports</a>
-- <a href="https://github.com/avilum/secimport/wiki/Command-Line-Usage">`secimport` Command Line Usage</a>
-    - The easiest option to start with inside docker.
-    - `python -m secimport.cli --help`
-- See <a href="https://github.com/avilum/secimport/wiki/YAML-Profiles">YAML Profiles Usage</a>>
-<br><br>
-### How pickle can be exploited in your 3rd party packages (and how to block it)
-```python
-# Not your code, but you load and run it from 3rd some party package.
-
-import pickle
-class Demo:
-    def __reduce__(self):
-        return (eval, ("__import__('os').system('echo Exploited!')",))
- 
-pickle.dumps(Demo())
-b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94."
-
-# Your code, at some day...
-pickle.loads(b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94.")
-Exploited!
-0
-```
-With `secimport`, you can control such action to do whatever you want:
-```python
-import secimport
-pickle = secimport.secure_import("pickle")
-pickle.loads(b"\x80\x04\x95F\x00\x00\x00\x00\x00\x00\x00\x8c\x08builtins\x94\x8c\x04eval\x94\x93\x94\x8c*__import__('os').system('echo Exploited!')\x94\x85\x94R\x94.")
-
-[1]    28027 killed     ipython
-```
-A log file is automatically created, containing everything you need to know:
-```
-$ less /tmp/.secimport/sandbox_pickle.log
-
-  @posix_spawn from /Users/avilumelsky/Downloads/Python-3.10.0/Lib/threading.py
-    DETECTED SHELL:
-        depth=8
-        sandboxed_depth=0
-        sandboxed_module=/Users/avilumelsky/Downloads/Python-3.10.0/Lib/pickle.py  
-
-    TERMINATING SHELL:
-        libsystem_kernel.dylib`__posix_spawn+0xa
-        ...
-                libsystem_kernel.dylib`__posix_spawn+0xa
-                libsystem_c.dylib`system+0x18b
-                python.exe`os_system+0xb3
-    KILLED
-:
-```
-More examples are available at <a href="https://github.com/avilum/secimport/wiki/Sandbox-Examples">Sandbox Examples</a>.
-
-<br><br>
-# Roadmap
-- ✔️ Allow/Block list configuration
-- ✔️ Create a .yaml configuration per module in the code
+Changelog:
+- ✔️ Added Allow/Block list configuration
+- ✔️ Created a .yaml configuration per module in the code
   - ✔️ Use secimport to compile that yml
   - ✔️ Create a single dcript policy
   - ✔️ Run an application with that policy using dtrace, without using `secure_import`
-- ✔️ <b>Add eBPF basic support using bpftrace</b>
+- ✔️ Added eBPF basic support using bpftrace
   - ✔️ bpftrace backend tests
-- ✔️ Implement python USDT probes:
-  - ✔️ import__find__load__start
-  - ✔️ import__find__load__done
-  - ✔️ line
-- ✔️ CLI for bpftrace backend usage
-- <b>Extandible Language Template</b>
-  - Create a miminal template that will support instrumenting different artifacts for different languages easily.
-    - <b>Go support</b> (bpftrace/dtrace hooks)
-      - Implement a template for golang's call stack
-    - <b>Node support</b> (bpftrace/dtrace hooks)
-      - Implement a template for Node's call stack and event loop
-- Multi Process support: Use current_module_str together with thread ID to distinguish between events in different processes
+- ✔️ Implemented python USDT probes template
+- ✔️ Added CLI for bpftrace backend usage
+- ✔️ Updated documentation and improved CLI
+- ✔️ Added GIFs

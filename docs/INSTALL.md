@@ -1,10 +1,26 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Python Interpreter Requirements](#python-interpreter-requirements)
+- [OS requirements](#os-requirements)
+  - [Install `bpftrace` (for Linux)](#install-bpftrace-for-linux)
+  - [Install `dtrace` (for Mac, Solaris, Windows)](#install-dtrace-for-mac-solaris-windows)
+    - [Using Docker: bpftrace (Linux, Mac)](#using-docker-bpftrace-linux-mac)
+- [Install Python with USDT probes and openssl (from source): ~5 minutes](#install-python-with-usdt-probes-and-openssl-from-source-5-minutes)
+  - [Test the interpreter](#test-the-interpreter)
+  - [Run `secimport` Tests](#run-secimport-tests)
+- [What's Next?](#whats-next)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 # Python Interpreter Requirements
 The only runtime requirement is a Python interpreter that was built with --with-dtrace (USDT probes).<br>
 You can check if your current interpreter supported by running `readelf` on your python interpreter:
 ```python
 readelf -n Python-3.10.0/python | grep -i function__entry
-``` 
+```
 You should be able to see the following output:
 ```
     Name: function__entry
