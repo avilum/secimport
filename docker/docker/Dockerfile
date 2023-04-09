@@ -16,7 +16,7 @@ ARG SECIMPORT_VERSION="0.6.2"
 
 # TODO: add openssl (longer build time, but pip will work for our interpreter)
 RUN echo "Installing prerequisites" && \
-    apt-get update && apt-get install nano sudo build-essential libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev curl wget auditd vim tmux git binutils unzip gcc systemtap-sdt-dev cmake zlib1g-dev -y
+    apt-get update && apt-get install nano sudo build-essential libsqlite3-dev libncurses5-dev libgdbm-dev libnss3-dev libssl-dev libreadline-dev libffi-dev curl wget auditd vim tmux git binutils unzip gcc systemtap-sdt-dev cmake zlib1g-dev -y
 RUN echo "Installing python with dtrace" && \
     curl -o Python-${PYTHON_VERSION}.tgz https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz && tar -xzf Python-${PYTHON_VERSION}.tgz && \
     cd Python-${PYTHON_VERSION} && ./configure --with-dtrace --prefix=/usr/local/openssl --prefix=$(pwd) --with-ensurepip=install && make && make install && \

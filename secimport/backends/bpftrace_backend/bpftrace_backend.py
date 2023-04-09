@@ -75,6 +75,7 @@ def run_bpftrace_script_for_module(
     destructive: bool,
     use_sudo: bool = False,
     templates_dir: Path = TEMPLATES_DIR_NAME,
+    dry_run: bool = True,
 ):
     module_file_path = create_bpftrace_script_for_module(
         module_name=module_name,
@@ -89,7 +90,8 @@ def run_bpftrace_script_for_module(
     )
     # Checking the bpftrace exists:
     try:
-        subprocess.call(["bpftrace", "-h"])
+        if not dry_run:
+            subprocess.call(["bpftrace", "-h"])
     except FileNotFoundError:
         raise EnvironmentError(
             "`bpftrace` is not installed. Please install it from https://github.com/iovisor/bpftrace/blob/master/INSTALL.md and make sure it is in PATH;"
@@ -103,8 +105,9 @@ def run_bpftrace_script_for_module(
     print("(sandbox command): ", bpftrace_command)
     print()
     print("Waiting for bpftrace.... ")
-    os.system(bpftrace_command)
-    sleep(5)
+    if not dry_run:
+        os.system(bpftrace_command)
+        sleep(5)
     return True
 
 

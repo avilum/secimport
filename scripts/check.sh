@@ -10,7 +10,10 @@ fi
 
 python3 -m ruff --fix .
 doctoc
-git add .
 pre-commit
 export PYTHONPATH=$(pwd):$PYTHONPATH
-coverage run -m pytest tests
+cd docker
+./build
+
+KERNEL_VERSION=`docker run --rm -it alpine uname -r | cut -d'-' -f1`
+docker run --rm --name=secimport --privileged -v "$(pwd)/secimport":"/workspace/secimport/" -v "$(pwd)/tests":"/workspace/tests/" -it secimport:${KERNEL_VERSION} "pip install coverage pytest && coverage run -m pytest tests && coverage report -m --skip-empty --omit=\"*/tests/*\""
