@@ -30,7 +30,7 @@ It uses backends like bpftrace (eBPF) and dtrace under the hood, making it cross
   - Restrict modules/packages inside your production environment
   - It is hard to keep 3rd party and open source up-to-date.
   - Vulnerabilities are inevitable.
-- No performance impact (see )
+- No performance impact (see  <a href="https://github.com/avilum/secimport/wiki/Performance-Benchmarks">Performance</a>)
 - Don't change the way you code!
 
 ## Examples
