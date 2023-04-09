@@ -2,7 +2,7 @@
 
 `secimport` is a cross-platform sandbox toolkit that traces your Python application and enforces privileges per module in your code in runtime. It uses backends like bpftrace (eBPF) and dtrace under the hood.
 
-[![Upload Python Package](https://github.com/avilum/secimport/actions/workflows/python-publish.yml/badge.svg?branch=master)](https://github.com/avilum/secimport/actions/workflows/python-publish.yml)
+[![Upload Python Package](https://github.com/avilum/secimport/actions/workflows/python-publish.yml/badge.svg)](https://github.com/avilum/secimport/actions/workflows/python-publish.yml)
 
 
 ## Why It's Awesome
