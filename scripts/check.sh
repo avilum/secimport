@@ -13,4 +13,4 @@ doctoc
 git add .
 pre-commit
 export PYTHONPATH=$(pwd):$PYTHONPATH
-python3 -m pytest tests/
+coverage run -m pytest tests
