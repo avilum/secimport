@@ -8,6 +8,7 @@ import os
 from sys import executable as PYTHON_EXECUTABLE
 import stat
 from pathlib import Path
+from time import sleep
 
 from secimport.backends.common.utils import (
     BASE_DIR_NAME,
@@ -94,6 +95,7 @@ def run_bpftrace_script_for_module(
     print()
     print("Waiting for bpftrace.... ")
     os.system(bpftrace_command)
+    sleep(5)
     return True
 
 

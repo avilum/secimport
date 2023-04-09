@@ -703,17 +703,21 @@ tracepoint:raw_syscalls:sys_enter /comm == "python"/ {
     if (@syscalls_filters["general_requirements", @sysname[args->id]] != 1){
         // Logging every syscall that was not confirmed by the user at compile time.
         if (@syscalls_filters[@latest_supervised_module, @sysname[args->id]] != 1){
-            printf("\033[91m[SECURITY PROFILE VIOLATED]: %s called syscall %s at depth %d\r\n\033[91m", @latest_supervised_module, @sysname[args->id], @["depth"]);
+            printf("\033[91m[SECURITY PROFILE VIOLATED]: %s called syscall %s at depth %d\033[0m\r\n", @latest_supervised_module, @sysname[args->id], @["depth"]);
 
-            // STOPPING
-            printf("\n^^^ KILLING PROCESS %d DUE TO SYSCALL VIOLATION ^^^\n", pid);
-            signal("SIGSTOP");
-            printf("\t\tPROCESS %d STOPPED.\r\n", pid);
+            if (str($1) == "STOP") {
+                printf("\n^^^ STOPPING PROCESS %d DUE TO SYSCALL VIOLATION ^^^\n", pid);
+                signal("SIGSTOP");
+                printf("\t\tPROCESS %d STOPPED.\r\n", pid);
+            }
 
-            // Killing (optinal) - Uncomment
-            // system("pkill -9 python"); // optional. Please use "bpftrace --unsafe" or remove this line.
-            // printf("\t\tKILLED.\r\n");
-            // exit(); // optional
+            if (str($1) == "KILL") {
+                printf("\n^^^ KILLING PROCESS %d DUE TO SYSCALL VIOLATION ^^^\n", pid);
+                signal("SIGKILL");
+                // system("pkill -9 python"); // optional. Please use "bpftrace --unsafe" or remove this line.
+                printf("\t\tKILLED.\r\n");
+                exit(); // optional
+            }
         }
     }
 }
@@ -740,5 +744,6 @@ END {
     clear(@entrypoints);
     clear(@syscalls_filters);
     clear(@globals);
+    clear(@latest_supervised_module);
     clear(@);
 }

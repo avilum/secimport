@@ -82,7 +82,7 @@ class SecImportCLI:
             elif len(parsed_items) == 2:
                 # Module dependency
                 _module, _syscall = parsed_items
-                if _module == "":
+                if not _module or _module == "None":  # empty string and None
                     _module = "general_requirements"
                 modules_and_syscalls[_module].append(_syscall)
             else:
@@ -150,25 +150,31 @@ class SecImportCLI:
 
     @staticmethod
     def trace(
+        entrypoint: str = None,
         python_interpreter: str = sys.executable,
         trace_log_file: str = "trace.log",
     ):
-        """Generate snippets for trace command line usage.
-
+        """Traces
         Args:
+            entrypoint (str, optional): A python script path to trace. If not specified, a python interactive shell will be opened in the foregraound. This shell, or the given command, will be traced and logged to the "trace_log_file" argument.
             python_interpreter (str, optional): The path of the python executable interpreter to trace. Defaults to sys.executable.
             trace_log_file (str, optional): The log file to write the trace into. Defaults to "trace.log".
         """
         colored_print(COLORS.OKGREEN, ">>> secimport trace")
+        if entrypoint:
+            # entrypoint_cmd = str(Path(entrypoint).absolute())
+            entrypoint_cmd = f'bash -c "{python_interpreter} {entrypoint}"'
+        else:
+            entrypoint_cmd = python_interpreter
         cmd = [
             f"{SECIMPORT_ROOT}/profiles/trace.bt",
             "-c",
-            f"{python_interpreter}",
+            f"{entrypoint_cmd}",
             "-o",
             f"{trace_log_file}",
         ]
         colored_print(COLORS.HEADER, "\nTRACING:", cmd)
-        colored_print(COLORS.BOLD, "\n\t\t\tPress CTRL+D to stop the trace;\n")
+        colored_print(COLORS.BOLD, "\n\t\t\tPress CTRL+D/CTRL+C to stop the trace;\n")
         os.system(" ".join(cmd))
         colored_print(COLORS.BOLD, "TRACING DONE;")
 
@@ -225,6 +231,8 @@ class SecImportCLI:
         python_interpreter: str = sys.executable,
         entrypoint: str = None,
         pid=None,
+        stop_on_violation=False,
+        kill_on_violation=False,
         sandbox_logfile: str = None,
     ):
         """Run a python process inside the sandbox.
@@ -234,6 +242,8 @@ class SecImportCLI:
             python_interpreter (str, optional): The python interpreter to probe. Defaults to sys.executable.
             entrypoint (str, optional): A script entrypoint to trace explicitly. Defaults to None.
             pid (_type_, optional): process id to trace. Defaults to None.
+            stop_on_violation: (str, optional). If set to True, the sandbox will send SIGSTOP to the process and prevent the execution the syscall.
+            kill_on_violation: (str, optional). If set to True, the sandbox will send SIGKILL to the process, and then the sandbox will exit.
             sandbox_logfile: (str, optional). Log the sandbox STDOUT to an explicit file, instead of the foreground STDOUT/STDERR.
         Raises:
             FileNotFoundError: _description_
@@ -251,7 +261,7 @@ class SecImportCLI:
             if entrypoint:
                 sandbox_startup_cmd += [
                     " -c ",
-                    f"{python_interpreter}" + f' "{entrypoint}"',
+                    f'bash -c "{python_interpreter} {entrypoint}"',
                 ]
             else:
                 sandbox_startup_cmd += [" -c ", f"{python_interpreter}"]
@@ -259,6 +269,21 @@ class SecImportCLI:
             raise ValueError("Please specify one of the following: entrypoint / pid")
         if sandbox_logfile:
             sandbox_startup_cmd += [" -o sandbox.log"]
+
+        # Passing the policy as bpftrace program arguments (They used as $1, $2, ...)
+        assert not (
+            stop_on_violation and kill_on_violation
+        ), "Please specify only one of the following flags: `--stop_on_violation`, `--kill_on_violation`"
+        if stop_on_violation:
+            print(
+                "[WARNING]: This sandbox will send SIGSTOP to the program upon violation."
+            )
+            sandbox_startup_cmd.append("STOP")
+        elif kill_on_violation:
+            print(
+                "[WARNING]: This sandbox will send SIGKILL to the program upon violation."
+            )
+            sandbox_startup_cmd.append("KILL")
 
         colored_print(COLORS.HEADER, "RUNNING SANDBOX...", sandbox_startup_cmd)
         os.system(" ".join(sandbox_startup_cmd))

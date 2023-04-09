@@ -57,7 +57,7 @@ def run_dtrace_script_for_module(
 
     # TODO: wait for dtrace to start explicitly using an event/fd, not time based - although 2 seconds is more than enough.
     # TODO: add startup logs for dropped packets without python modules (until the first python enter takes place in the syscalls probe, the python module is null).
-    time.sleep(2)
+    time.sleep(5)
     return True
 
 
