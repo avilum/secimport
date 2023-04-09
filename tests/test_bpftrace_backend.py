@@ -16,7 +16,7 @@ class TestEBPFBackend(unittest.TestCase):
 
         try:
             os.remove(BASE_DIR_NAME)
-        except:
+        except (FileNotFoundError, PermissionError):
             ...
         return super().setUp()
 
@@ -67,7 +67,7 @@ class TestEBPFBackend(unittest.TestCase):
 
         self.assertTrue(res)
 
-    def test_create_bpftrace_script_for_module(self):
+    def test_create_bpftrace_script_for_nonexisting_module(self):
         # create_bpftrace_script_for_module
         # TODO: implement
         bpftrace_script_file_path = create_bpftrace_script_for_module(

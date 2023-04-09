@@ -1,0 +1,367 @@
+➜  docker git:(3d27973) git checkout 0.7.0
+HEAD is now at 3d27973 Merge pull request #18 from avilum/feature/new_cli_and_interactive_quickstart
+➜  docker git:(3d27973) ./run.sh
+Running temporary container...
+root@28a2599fc9a1:/workspace# ll
+total 40
+drwxr-xr-x 1 root root 4096 Apr  9 19:18 ./
+drwxr-xr-x 1 root root 4096 Apr  9 19:18 ../
+drwxr-xr-x 1 1000 1000 4096 Apr  9 17:22 Python-3.10.0/
+drwxr-xr-x 8 root root  256 Apr  8 14:10 examples/
+-rwxr-xr-x 1 root root  332 Apr  9 17:15 fastapi_example.sh*
+-rwxr-xr-x 1 root root  246 Apr  9 11:44 fastapi_main.py*
+-rwxr-xr-x 1 root root 1333 Apr  9 10:15 processing_sandbox.bt*
+-rwxr-xr-x 1 root root  672 Apr  9 12:05 run_sandbox.sh*
+-rwxr-xr-x 1 root root  488 Apr  9 18:43 run_tests.sh*
+drwxr-xr-x 9 root root  288 Apr  9 18:52 secimport/
+-rwxr-xr-x 1 root root  210 Apr  9 10:28 setup.sh*
+root@28a2599fc9a1:/workspace# ./fastapi_example.sh
+FastAPI Example
+Tracing the main application, hit CTRL+C/CTRL+D when you are done.
+ >>> secimport trace
+
+TRACING: ['/workspace/secimport/profiles/trace.bt', '-c', 'bash -c "/workspace/Python-3.10.0/python fastapi_main.py"', '-o', 'trace.log']
+
+                        Press CTRL+D/CTRL+C to stop the trace;
+
+INFO:     Started server process [26]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     172.17.0.1:55786 - "GET /nonexisting HTTP/1.1" 404 Not Found
+INFO:     172.17.0.1:55786 - "GET / HTTP/1.1" 200 OK
+INFO:     172.17.0.1:55786 - "GET /docs HTTP/1.1" 200 OK
+INFO:     172.17.0.1:55786 - "GET /openapi.json HTTP/1.1" 200 OK
+
+^CINFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [26]
+
+
+ TRACING DONE;
+
+ >>> secimport build
+
+SECIMPORT COMPILING...
+
+CREATED JSON TEMPLATE:  sandbox.json
+CREATED YAML TEMPLATE:  sandbox.yaml
+
+
+compiling template sandbox.yaml
+[debug] adding syscall mmap to allowlist for module None
+[debug] adding syscall mmap to allowlist for module None
+[debug] adding syscall ioctl to allowlist for module None
+[debug] adding syscall getpid to allowlist for module None
+[debug] adding syscall clock_gettime to allowlist for module None
+[debug] adding syscall getpid to allowlist for module None
+[debug] adding syscall brk to allowlist for module None
+[debug] adding syscall clock_gettime to allowlist for module None
+[debug] adding syscall fcntl to allowlist for module None
+[debug] adding syscall fstat to allowlist for module None
+[debug] adding syscall getpid to allowlist for module None
+[debug] adding syscall listen to allowlist for module None
+[debug] adding syscall getpid to allowlist for module None
+[debug] adding syscall getpid to allowlist for module None
+[debug] adding syscall recvfrom to allowlist for module None
+[debug] adding syscall sendto to allowlist for module None
+[debug] adding syscall getpid to allowlist for module None
+[debug] adding syscall getpeername to allowlist for module None
+[debug] adding syscall getsockname to allowlist for module None
+[debug] adding syscall clock_gettime to allowlist for module None
+[debug] adding syscall close to allowlist for module None
+[debug] adding syscall dup to allowlist for module None
+[debug] adding syscall fstat to allowlist for module None
+[debug] adding syscall ioctl to allowlist for module None
+[debug] adding syscall lseek to allowlist for module None
+[debug] adding syscall read to allowlist for module None
+[debug] adding syscall rt_sigaction to allowlist for module None
+[debug] adding syscall brk to allowlist for module None
+[debug] adding syscall mmap to allowlist for module None
+[debug] adding syscall brk to allowlist for module None
+[debug] adding syscall brk to allowlist for module None
+[debug] adding syscall mmap to allowlist for module None
+[debug] adding syscall rt_sigaction to allowlist for module None
+[debug] adding syscall setsockopt to allowlist for module None
+[debug] adding syscall stat to allowlist for module None
+[debug] adding syscall clock_gettime to allowlist for module None
+[debug] adding syscall getpid to allowlist for module None
+[debug] adding syscall write to allowlist for module None
+[debug] adding syscall getcwd to allowlist for module None
+[debug] adding syscall getpid to allowlist for module None
+[debug] adding syscall getrandom to allowlist for module None
+[debug] adding syscall prlimit64 to allowlist for module None
+[debug] adding syscall read to allowlist for module None
+[debug] adding syscall uname to allowlist for module None
+[debug] adding syscall close to allowlist for module None
+[debug] adding syscall fstat to allowlist for module None
+[debug] adding syscall getcwd to allowlist for module None
+[debug] adding syscall getdents64 to allowlist for module None
+[debug] adding syscall openat to allowlist for module None
+[debug] adding syscall getrandom to allowlist for module None
+[debug] adding syscall clock_gettime to allowlist for module None
+[debug] adding syscall close to allowlist for module None
+[debug] adding syscall epoll_create1 to allowlist for module None
+[debug] adding syscall epoll_wait to allowlist for module None
+[debug] adding syscall rt_sigreturn to allowlist for module None
+[debug] adding syscall write to allowlist for module None
+[debug] adding syscall rt_sigaction to allowlist for module None
+[debug] adding syscall fstat to allowlist for module None
+[debug] adding syscall getegid to allowlist for module None
+[debug] adding syscall geteuid to allowlist for module None
+[debug] adding syscall getgid to allowlist for module None
+[debug] adding syscall getuid to allowlist for module None
+[debug] adding syscall ioctl to allowlist for module None
+[debug] adding syscall lseek to allowlist for module None
+[debug] adding syscall openat to allowlist for module None
+[debug] adding syscall accept4 to allowlist for module None
+[debug] adding syscall bind to allowlist for module None
+[debug] adding syscall getsockname to allowlist for module None
+[debug] adding syscall ioctl to allowlist for module None
+[debug] adding syscall setsockopt to allowlist for module None
+[debug] adding syscall socket to allowlist for module None
+[debug] adding syscall socketpair to allowlist for module None
+[debug] adding syscall brk to allowlist for module None
+[debug] adding syscall getpid to allowlist for module None
+[debug] adding syscall gettid to allowlist for module None
+[debug] adding syscall brk to allowlist for module None
+[debug] adding syscall getpid to allowlist for module None
+[debug] adding syscall mmap to allowlist for module None
+[debug] adding syscall brk to allowlist for module None
+[debug] adding syscall clock_gettime to allowlist for module None
+[debug] adding syscall close to allowlist for module None
+[debug] adding syscall dup to allowlist for module None
+[debug] adding syscall fcntl to allowlist for module None
+[debug] adding syscall fstat to allowlist for module None
+[debug] adding syscall futex to allowlist for module None
+[debug] adding syscall ioctl to allowlist for module None
+[debug] adding syscall lseek to allowlist for module None
+[debug] adding syscall mmap to allowlist for module None
+[debug] adding syscall mprotect to allowlist for module None
+[debug] adding syscall munmap to allowlist for module None
+[debug] adding syscall openat to allowlist for module None
+[debug] adding syscall read to allowlist for module None
+[debug] adding syscall readlink to allowlist for module None
+[debug] adding syscall rt_sigaction to allowlist for module None
+[debug] adding syscall stat to allowlist for module None
+[debug] adding syscall sysinfo to allowlist for module None
+[debug] adding syscall brk to allowlist for module None
+[debug] adding syscall close to allowlist for module None
+[debug] adding syscall fstat to allowlist for module None
+[debug] adding syscall getcwd to allowlist for module None
+[debug] adding syscall getdents64 to allowlist for module None
+[debug] adding syscall ioctl to allowlist for module None
+[debug] adding syscall lseek to allowlist for module None
+[debug] adding syscall lstat to allowlist for module None
+[debug] adding syscall mkdir to allowlist for module None
+[debug] adding syscall mmap to allowlist for module None
+[debug] adding syscall munmap to allowlist for module None
+[debug] adding syscall openat to allowlist for module None
+[debug] adding syscall read to allowlist for module None
+[debug] adding syscall readlink to allowlist for module None
+[debug] adding syscall rename to allowlist for module None
+[debug] adding syscall stat to allowlist for module None
+[debug] adding syscall write to allowlist for module None
+[debug] adding syscall close to allowlist for module None
+[debug] adding syscall fcntl to allowlist for module None
+[debug] adding syscall fstat to allowlist for module None
+[debug] adding syscall ioctl to allowlist for module None
+[debug] adding syscall lseek to allowlist for module None
+[debug] adding syscall openat to allowlist for module None
+[debug] adding syscall read to allowlist for module None
+[debug] adding syscall epoll_ctl to allowlist for module None
+[debug] adding syscall access to allowlist for module None
+[debug] adding syscall arch_prctl to allowlist for module None
+[debug] adding syscall brk to allowlist for module None
+[debug] adding syscall close to allowlist for module None
+[debug] adding syscall fstat to allowlist for module None
+[debug] adding syscall futex to allowlist for module None
+[debug] adding syscall getcwd to allowlist for module None
+[debug] adding syscall getrandom to allowlist for module None
+[debug] adding syscall mmap to allowlist for module None
+[debug] adding syscall mprotect to allowlist for module None
+[debug] adding syscall munmap to allowlist for module None
+[debug] adding syscall openat to allowlist for module None
+[debug] adding syscall pread to allowlist for module None
+[debug] adding syscall prlimit64 to allowlist for module None
+[debug] adding syscall read to allowlist for module None
+[debug] adding syscall rt_sigaction to allowlist for module None
+[debug] adding syscall rt_sigprocmask to allowlist for module None
+[debug] adding syscall set_robust_list to allowlist for module None
+[debug] adding syscall set_tid_address to allowlist for module None
+[debug] adding syscall mmap to allowlist for module /root/.local/lib/python3.10/site-packages/fastapi/security/oaut
+[debug] adding syscall mmap to allowlist for module /root/.local/lib/python3.10/site-packages/typing_extensions.py
+[debug] adding syscall ioctl to allowlist for module /root/.local/lib/python3.10/site-packages/uvicorn/logging.py
+[debug] adding syscall getpid to allowlist for module /root/.local/lib/python3.10/site-packages/uvicorn/protocols/htt
+[debug] adding syscall clock_gettime to allowlist for module /root/.local/lib/python3.10/site-packages/uvicorn/server.py
+[debug] adding syscall getpid to allowlist for module /root/.local/lib/python3.10/site-packages/uvicorn/server.py
+[debug] adding syscall brk to allowlist for module /workspace/Python-3.10.0/Lib/abc.py
+[debug] adding syscall clock_gettime to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/base_events.py
+[debug] adding syscall fcntl to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/base_events.py
+[debug] adding syscall fstat to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/base_events.py
+[debug] adding syscall getpid to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/base_events.py
+[debug] adding syscall listen to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/base_events.py
+[debug] adding syscall getpid to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/coroutines.py
+[debug] adding syscall getpid to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/mixins.py
+[debug] adding syscall recvfrom to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/selector_events.py
+[debug] adding syscall sendto to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/selector_events.py
+[debug] adding syscall getpid to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/tasks.py
+[debug] adding syscall getpeername to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/trsock.py
+[debug] adding syscall getsockname to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/trsock.py
+[debug] adding syscall clock_gettime to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/unix_events.py
+[debug] adding syscall close to allowlist for module /workspace/Python-3.10.0/Lib/codecs.py
+[debug] adding syscall dup to allowlist for module /workspace/Python-3.10.0/Lib/codecs.py
+[debug] adding syscall fstat to allowlist for module /workspace/Python-3.10.0/Lib/codecs.py
+[debug] adding syscall ioctl to allowlist for module /workspace/Python-3.10.0/Lib/codecs.py
+[debug] adding syscall lseek to allowlist for module /workspace/Python-3.10.0/Lib/codecs.py
+[debug] adding syscall read to allowlist for module /workspace/Python-3.10.0/Lib/codecs.py
+[debug] adding syscall rt_sigaction to allowlist for module /workspace/Python-3.10.0/Lib/codecs.py
+[debug] adding syscall brk to allowlist for module /workspace/Python-3.10.0/Lib/collections/__init__.py
+[debug] adding syscall mmap to allowlist for module /workspace/Python-3.10.0/Lib/collections/__init__.py
+[debug] adding syscall brk to allowlist for module /workspace/Python-3.10.0/Lib/copy.py
+[debug] adding syscall brk to allowlist for module /workspace/Python-3.10.0/Lib/dataclasses.py
+[debug] adding syscall mmap to allowlist for module /workspace/Python-3.10.0/Lib/enum.py
+[debug] adding syscall rt_sigaction to allowlist for module /workspace/Python-3.10.0/Lib/enum.py
+[debug] adding syscall setsockopt to allowlist for module /workspace/Python-3.10.0/Lib/enum.py
+[debug] adding syscall stat to allowlist for module /workspace/Python-3.10.0/Lib/genericpath.py
+[debug] adding syscall clock_gettime to allowlist for module /workspace/Python-3.10.0/Lib/logging/__init__.py
+[debug] adding syscall getpid to allowlist for module /workspace/Python-3.10.0/Lib/logging/__init__.py
+[debug] adding syscall write to allowlist for module /workspace/Python-3.10.0/Lib/logging/__init__.py
+[debug] adding syscall getcwd to allowlist for module /workspace/Python-3.10.0/Lib/multiprocessing/process.py
+[debug] adding syscall getpid to allowlist for module /workspace/Python-3.10.0/Lib/multiprocessing/process.py
+[debug] adding syscall getrandom to allowlist for module /workspace/Python-3.10.0/Lib/multiprocessing/process.py
+[debug] adding syscall prlimit64 to allowlist for module /workspace/Python-3.10.0/Lib/multiprocessing/util.py
+[debug] adding syscall read to allowlist for module /workspace/Python-3.10.0/Lib/os.py
+[debug] adding syscall uname to allowlist for module /workspace/Python-3.10.0/Lib/platform.py
+[debug] adding syscall close to allowlist for module /workspace/Python-3.10.0/Lib/posixpath.py
+[debug] adding syscall fstat to allowlist for module /workspace/Python-3.10.0/Lib/posixpath.py
+[debug] adding syscall getcwd to allowlist for module /workspace/Python-3.10.0/Lib/posixpath.py
+[debug] adding syscall getdents64 to allowlist for module /workspace/Python-3.10.0/Lib/posixpath.py
+[debug] adding syscall openat to allowlist for module /workspace/Python-3.10.0/Lib/posixpath.py
+[debug] adding syscall getrandom to allowlist for module /workspace/Python-3.10.0/Lib/random.py
+[debug] adding syscall clock_gettime to allowlist for module /workspace/Python-3.10.0/Lib/selectors.py
+[debug] adding syscall close to allowlist for module /workspace/Python-3.10.0/Lib/selectors.py
+[debug] adding syscall epoll_create1 to allowlist for module /workspace/Python-3.10.0/Lib/selectors.py
+[debug] adding syscall epoll_wait to allowlist for module /workspace/Python-3.10.0/Lib/selectors.py
+[debug] adding syscall rt_sigreturn to allowlist for module /workspace/Python-3.10.0/Lib/selectors.py
+[debug] adding syscall write to allowlist for module /workspace/Python-3.10.0/Lib/selectors.py
+[debug] adding syscall rt_sigaction to allowlist for module /workspace/Python-3.10.0/Lib/signal.py
+[debug] adding syscall fstat to allowlist for module /workspace/Python-3.10.0/Lib/site.py
+[debug] adding syscall getegid to allowlist for module /workspace/Python-3.10.0/Lib/site.py
+[debug] adding syscall geteuid to allowlist for module /workspace/Python-3.10.0/Lib/site.py
+[debug] adding syscall getgid to allowlist for module /workspace/Python-3.10.0/Lib/site.py
+[debug] adding syscall getuid to allowlist for module /workspace/Python-3.10.0/Lib/site.py
+[debug] adding syscall ioctl to allowlist for module /workspace/Python-3.10.0/Lib/site.py
+[debug] adding syscall lseek to allowlist for module /workspace/Python-3.10.0/Lib/site.py
+[debug] adding syscall openat to allowlist for module /workspace/Python-3.10.0/Lib/site.py
+[debug] adding syscall accept4 to allowlist for module /workspace/Python-3.10.0/Lib/socket.py
+[debug] adding syscall bind to allowlist for module /workspace/Python-3.10.0/Lib/socket.py
+[debug] adding syscall getsockname to allowlist for module /workspace/Python-3.10.0/Lib/socket.py
+[debug] adding syscall ioctl to allowlist for module /workspace/Python-3.10.0/Lib/socket.py
+[debug] adding syscall setsockopt to allowlist for module /workspace/Python-3.10.0/Lib/socket.py
+[debug] adding syscall socket to allowlist for module /workspace/Python-3.10.0/Lib/socket.py
+[debug] adding syscall socketpair to allowlist for module /workspace/Python-3.10.0/Lib/socket.py
+[debug] adding syscall brk to allowlist for module /workspace/Python-3.10.0/Lib/sre_compile.py
+[debug] adding syscall getpid to allowlist for module /workspace/Python-3.10.0/Lib/threading.py
+[debug] adding syscall gettid to allowlist for module /workspace/Python-3.10.0/Lib/threading.py
+[debug] adding syscall brk to allowlist for module /workspace/Python-3.10.0/Lib/typing.py
+[debug] adding syscall getpid to allowlist for module /workspace/Python-3.10.0/Lib/typing.py
+[debug] adding syscall mmap to allowlist for module /workspace/Python-3.10.0/Lib/typing.py
+[debug] adding syscall brk to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall clock_gettime to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall close to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall dup to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall fcntl to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall fstat to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall futex to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall ioctl to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall lseek to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall mmap to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall mprotect to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall munmap to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall openat to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall read to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall readlink to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall rt_sigaction to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall stat to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall sysinfo to allowlist for module <frozen importlib._bootstrap>
+[debug] adding syscall brk to allowlist for module <frozen importlib._bootstrap_external>
+[debug] adding syscall close to allowlist for module <frozen importlib._bootstrap_external>
+[debug] adding syscall fstat to allowlist for module <frozen importlib._bootstrap_external>
+[debug] adding syscall getcwd to allowlist for module <frozen importlib._bootstrap_external>
+[debug] adding syscall getdents64 to allowlist for module <frozen importlib._bootstrap_external>
+[debug] adding syscall ioctl to allowlist for module <frozen importlib._bootstrap_external>
+[debug] adding syscall lseek to allowlist for module <frozen importlib._bootstrap_external>
+[debug] adding syscall lstat to allowlist for module <frozen importlib._bootstrap_external>
+[debug] adding syscall mkdir to allowlist for module <frozen importlib._bootstrap_external>
+[debug] adding syscall mmap to allowlist for module <frozen importlib._bootstrap_external>
+[debug] adding syscall munmap to allowlist for module <frozen importlib._bootstrap_external>
+[debug] adding syscall openat to allowlist for module <frozen importlib._bootstrap_external>
+[debug] adding syscall read to allowlist for module <frozen importlib._bootstrap_external>
+[debug] adding syscall readlink to allowlist for module <frozen importlib._bootstrap_external>
+[debug] adding syscall rename to allowlist for module <frozen importlib._bootstrap_external>
+[debug] adding syscall stat to allowlist for module <frozen importlib._bootstrap_external>
+[debug] adding syscall write to allowlist for module <frozen importlib._bootstrap_external>
+[debug] adding syscall close to allowlist for module <frozen zipimport>
+[debug] adding syscall fcntl to allowlist for module <frozen zipimport>
+[debug] adding syscall fstat to allowlist for module <frozen zipimport>
+[debug] adding syscall ioctl to allowlist for module <frozen zipimport>
+[debug] adding syscall lseek to allowlist for module <frozen zipimport>
+[debug] adding syscall openat to allowlist for module <frozen zipimport>
+[debug] adding syscall read to allowlist for module <frozen zipimport>
+[debug] adding syscall epoll_ctl to allowlist for module <string>
+[debug] adding syscall access to allowlist for module general_requirements
+[debug] adding syscall arch_prctl to allowlist for module general_requirements
+[debug] adding syscall brk to allowlist for module general_requirements
+[debug] adding syscall close to allowlist for module general_requirements
+[debug] adding syscall fstat to allowlist for module general_requirements
+[debug] adding syscall futex to allowlist for module general_requirements
+[debug] adding syscall getcwd to allowlist for module general_requirements
+[debug] adding syscall getrandom to allowlist for module general_requirements
+[debug] adding syscall mmap to allowlist for module general_requirements
+[debug] adding syscall mprotect to allowlist for module general_requirements
+[debug] adding syscall munmap to allowlist for module general_requirements
+[debug] adding syscall openat to allowlist for module general_requirements
+[debug] adding syscall pread to allowlist for module general_requirements
+[debug] adding syscall prlimit64 to allowlist for module general_requirements
+[debug] adding syscall read to allowlist for module general_requirements
+[debug] adding syscall rt_sigaction to allowlist for module general_requirements
+[debug] adding syscall rt_sigprocmask to allowlist for module general_requirements
+[debug] adding syscall set_robust_list to allowlist for module general_requirements
+[debug] adding syscall set_tid_address to allowlist for module general_requirements
+
+DTRACE SANDBOX:  sandbox.d
+BPFTRCE SANDBOX:  sandbox.bt
+
+ SANDBOX READY: sandbox.bt
+
+ >>> secimport run
+ RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', 'bash -c "/workspace/Python-3.10.0/python fastapi_main.py"']
+
+Attaching 5 probes...
+REGISTERING SYSCALLS...
+STARTED
+INFO:     Started server process [39]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     172.17.0.1:55794 - "GET /docs HTTP/1.1" 200 OK
+INFO:     172.17.0.1:55794 - "GET /openapi.json HTTP/1.1" 200 OK
+INFO:     172.17.0.1:55794 - "GET /asdasd HTTP/1.1" 404 Not Found
+^CINFO:     Shutting down
+INFO:     Waiting for application shutdown.
+INFO:     Application shutdown complete.
+INFO:     Finished server process [39]
+
+
+
+
+
+
+
+
+
+ SANDBOX EXITED;
+
+root@28a2599fc9a1:/workspace#
