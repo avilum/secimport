@@ -8,12 +8,20 @@ else
     exit 1;
 fi
 
+# Lint and fix code styling
 python3 -m ruff --fix .
 doctoc
 pre-commit
 export PYTHONPATH=$(pwd):$PYTHONPATH
+
+# Run tests with coverate
+coverage run -m pytest tests
+coverage report -m --skip-empty --omit="*/tests/*"
+
+# Build docker
 cd docker/
 ./build.sh
+
 
 # Run unit tests inside container
 # cd ..
