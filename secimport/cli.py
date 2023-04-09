@@ -8,7 +8,6 @@ import sys
 import yaml
 import secimport
 from secimport.backends.common.utils import SECIMPORT_ROOT
-import subprocess
 
 
 class COLORS:
@@ -46,7 +45,10 @@ class SecImportCLI:
         3. run:
             $  secimport run
             $  secimport run --entrypoint my_custom_main.py
+            $  secimport run --entrypoint my_custom_main.py --stop_on_violation=true
+            $  secimport run --entrypoint my_custom_main.py --kill_on_violation=true
             $  secimport run --sandbox_executable /path/to/my_sandbox.bt --pid 2884
+            $  secimport run --sandbox_executable /path/to/my_sandbox.bt --sandbox_logfile my_log.log
             $  secimport run -h
     """
 
@@ -199,10 +201,10 @@ class SecImportCLI:
             f"{trace_log_file}",
         ]
         colored_print(COLORS.HEADER, "\nTRACING PID:")
-        colored_print(COLORS.OKBLUE, " ".join(cmd))
+        colored_print(COLORS.OKBLUE, pid)
+        input("\t\t\tPress CTRL+D/CTRL+C to stop the trace;")
         os.system(" ".join(cmd))
-        colored_print(COLORS.OKBLUE, process)
-        input("\t\t\tPress CTRL+D to stop the trace;")
+        colored_print(COLORS.ENDC)
 
     @staticmethod
     def build(trace_file: str = "trace.log") -> str:
