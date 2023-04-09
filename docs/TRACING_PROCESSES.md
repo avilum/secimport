@@ -1,3 +1,11 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Tracing processes for syscalls](#tracing-processes-for-syscalls)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 # Tracing processes for syscalls
 There are several methods to create a secimport profile for your modules.
   - Using a YAML build
@@ -7,7 +15,7 @@ There are several methods to create a secimport profile for your modules.
     - The log output will contain all the syscalls made by your process.
     - Create a secure import based on that log
   - Using our dscript to generate a profile:
-    -  `sudo dtrace -s src/secimport/templates/default.allowlist.template.d -c "python -m http.server"`
+    -  `sudo dtrace -s secimport/templates/default.allowlist.template.d -c "python -m http.server"`
     - CTRL+C
     - Create a secure import based on that log.
   - Using `bpftrace`

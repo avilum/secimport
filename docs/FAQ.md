@@ -1,3 +1,14 @@
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Is it safe to use in production?](#is-it-safe-to-use-in-production)
+- [Should I use dtrace or bpftrace backend?](#should-i-use-dtrace-or-bpftrace-backend)
+- [What are the tradeoffs? How does it change they way I code?](#what-are-the-tradeoffs-how-does-it-change-they-way-i-code)
+- [What are the performance impacts?](#what-are-the-performance-impacts)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
 
 ## Is it safe to use in production?
 From <a href="https://en.wikipedia.org/wiki/DTrace">Wikipedia</a>:

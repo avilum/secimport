@@ -1,1 +1,0 @@
-if (@sysname[args->id] == "open" || @sysname[args->id] == "write")

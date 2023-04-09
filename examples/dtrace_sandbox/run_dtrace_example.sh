@@ -8,5 +8,5 @@ echo "Running the malicious module with dtrace..."
 
 # An example using dtrace as a sandbox
 pkill -9 dtrace
-PYTHONPATH=$(pwd)/src:$PYTHONPATH dtrace -s $(pwd)/templates/py_sandbox.d -c "python $(pwd)/examples/malicious.py"
+PYTHONPATH=$(pwd):$PYTHONPATH dtrace -s $(pwd)/templates/py_sandbox.d -c "python $(pwd)/examples/malicious.py"
 pkill -9 dtrace

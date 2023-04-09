@@ -1,0 +1,13 @@
+    if (@sysname[args->id] == "posix_spawn" ||
+        @sysname[args->id] == "posix_spawnp" ||
+        @sysname[args->id] == "clone" ||
+        @sysname[args->id] == "__clone2" ||
+        @sysname[args->id] == "clone3" ||
+        @sysname[args->id] == "fork" ||
+        @sysname[args->id] == "vfork" ||
+        @sysname[args->id] == "forkexec" ||
+        @sysname[args->id] == "execl" ||
+        @sysname[args->id] == "execlp" ||
+        @sysname[args->id] == "execle" ||
+        @sysname[args->id] == "execv" ||
+        @sysname[args->id] == "execvp")

@@ -1,4 +1,14 @@
-# CLI scripts
+<!-- START doctoc generated TOC please keep comment here to allow auto update -->
+<!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
+**Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
+
+- [Command Line Usage](#command-line-usage)
+- [Creating a new sandbox from scratch:](#creating-a-new-sandbox-from-scratch)
+  - [QUICKSTART](#quickstart)
+
+<!-- END doctoc generated TOC please keep comment here to allow auto update -->
+
+# Command Line Usage
 
 Secimport uses Fire to create a powerful CLI.
 
@@ -50,8 +60,6 @@ COMMANDS
 (END)
 ```
 
-
-
 # Creating a new sandbox from scratch:
 
 1. Run the secimport docker container
@@ -64,18 +72,18 @@ cd docker
 ## QUICKSTART
 ```shell
 root@1fa3d6f09989:/workspace# secimport interactive
- 
+
 Let's create our first tailor-made sandbox with secimport!
 - A python shell will be opened
 - The behavior will be recorded.
- 
+
 OK? (y): y
- >>> secimport trace 
- 
-TRACING: ['/workspace/secimport/profiles/trace.bt', '-c', '/workspace/Python-3.10.0/python', '-o', 'trace.log'] 
- 
+ >>> secimport trace
+
+TRACING: ['/workspace/secimport/profiles/trace.bt', '-c', '/workspace/Python-3.10.0/python', '-o', 'trace.log']
+
                         Press CTRL+D to stop the trace;
- 
+
 Python 3.10.0 (default, Mar 19 2023, 08:34:46) [GCC 9.4.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import this
@@ -100,17 +108,17 @@ Although never is often better than *right* now.
 If the implementation is hard to explain, it's a bad idea.
 If the implementation is easy to explain, it may be a good idea.
 Namespaces are one honking great idea -- let's do more of those!
->>> 
+>>>
 
 
- TRACING DONE; 
- >>> secimport build 
- 
-SECIMPORT COMPILING... 
+ TRACING DONE;
+ >>> secimport build
+
+SECIMPORT COMPILING...
 
 CREATED JSON TEMPLATE:  traced_modules.json
 CREATED YAML TEMPLATE:  traced_modules.yaml
- 
+
 
 compiling template traced_modules.yaml
 [debug] adding syscall close to allowlist for module None
@@ -124,17 +132,17 @@ compiling template traced_modules.yaml
 [debug] adding syscall set_tid_address to allowlist for module general_requirements
 
 DTRACE SANDBOX:  traced_modules.d
-BPFTRCE SANDBOX:  traced_modules.bt
- 
- SANDBOX READY: traced_modules.bt 
- 
+BPFTRCE SANDBOX:  sandbox.bt
+
+ SANDBOX READY: sandbox.bt
+
 Now, let's run the sandbox.
 - Run the same commands as before, they should run without any problem;.
-- Do something new in the shell; e.g:   >>> __import__("os").system("ps") 
+- Do something new in the shell; e.g:   >>> __import__("os").system("ps")
 
         OK? (y): y
- >>> secimport run 
- RUNNING SANDBOX... ['./traced_modules.bt', '--unsafe', ' -c ', '/workspace/Python-3.10.0/python'] 
+ >>> secimport run
+ RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', '/workspace/Python-3.10.0/python']
 Attaching 5 probes...
 REGISTERING SYSCALLS...
 STARTED

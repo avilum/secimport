@@ -1,1 +1,0 @@
-    if (probefunc == "socket")
