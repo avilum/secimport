@@ -13,55 +13,77 @@
 - Supports `Python` at the moment
   -  `Go` is under development
 
-## Quick Start - Using the CLI
-To run an end-to-end interactive example, run:
-```
-secimport interactive
-```
+
+## Installation
+For evaluation, we highly recommend the QuickStart with <a href="#Docker">Docker</a> instead of self-installing.<br>
+If you are not using Docker, follow <a href="https://github.com/avilum/secimport/wiki/Installation">Installation</a> to install eBPF or DTrace.
+- To install secimport from git clone: `python3 -m pip install -e .`
+- To install secimport from pypi (latest stable release): `python3 -m pip install secimport`
+
 
 ## Docker
-
 The quickest way to evaluate `secimport` is to use our [Docker container](docker/README.md), which includes `bpftrace` (`ebpf`) and other plug-and-play examples.
 
+## Quick Start - Using the CLI
+To run an end-to-end interactive example:
+1. Build a docker with custom kernel that matches your existing OS kernel version
+    ```
+    ➜  secimport ✗ cd docker/
+    ➜  docker ✗ ./build.sh
+    ```
+2. Run the container
+    ```
+    ➜  docker ✗ ./run.sh
+    Running temporary container...
 
-## Trace your application
-Start a trace. `secimport trace ` will log all the syscalls for all the modules in your application.<br>
-Once you're satisfied and covered the logic you would like to sandbox, hit `CTRL+C` or `CTRL+D`
+    root@f05d2c33b0b3:/workspace#
+    ```
+3. Use the CLI
+    ```
+    root@f05d2c33b0b3:/workspace# secimport interactive
+
+    Let's create our first tailor-made sandbox with secimport!
+    - A python shell will be opened
+    - The behavior will be recorded.
+
+    OK? (y): y
+    >>> secimport trace
+
+    TRACING: ['/workspace/secimport/profiles/trace.bt', '-c', '/workspace/Python-3.10.0/python', '-o', 'trace.log']
+
+                            Press CTRL+D/CTRL+C to stop the trace;
+
+    Python 3.10.0 (default, Apr  9 2023, 17:19:17) [GCC 9.4.0] on linux
+    Type "help", "copyright", "credits" or "license" for more information.
+    >>> import ...
+
+
+    ```
+## Sandbox Your Program (Using the CLI)
+`secimport trace` will start a bpftrace program that will log all the syscalls for all the modules in your application into a file.<br>
+Once you covered the logic you would like to or sandbox and you're satisfied, hit `CTRL+C` or `CTRL+D` or wait for the program to finish.
 ```
-secimport trace
-# CTRL+C or CTRL+D will stop the trace.
-
-# Usage:
-        1. trace:
-            $  secimport trace
-            $  secimport trace -h
-            $  secimport trace_pid 123
-            $  secimport trace_pid -h
+$ secimport trace
+$ secimport trace -h
+$ secimport trace_pid 123
+$ secimport trace_pid -h
 ```
 
 Then, build a sandbox from the trace using the `build` command:
 ```
-secimport build
-
-# Usage:
-        2. build:
-            # secimport build
-            $ secimport build -h
+# secimport build
+$ secimport build -h
 ```
 
 Finally, run the sandbox with the `run` command:
 ```
-secimport run
-
-# Usage:
-        3. run:
-            $  secimport run
-            $  secimport run --entrypoint my_custom_main.py
-            $  secimport run --entrypoint my_custom_main.py --stop_on_violation=true
-            $  secimport run --entrypoint my_custom_main.py --kill_on_violation=true
-            $  secimport run --sandbox_executable /path/to/my_sandbox.bt --pid 2884
-            $  secimport run --sandbox_executable /path/to/my_sandbox.bt --sandbox_logfile my_log.log
-            $  secimport run -h
+$ secimport run
+$ secimport run --entrypoint my_custom_main.py
+$ secimport run --entrypoint my_custom_main.py --stop_on_violation=true
+$ secimport run --entrypoint my_custom_main.py --kill_on_violation=true
+$ secimport run --sandbox_executable /path/to/my_sandbox.bt --pid 2884
+$ secimport run --sandbox_executable /path/to/my_sandbox.bt --sandbox_logfile my_log.log
+$ secimport run -h
 ```
 
 For more detailed usage instructions, see the [Command-Line Usage](https://github.com/avilum/secimport/wiki/Command-Line-Usage) page.

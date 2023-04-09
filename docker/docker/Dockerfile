@@ -32,12 +32,13 @@ RUN Python-3.10.0/python -m pip install secimport==${SECIMPORT_VERSION} fastapi 
 
 ENV BPFTRACE_KERNEL_SOURCE=/kernel/usr/src/linux-headers
 COPY setup.sh .
+COPY run_tests.sh .
 COPY run_sandbox.sh .
 COPY processing_sandbox.bt .
 COPY fastapi_example.sh .
 COPY fastapi_main.py .
 RUN chmod 755 run_sandbox.sh
-RUN chmod +x fastapi_example.sh fastapi_main.py
+RUN chmod +x run_tests.sh fastapi_example.sh fastapi_main.py
 RUN \
     echo 'export PYTHONPATH="/workspace/Python-3.10.0/python:$PYTHONPATH"' >> /root/.bashrc && \
     echo 'alias python="/workspace/Python-3.10.0/python"' >> /root/.bashrc && \
