@@ -17,16 +17,6 @@
   -  `Go` is under development
 
 
-## Installation
-For evaluation, we highly recommend the QuickStart with <a href="#Docker">Docker</a> instead of self-installing.<br>
-If you are not using Docker, follow <a href="https://github.com/avilum/secimport/wiki/Installation">Installation</a> to install eBPF or DTrace.
-- To install secimport from git clone: `python3 -m pip install -e .`
-- To install secimport from pypi (latest stable release): `python3 -m pip install secimport`
-
-
-## Docker
-The quickest way to evaluate `secimport` is to use our [Docker container](docker/README.md), which includes `bpftrace` (`ebpf`) and other plug-and-play examples.
-
 ## Quick Start - Using the CLI
 To run an end-to-end interactive example:
 1. Build a docker with custom kernel that matches your existing OS kernel version
@@ -94,6 +84,18 @@ For more detailed usage instructions, see the [Command-Line Usage](https://githu
 ## Python API
 
 You can also use `secimport` by replacing `import` with `secimport.secure_import` for selected modules. See the [Python Imports](examples/python_imports/) example for more details.
+
+
+## Installation
+For evaluation, we highly recommend the QuickStart with <a href="#Docker">Docker</a> instead of self-installing.<br>
+If you are not using Docker, follow <a href="https://github.com/avilum/secimport/wiki/Installation">Installation</a> to install eBPF or DTrace.
+- To install secimport from git clone, install `poetry` and run `poetry install`
+- To install secimport from pypi (latest stable release): `python3 -m pip install secimport`
+
+
+## Docker
+The quickest way to evaluate `secimport` is to use our [Docker container](docker/README.md), which includes `bpftrace` (`ebpf`) and other plug-and-play examples.
+
 
 ## Examples
 
