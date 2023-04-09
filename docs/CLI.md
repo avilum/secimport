@@ -2,7 +2,7 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [CLI scripts](#cli-scripts)
+- [Command Line Usage](#command-line-usage)
 - [Creating a new sandbox from scratch:](#creating-a-new-sandbox-from-scratch)
   - [QUICKSTART](#quickstart)
 

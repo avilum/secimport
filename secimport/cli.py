@@ -53,8 +53,8 @@ class SecImportCLI:
     @staticmethod
     def __create_profile_from_trace(
         trace_file: str = "trace.log",
-        output_json_file: str = "traced_modules.json",
-        output_yaml_file: str = "traced_modules.yaml",
+        output_json_file: str = "sandbox.json",
+        output_yaml_file: str = "sandbox.yaml",
         destructive: bool = True,
     ) -> str:
         """Creates a yaml policy file from a given trace log. default: "trace.log".
@@ -65,9 +65,9 @@ class SecImportCLI:
         if not Path(trace_file).exists:
             raise FileNotFoundError(trace_file)
 
-        parse_cmd = f"""cat {trace_file} | grep -Po "\@modules_syscalls\[\K(.+?)]" | tr -d ']' | sort > traced_modules.log"""
+        parse_cmd = f"""cat {trace_file} | grep -Po "\@modules_syscalls\[\K(.+?)]" | tr -d ']' | sort > sandbox.log"""
         os.system(parse_cmd)
-        modules_syscalls_file = Path("traced_modules.log")
+        modules_syscalls_file = Path("sandbox.log")
         if not modules_syscalls_file.exists():
             raise FileNotFoundError(trace_file)
         with open(modules_syscalls_file, "r") as f:
@@ -114,7 +114,7 @@ class SecImportCLI:
 
     @staticmethod
     def __create_sandbox_from_profile(
-        template_filename: str = "traced_modules.yaml",
+        template_filename: str = "sandbox.yaml",
     ) -> str:
         """Generates a tailor-made sandbox code for a given yaml profile.
 
@@ -167,11 +167,9 @@ class SecImportCLI:
             "-o",
             f"{trace_log_file}",
         ]
-
         colored_print(COLORS.HEADER, "\nTRACING:", cmd)
         colored_print(COLORS.BOLD, "\n\t\t\tPress CTRL+D to stop the trace;\n")
         os.system(" ".join(cmd))
-        # process = subprocess.run(cmd)
         colored_print(COLORS.BOLD, "TRACING DONE;")
 
     @staticmethod
@@ -196,7 +194,7 @@ class SecImportCLI:
         ]
         colored_print(COLORS.HEADER, "\nTRACING PID:")
         colored_print(COLORS.OKBLUE, " ".join(cmd))
-        process = subprocess.run(cmd)
+        os.system(" ".join(cmd))
         colored_print(COLORS.OKBLUE, process)
         input("\t\t\tPress CTRL+D to stop the trace;")
 

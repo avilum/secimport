@@ -62,11 +62,11 @@ root@e28bf0ec63d4:/workspace# secimport build
 
 SECIMPORT COMPILING...
 
-CREATED JSON TEMPLATE:  traced_modules.json
-CREATED YAML TEMPLATE:  traced_modules.yaml
+CREATED JSON TEMPLATE:  sandbox.json
+CREATED YAML TEMPLATE:  sandbox.yaml
 
 
-compiling template traced_modules.yaml
+compiling template sandbox.yaml
 ...
 [debug] adding syscall openat to allowlist for module /workspace/Python-3.10.0/Lib/ast.py
 [debug] adding syscall close to allowlist for module /workspace/Python-3.10.0/Lib/codecs.py
@@ -117,7 +117,18 @@ root@d57458518cbf:/workspace$ ./run_sandbox.sh
 🚀 The sandbox log is at sandbox.log.
 ```
 ## Installation
-To install yourself, please see <a href="https://github.com/avilum/secimport/wiki/Installation">Installation</a>.
+For evaluation, we highly recommend the QuickStart with <a href="#Docker">Docker</a> instead of self-installing.
+
+```shell
+# To install secimport from git clone:
+python3 -m pip install -e .
+
+# To install secimport from pypi (latest stable release):
+python3 -m pip install secimport
+```
+
+This does not install the backends that secimport needs in order to run, but only the python package.
+To install one of the backends yourself (eBPF or DTrace), please see <a href="https://github.com/avilum/secimport/wiki/Installation">Installation</a>.
 
 ## Documentation
 [Our documentation center is Wiki on GitHub](https://github.com/avilum/secimport/wiki)
