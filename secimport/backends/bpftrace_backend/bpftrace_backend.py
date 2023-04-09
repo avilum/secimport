@@ -5,6 +5,7 @@ Copyright (c) 2022 Avi Lumelsky
 
 import importlib
 import os
+import subprocess
 from sys import executable as PYTHON_EXECUTABLE
 import stat
 from pathlib import Path
@@ -86,6 +87,14 @@ def run_bpftrace_script_for_module(
         destructive=destructive,
         templates_dir=templates_dir,
     )
+    # Checking the bpftrace exists:
+    try:
+        subprocess.call(["bpftrace", "-h"])
+    except FileNotFoundError:
+        raise EnvironmentError(
+            "`bpftrace` is not installed. Please install it from https://github.com/iovisor/bpftrace/blob/master/INSTALL.md and make sure it is in PATH;"
+        )
+
     output_file = BASE_DIR_NAME / f"bpftrace_sandbox_{module_name}.log"
     current_pid = os.getpid()
     bpftrace_command = f'{"sudo " if use_sudo else ""} {module_file_path} --unsafe -q -p {current_pid} -o {output_file} &2>/dev/null'
