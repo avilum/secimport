@@ -6,11 +6,34 @@ import sys
 from secimport.backends.bpftrace_backend.bpftrace_backend import (
     render_bpftrace_template,
     create_bpftrace_script_for_module,
+    run_bpftrace_script_for_module,
 )
+from secimport.backends.common.utils import BASE_DIR_NAME
 
 
 class TestEBPFBackend(unittest.TestCase):
-    def test_run_bpftrace_script_for_module(self):
+    def setUp(self) -> None:
+
+        try:
+            os.remove(BASE_DIR_NAME)
+        except:
+            ...
+        return super().setUp()
+
+    def test_run_bpftrace_with_none_module_raises_error(self):
+        with self.assertRaises(ModuleNotFoundError):
+            create_bpftrace_script_for_module(
+                module_name="nonexisting",
+                allow_networking=False,
+                allow_shells=False,
+                log_file_system=True,
+                log_syscalls=True,
+                log_network=True,
+                log_python_calls=True,
+                destructive=True,
+            )
+
+    def test_create_bpftrace_script_for_module(self):
         bpftrace_script_file_path = create_bpftrace_script_for_module(
             "this",
             allow_networking=False,
@@ -28,6 +51,21 @@ class TestEBPFBackend(unittest.TestCase):
         bpftrace_file_content = open(bpftrace_script_file_path).read()
         self.assertTrue("system" in bpftrace_file_content)
         self.assertTrue(sys.executable in bpftrace_file_content)
+
+    def test_run_bpftrace_script_for_module(self):
+        res = run_bpftrace_script_for_module(
+            "this",
+            allow_networking=False,
+            allow_shells=False,
+            log_file_system=True,
+            log_syscalls=True,
+            log_network=True,
+            log_python_calls=True,
+            destructive=True,
+            dry_run=True,
+        )
+
+        self.assertTrue(res)
 
     def test_create_bpftrace_script_for_module(self):
         # create_bpftrace_script_for_module
