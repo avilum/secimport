@@ -12,6 +12,22 @@ class TestSecImportCLI(unittest.TestCase):
 
         sys.path.append(SECIMPORT_ROOT)
 
+    def test_e2e(self):
+        temp_script_path = "/tmp/.test_code.py"
+        with open(temp_script_path, "w") as f:
+            f.write('import os; os.system("echo hi");')
+
+        cmd = f"secimport trace --entrypoint {temp_script_path} -o /tmp/.example.log"
+        subprocess.run(cmd.split())
+
+        cmd = "secimport build --trace-file /tmp/.example.log"
+        subprocess.run(cmd.split())
+
+        cmd = f"secimport run  --entrypoint {temp_script_path}"
+        subprocess.run(cmd.split())
+
+        # TODO: assert
+
     def test_help_command_runs_without_errors(self):
         cmd = "secimport --help"
         proc = subprocess.run(cmd.split())
