@@ -21,12 +21,12 @@ It traces your code, and runs an executable that allows only the same syscalls p
 Follow these steps to run an interactive example:
 1. Build and run the Docker container with a custom kernel that matches your existing OS kernel version:
 ```
-$ cd docker/ && ./build.sh && ./run.sh
+cd docker/ && ./build.sh && ./run.sh
 ```
 A temporary container will be created, and you will be logged in as the root user.
 1. Use the CLI to create your first tailor-made sandbox:
 ```
-$ secimport interactive
+secimport interactive
 
 Let's create our first tailor-made sandbox with secimport!
 - A python shell will be opened
@@ -45,6 +45,7 @@ You can also use `secimport` by replacing `import` with `secimport.secure_import
 
 
 ## Installation
+Tested on Mac and Linux x86.<b>
 For evaluation, we highly recommend using our <a href="#Docker">Docker</a> image instead of self-installing.<br>
 If you are not using Docker, follow <a href="https://github.com/avilum/secimport/wiki/Installation">Installation</a> to install eBPF or DTrace.
 - To install secimport from git clone, install `poetry` and run `poetry install`

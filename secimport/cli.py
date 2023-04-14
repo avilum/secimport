@@ -301,7 +301,7 @@ class SecImportCLI:
             COLORS.OKBLUE,
             "\nLet's create our first tailor-made sandbox with secimport!\n- A python shell will be opened\n- The behavior will be recorded.\n",
         )
-        start = input("OK? (y): ")
+        start = input("OK? (y): ") or "y"
         if start.lower() == "y":
             try:
                 SecImportCLI.trace()
@@ -314,7 +314,7 @@ class SecImportCLI:
                 COLORS.OKBLUE,
                 '\nNow, let\'s run the sandbox.\n- Run the same commands as before, they should run without any problem;.\n- Do something new in the shell; e.g:\t>>> __import__("os").system("ps")',
             )
-            run = input("\n\tOK? (y): ")
+            run = input("\n\tOK? (y): ") or "y"
 
             if run.lower() == "y":
                 SecImportCLI.run()
