@@ -25,7 +25,7 @@ tracepoint:raw_syscalls:sys_enter / @stack[pid, tid] && @syscalls_filters["gener
         printf("\n^^^ KILLING PROCESS %d DUE TO SYSCALL VIOLATION ^^^\n", pid);
         signal("SIGKILL");
         printf("\t\tKILLED.\r\n");
-        exit(); // optional
+        exit(); // option
     }
 }
 
