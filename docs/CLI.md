@@ -18,7 +18,7 @@ $ secimport --help
 ```
 ```shell
 NAME
-    cli.py - SecImport - A toolkit for Tracing and Securing Python Runtime using USDT probes and eBPF/DTrace: https://github.com/avilum/secimport/wiki/Command-Line-Usage
+    SecImport - A toolkit for Tracing and Securing Python Runtime using USDT probes and eBPF/DTrace
 
 SYNOPSIS
     cli.py COMMAND
@@ -39,7 +39,10 @@ DESCRIPTION
         3. run:
             $  secimport run
             $  secimport run --entrypoint my_custom_main.py
+            $  secimport run --entrypoint my_custom_main.py --stop_on_violation=true
+            $  secimport run --entrypoint my_custom_main.py --kill_on_violation=true
             $  secimport run --sandbox_executable /path/to/my_sandbox.bt --pid 2884
+            $  secimport run --sandbox_executable /path/to/my_sandbox.bt --sandbox_logfile my_log.log
             $  secimport run -h
 
 COMMANDS
@@ -53,11 +56,11 @@ COMMANDS
        Run a python process inside the sandbox.
 
      trace
-       Generate snippets for trace command line usage.
+       Traces
 
      trace_pid
        Traces a running process by pid. It might require sudo privilleges on some hosts.
-(END)
+
 ```
 
 # Creating a new sandbox from scratch:
