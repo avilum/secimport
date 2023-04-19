@@ -45,7 +45,7 @@ You can also use `secimport` by replacing `import` with `secimport.secure_import
 
 
 ## Installation
-Tested on Mac and Linux x86.<b>
+Tested on Mac and Linux x86.<br>
 For evaluation, we highly recommend using our <a href="#Docker">Docker</a> image instead of self-installing.<br>
 If you are not using Docker, follow <a href="https://github.com/avilum/secimport/wiki/Installation">Installation</a> to install eBPF or DTrace.
 - To install secimport from git clone, install `poetry` and run `poetry install`
