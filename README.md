@@ -14,7 +14,7 @@ It traces your code, and runs an executable that allows only the same syscalls p
   - Trace the syscalls flow of your application at user-space/os/kernel and per module.
   - Run your application while enforcing syscalls per module.
   - Upon violation of the policy, it can log, stop or kill the process.
-- 🚀 Has negligible performance impact thanks to eBPF [Performance](https://github.com/avilum/secimport/wiki/Performance-Benchmarks).
+- 🚀 Has negligible performance impact, production ready thanks to eBPF [Performance](https://github.com/avilum/secimport/wiki/Performance-Benchmarks).
 
 
 ## Quick Start
