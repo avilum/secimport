@@ -8,14 +8,9 @@
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
-# Command Line Usage
+## Usage
+To sandbox your program using the CLI, start a bpftrace program that logs all the syscalls for all the modules in your application into a file with the secimport trace command. Once you have covered the logic you would like to sandbox, hit CTRL+C or CTRL+D, or wait for the program to finish. Then, build a sandbox from the trace using the secimport build command, and run the sandbox with the secimport run command.
 
-Secimport uses Fire to create a powerful CLI.
-
-```shell
-$ pip install secimport
-$ secimport --help
-```
 ```shell
 NAME
     SecImport - A toolkit for Tracing and Securing Python Runtime using USDT probes and eBPF/DTrace
@@ -63,16 +58,43 @@ COMMANDS
 
 ```
 
-# Creating a new sandbox from scratch:
+## Stop on violation 
+```
+root@1bc0531d91d0:/workspace# secimport run  --stop_on_violation=true
+ >>> secimport run
+[WARNING]: This sandbox will send SIGSTOP to the program upon violation.
+ RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', '/workspace/Python-3.10.0/python', 'STOP']
+Attaching 4 probes...
+Python 3.10.0 (default, Apr 28 2023, 11:32:40) [GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import os
+>>> os.system('ps')
+[SECURITY PROFILE VIOLATED]: <stdin> called syscall 56 at depth 8022
 
-1. Run the secimport docker container
-```shell
-cd docker
-./build.sh      # Build the bpftrace docker, to support your existing kernel
-./run.sh        # Starts a new temporary container.
+^^^ STOPPING PROCESS 85918 DUE TO SYSCALL VIOLATION ^^^
+		PROCESS 85918 STOPPED.
 ```
 
-## QUICKSTART
+## Kill on violation
+```
+root@ee4bc99bb011:/workspace# secimport run --kill_on_violation
+ >>> secimport run
+[WARNING]: This sandbox will send SIGKILL to the program upon violation.
+ RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', '/workspace/Python-3.10.0/python', 'KILL']
+import os
+oAttaching 4 probes...
+sPython 3.10.0 (default, Apr 28 2023, 11:32:40) [GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import os
+>>> os.system('ps')
+[SECURITY PROFILE VIOLATED]: <stdin> called syscall 56 at depth 8022
+
+^^^ KILLING PROCESS 86466 DUE TO SYSCALL VIOLATION ^^^
+		KILLED.
+ SANDBOX EXITED;
+```
+
+## Dynamic profiling - trace, build sandbox, run.
 ```shell
 root@1fa3d6f09989:/workspace# secimport interactive
 
@@ -90,30 +112,7 @@ TRACING: ['/workspace/secimport/profiles/trace.bt', '-c', '/workspace/Python-3.1
 Python 3.10.0 (default, Mar 19 2023, 08:34:46) [GCC 9.4.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import this
-The Zen of Python, by Tim Peters
-
-Beautiful is better than ugly.
-Explicit is better than implicit.
-Simple is better than complex.
-Complex is better than complicated.
-Flat is better than nested.
-Sparse is better than dense.
-Readability counts.
-Special cases aren't special enough to break the rules.
-Although practicality beats purity.
-Errors should never pass silently.
-Unless explicitly silenced.
-In the face of ambiguity, refuse the temptation to guess.
-There should be one-- and preferably only one --obvious way to do it.
-Although that way may not be obvious at first unless you're Dutch.
-Now is better than never.
-Although never is often better than *right* now.
-If the implementation is hard to explain, it's a bad idea.
-If the implementation is easy to explain, it may be a good idea.
-Namespaces are one honking great idea -- let's do more of those!
 >>>
-
-
  TRACING DONE;
  >>> secimport build
 
@@ -152,34 +151,7 @@ STARTED
 Python 3.10.0 (default, Mar 19 2023, 08:34:46) [GCC 9.4.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import this
-The Zen of Python, by Tim Peters
-
-Beautiful is better than ugly.
-Explicit is better than implicit.
-Simple is better than complex.
-Complex is better than complicated.
-Flat is better than nested.
-Sparse is better than dense.
-Readability counts.
-Special cases aren't special enough to break the rules.
-Although practicality beats purity.
-Errors should never pass silently.
-Unless explicitly silenced.
-In the face of ambiguity, refuse the temptation to guess.
-There should be one-- and preferably only one --obvious way to do it.
-Although that way may not be obvious at first unless you're Dutch.
-Now is better than never.
-Although never is often better than *right* now.
-If the implementation is hard to explain, it's a bad idea.
-If the implementation is easy to explain, it may be a good idea.
-Namespaces are one honking great idea -- let's do more of those!
 >>> import os
-[SECIMPORT VIOLATION]: <stdin> called syscall ioctl at depth 0
-[SECIMPORT VIOLATION]: <stdin> called syscall ioctl at depth 0
-[SECIMPORT VIOLATION]: <stdin> called syscall ioctl at depth 0
-[SECIMPORT VIOLATION]: <stdin> called syscall ioctl at depth 0
-[SECIMPORT VIOLATION]: <stdin> called syscall ioctl at depth 0
-[SECIMPORT VIOLATION]: <stdin> called syscall ioctl at depth 0
 [SECIMPORT VIOLATION]: <stdin> called syscall ioctl at depth 0
 [SECIMPORT VIOLATION]: <stdin> called syscall ioctl at depth 0
 ```
