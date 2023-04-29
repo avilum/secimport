@@ -63,7 +63,7 @@ DESCRIPTION
             $  secimport trace_pid 123
             $  secimport trace_pid -h
         2. build:
-            # secimport build
+            $ secimport build
             $ secimport build -h
         3. run:
             $  secimport run
