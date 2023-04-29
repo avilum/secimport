@@ -22,7 +22,7 @@ docker build \
     --build-arg KERNEL_VERSION=${KERNEL_VERSION} \
     --build-arg BPFTRACE_VERSION=${BPFTRACE_VERSION} \
     --build-arg PYTHON_VERSION=${PYTHON_VERSION} \
-    -t secimport:${KERNEL_VERSION} .
+    -t secimport .
 
 popd
 
