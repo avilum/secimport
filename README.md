@@ -7,17 +7,29 @@
 It traces your code, and runs an executable that allows only the same syscalls per module.
 
 - 🚀 Trace which syscalls are called by each module in your code.
-  - `secimport` uses USDT (Userland Statically Defined Tracing) probes in the runtime using eBPF or dtrace instrumentation scripts.
+  - secimport uses USDT (Userland Statically Defined Tracing) probes in the runtime using eBPF or dtrace instrumentation scripts.
 - 🚀 Control the execution or third-party and open-source packages you can't fully control.
   - Avoid incidents like <a href="https://en.wikipedia.org/wiki/Log4Shell">log4shell</a>.
 - 🚀 Prevent code execution, reduce the risk of supply chain attacks.
-  - Trace the syscalls flow of your application at user-space/os/kernel and per module.
+  - Trace the syscalls flow of your application at the user-space/os/kernel level and per module.
   - Run your application while enforcing syscalls per module.
-  - Upon violation of the policy, it can log, stop or kill the process.
-- 🚀 Has negligible performance impact, production ready thanks to eBPF [Performance](https://github.com/avilum/secimport/wiki/Performance-Benchmarks).
+  - Upon violation of the policy, it can log, stop, or kill the process.
+- 🚀 Has negligible performance impact and is production-ready thanks to eBPF. Check out the [Performance](https://github.com/avilum/secimport/wiki/Performance-Benchmarks) benchmarks.
+
+secimport is a production-oriented sandbox toolkit that traces your code and runs an executable that allows only the same syscalls per module.
+
+🚀 Trace which syscalls are called by each module in your code.
+secimport uses USDT (Userland Statically Defined Tracing) probes in the runtime using eBPF or dtrace instrumentation scripts.
+🚀 Control the execution of third-party and open-source packages you can't fully control.
+Avoid incidents like log4shell.
+🚀 Prevent code execution, reduce the risk of supply chain attacks.
+Trace the syscalls flow of your application at the user-space/os/kernel level and per module.
+Run your application while enforcing syscalls per module.
+Upon violation of the policy, it can log, stop, or kill the process.
+🚀 Has negligible performance impact and is production-ready thanks to eBPF. Check out the Performance Benchmarks.
 
 ## Installation
-Tested on MacOS (x86) and Linux (Ubuntu,Debian,Rocky) x86/AMD/ARM <br>
+Tested on Ubuntu, Debian, Rocky (Linux x86/AMD/ARM) and MacOS in (x86/M1).<br>
 
 ### With Docker
 For quicker evaluation, we recommend using the <a href="#Docker">Docker</a> image instead of self-installing.<br>
@@ -157,22 +169,13 @@ CREATED YAML TEMPLATE:  traced_modules.yaml
 
 
 compiling template traced_modules.yaml
-[debug] adding syscall close to allowlist for module None
-[debug] adding syscall dup to allowlist for module None
-[debug] adding syscall fstat to allowlist for module None
-[debug] adding syscall ioctl to allowlist for module None
-[debug] adding syscall lseek to allowlist for module None
-[debug] adding syscall read to allowlist for module None
-...
-[debug] adding syscall set_robust_list to allowlist for module general_requirements
-[debug] adding syscall set_tid_address to allowlist for module general_requirements
 
 DTRACE SANDBOX:  traced_modules.d
 BPFTRCE SANDBOX:  sandbox.bt
-
- SANDBOX READY: sandbox.bt
+```
 
 Now, let's run the sandbox.
+```python
 - Run the same commands as before, they should run without any problem;.
 - Do something new in the shell; e.g:   >>> __import__("os").system("ps")
 
