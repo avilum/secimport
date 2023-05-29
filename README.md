@@ -3,30 +3,18 @@
 
 
 ## The Tailor-Made Sandbox for Your Application
-`secimport` is production-oriented sandbox toolkit.<br>
+secimport is production-oriented sandbox toolkit.<br>
 It traces your code, and runs an executable that allows only the same syscalls per module.
 
-- 🚀 Trace which syscalls are called by each module in your code.
-  - secimport uses USDT (Userland Statically Defined Tracing) probes in the runtime using eBPF or dtrace instrumentation scripts.
-- 🚀 Control the execution or third-party and open-source packages you can't fully control.
+- Trace which syscalls are called by each module in your code.
+  - secimport uses USDT (Userland Statically Defined Tracing) together with kernel probes in the runtime using eBPF or dtrace instrumentation scripts.
+- Control the execution or third-party and open-source packages you can't fully control.
   - Avoid incidents like <a href="https://en.wikipedia.org/wiki/Log4Shell">log4shell</a>.
-- 🚀 Prevent code execution, reduce the risk of supply chain attacks.
+- Prevent code execution, reduce the risk of supply chain attacks.
   - Trace the syscalls flow of your application at the user-space/os/kernel level and per module.
   - Run your application while enforcing syscalls per module.
   - Upon violation of the policy, it can log, stop, or kill the process.
-- 🚀 Has negligible performance impact and is production-ready thanks to eBPF. Check out the [Performance](https://github.com/avilum/secimport/wiki/Performance-Benchmarks) benchmarks.
-
-secimport is a production-oriented sandbox toolkit that traces your code and runs an executable that allows only the same syscalls per module.
-
-🚀 Trace which syscalls are called by each module in your code.
-secimport uses USDT (Userland Statically Defined Tracing) probes in the runtime using eBPF or dtrace instrumentation scripts.
-🚀 Control the execution of third-party and open-source packages you can't fully control.
-Avoid incidents like log4shell.
-🚀 Prevent code execution, reduce the risk of supply chain attacks.
-Trace the syscalls flow of your application at the user-space/os/kernel level and per module.
-Run your application while enforcing syscalls per module.
-Upon violation of the policy, it can log, stop, or kill the process.
-🚀 Has negligible performance impact and is production-ready thanks to eBPF. Check out the Performance Benchmarks.
+- Has negligible performance impact and is production-ready thanks to eBPF. Check out the [Performance](https://github.com/avilum/secimport/wiki/Performance-Benchmarks) benchmarks.
 
 ## Installation
 Tested on Ubuntu, Debian, Rocky (Linux x86/AMD/ARM) and MacOS in (x86/M1).<br>
