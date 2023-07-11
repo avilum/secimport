@@ -107,7 +107,7 @@ Finally, you convert this policy into an sandbox (eBPF instrumentation script) t
 Tested on Ubuntu, Debian, Rocky (Linux x86/AMD/ARM) and MacOS in (x86/M1). If you run on MacOS you will need to <a href="https://github.com/avilum/secimport/blob/master/docs/MAC_OS_USERS.md">disable SIP for dtrace. </a>
 
 ## With Docker
-For quicker evaluation, we recommend using the <a href="#Docker">Docker</a> image instead of self-installing.<br>
+For quicker evaluation, we recommend using the <a href="[docs/Docker](https://github.com/avilum/secimport/blob/master/docker/README.md)">Secimport Docker Image</a> instead of self-installing.<br>
 - Build and run the Docker container with a custom kernel that matches your existing OS kernel version:
   ```
   cd docker/ && ./build.sh && ./run.sh
