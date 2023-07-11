@@ -47,12 +47,13 @@ modules:
         bpftrace_module_sandbox_code: str = build_module_sandbox_from_yaml_template(
             profile_file_path, backend=InstrumentationBackend.EBPF
         )
-        dtrace_module_sandbox_code: str = build_module_sandbox_from_yaml_template(
-            profile_file_path, backend=InstrumentationBackend.DTRACE
-        )
+        # TODO: Add dtrace tests back to suite. Currently CI is an issue (dtrace environment).
+        # dtrace_module_sandbox_code: str = build_module_sandbox_from_yaml_template(
+        #     profile_file_path, backend=InstrumentationBackend.DTRACE
+        # )
         for module_sandbox_code in [
             bpftrace_module_sandbox_code,
-            dtrace_module_sandbox_code,
+            # dtrace_module_sandbox_code,
         ]:
             self.assertTrue("fastapi" in module_sandbox_code)
             self.assertTrue("requests" in module_sandbox_code)

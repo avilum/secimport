@@ -1,0 +1,212 @@
+{
+    "general_requirements": [
+        " access",
+        " arch_prctl",
+        " brk",
+        " close",
+        " fstat",
+        " futex",
+        " getcwd",
+        " getrandom",
+        " mmap",
+        " mprotect",
+        " munmap",
+        " openat",
+        " pread",
+        " prlimit64",
+        " read",
+        " rt_sigaction",
+        " rt_sigprocmask",
+        " set_robust_list",
+        " set_tid_address"
+    ],
+    "/root/.local/lib/python3.10/site-packages/idna/idnadata.py": [
+        " brk"
+    ],
+    "/workspace/Python-3.10.0/Lib/codecs.py": [
+        " close",
+        " dup",
+        " fstat",
+        " ioctl",
+        " lseek",
+        " read",
+        " rt_sigaction"
+    ],
+    "/workspace/Python-3.10.0/Lib/collections/__init__.py": [
+        " brk",
+        " mmap"
+    ],
+    "/workspace/Python-3.10.0/Lib/email/message.py": [
+        " clock_gettime"
+    ],
+    "/workspace/Python-3.10.0/Lib/email/utils.py": [
+        " clock_gettime"
+    ],
+    "/workspace/Python-3.10.0/Lib/encodings/idna.py": [
+        " clock_gettime",
+        " close",
+        " connect",
+        " fstat",
+        " futex",
+        " getpeername",
+        " ioctl",
+        " lseek",
+        " mmap",
+        " mprotect",
+        " munmap",
+        " openat",
+        " poll",
+        " read",
+        " recvfrom",
+        " sendto",
+        " setsockopt",
+        " socket",
+        " stat",
+        " uname"
+    ],
+    "/workspace/Python-3.10.0/Lib/genericpath.py": [
+        " stat"
+    ],
+    "/workspace/Python-3.10.0/Lib/http/cookiejar.py": [
+        " clock_gettime"
+    ],
+    "/workspace/Python-3.10.0/Lib/http/cookies.py": [
+        " brk"
+    ],
+    "/workspace/Python-3.10.0/Lib/logging/__init__.py": [
+        " exit_group",
+        " munmap",
+        " rt_sigaction"
+    ],
+    "/workspace/Python-3.10.0/Lib/os.py": [
+        " read"
+    ],
+    "/workspace/Python-3.10.0/Lib/posixpath.py": [
+        " close",
+        " fstat",
+        " getcwd",
+        " getdents64",
+        " openat"
+    ],
+    "/workspace/Python-3.10.0/Lib/random.py": [
+        " getrandom"
+    ],
+    "/workspace/Python-3.10.0/Lib/selectors.py": [
+        " close",
+        " epoll_create1"
+    ],
+    "/workspace/Python-3.10.0/Lib/site.py": [
+        " fstat",
+        " getegid",
+        " geteuid",
+        " getgid",
+        " getuid",
+        " ioctl",
+        " lseek",
+        " openat"
+    ],
+    "/workspace/Python-3.10.0/Lib/socket.py": [
+        " bind",
+        " close",
+        " getsockname",
+        " ioctl",
+        " socket"
+    ],
+    "/workspace/Python-3.10.0/Lib/sre_compile.py": [
+        " brk"
+    ],
+    "/workspace/Python-3.10.0/Lib/sre_constants.py": [
+        " mmap"
+    ],
+    "/workspace/Python-3.10.0/Lib/ssl.py": [
+        " brk",
+        " clock_gettime",
+        " close",
+        " fstat",
+        " futex",
+        " getpid",
+        " getrandom",
+        " getsockopt",
+        " ioctl",
+        " openat",
+        " read",
+        " write"
+    ],
+    "/workspace/Python-3.10.0/Lib/threading.py": [
+        " gettid",
+        " write"
+    ],
+    "/workspace/Python-3.10.0/Lib/typing.py": [
+        " mmap"
+    ],
+    "/workspace/Python-3.10.0/lib/python3.10/site-packages/requests/": [
+        " clock_gettime"
+    ],
+    "/workspace/Python-3.10.0/lib/python3.10/site-packages/urllib3/c": [
+        " clock_gettime",
+        " ioctl"
+    ],
+    "/workspace/Python-3.10.0/lib/python3.10/site-packages/urllib3/r": [
+        " brk"
+    ],
+    "/workspace/Python-3.10.0/lib/python3.10/site-packages/urllib3/u": [
+        " brk",
+        " clock_gettime",
+        " close",
+        " connect",
+        " fstat",
+        " ioctl",
+        " openat",
+        " read",
+        " setsockopt"
+    ],
+    "<frozen importlib._bootstrap>": [
+        " brk",
+        " clock_gettime",
+        " close",
+        " dup",
+        " fcntl",
+        " fstat",
+        " futex",
+        " ioctl",
+        " lseek",
+        " mmap",
+        " mprotect",
+        " munmap",
+        " openat",
+        " read",
+        " readlink",
+        " rt_sigaction",
+        " stat",
+        " sysinfo"
+    ],
+    "<frozen importlib._bootstrap_external>": [
+        " brk",
+        " close",
+        " fstat",
+        " getcwd",
+        " getdents64",
+        " ioctl",
+        " lseek",
+        " lstat",
+        " mmap",
+        " munmap",
+        " openat",
+        " read",
+        " readlink",
+        " stat"
+    ],
+    "<frozen zipimport>": [
+        " brk",
+        " close",
+        " fcntl",
+        " fstat",
+        " ioctl",
+        " lseek",
+        " openat",
+        " read"
+    ],
+    "<string>": [
+        " brk"
+    ]
+}

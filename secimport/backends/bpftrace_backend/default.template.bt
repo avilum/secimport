@@ -682,8 +682,13 @@ BEGIN {
 
     // Defining the syscalls supervisions for all the modules
     // @syscalls_filters[@globals["current_module"], @sysname[args->id]]
+
+    // Syscall filters:
+    //  0 is undefined;
+    //  1 is allowed;
+    //  2 is blocked;
     ###SYSCALL_FILTER###
-    printf("STARTED\n");
+    printf("Sandbox Initialized.\n");
 }
 
 

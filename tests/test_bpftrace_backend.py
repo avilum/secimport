@@ -16,7 +16,7 @@ class TestEBPFBackend(unittest.TestCase):
 
         try:
             os.remove(BASE_DIR_NAME)
-        except (FileNotFoundError, PermissionError):
+        except (FileNotFoundError, PermissionError, IsADirectoryError):
             ...
         return super().setUp()
 

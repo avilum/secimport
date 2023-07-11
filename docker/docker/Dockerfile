@@ -27,23 +27,31 @@ RUN echo "Installing bpftrace" && \
     echo "Done building bpftrace" && \
     mv /kernel/usr/src/linux-headers* /kernel/usr/src/linux-headers && \
     rm /workspace/Python-3.10.0.tgz
-RUN Python-3.10.0/python -m pip install secimport fastapi uvicorn --user -U && Python-3.10.0/python -m pip cache purge
+
+# Install nsjail: taken from https://github.com/google/nsjail/blob/master//Dockerfile
+RUN apt-get -y update && apt-get install -y \
+    autoconf \
+    bison \
+    flex \
+    gcc \
+    g++ \
+    git \
+    libprotobuf-dev \
+    libnl-route-3-dev \
+    libtool \
+    make \
+    pkg-config \
+    protobuf-compiler \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN git clone https://github.com/google/nsjail.git /nsjail && cd /nsjail && make && mv /nsjail/nsjail /bin && rm -rf -- /nsjail
+
+# Python dependencies for examples
+RUN /workspace/Python-3.10.0/python -m pip install --upgrade pip && Python-3.10.0/python -m pip install pyyaml fire fastapi uvicorn --user -U && Python-3.10.0/python -m pip cache purge
 
 ENV BPFTRACE_KERNEL_SOURCE=/kernel/usr/src/linux-headers
 COPY setup.sh .
-COPY run_tests.sh .
-COPY run_sandbox.sh .
-COPY processing_sandbox.bt .
-COPY fastapi_example.sh .
-COPY fastapi_main.py .
-RUN chmod 755 run_sandbox.sh
-RUN chmod +x run_tests.sh fastapi_example.sh fastapi_main.py
-RUN \
-    echo 'export PYTHONPATH="/workspace/Python-3.10.0/python:$PYTHONPATH"' >> /root/.bashrc && \
-    echo 'alias python="/workspace/Python-3.10.0/python"' >> /root/.bashrc && \
-    echo 'alias python3="/workspace/Python-3.10.0/python"' >> /root/.bashrc && \
-    echo 'alias pip="/workspace/Python-3.10.0/bin/pip3"' >> /root/.bashrc && \
-    echo 'alias secimport="python -m secimport.cli"' >> /root/.bashrc
 
+# Open port 8000 for demos/examples with networking
 EXPOSE 8000
 ENTRYPOINT ["/bin/sh", "/workspace/setup.sh"]

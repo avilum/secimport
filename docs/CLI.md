@@ -2,9 +2,10 @@
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
-- [Command Line Usage](#command-line-usage)
-- [Creating a new sandbox from scratch:](#creating-a-new-sandbox-from-scratch)
-  - [QUICKSTART](#quickstart)
+- [Usage](#usage)
+- [Stop on violation](#stop-on-violation)
+- [Kill on violation](#kill-on-violation)
+- [Dynamic profiling - trace, build sandbox, run.](#dynamic-profiling---trace-build-sandbox-run)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
@@ -20,17 +21,18 @@ SYNOPSIS
 
 DESCRIPTION
     QUICK START:
-            >>> secimport interactive
+            $ secimport interactive
 
     EXAMPLES:
-        1. trace:
+        1. trace | shell:
+            $  secimport shell
             $  secimport trace
             $  secimport trace -h
             $  secimport trace_pid 123
             $  secimport trace_pid -h
         2. build:
             # secimport build
-            $ secimport build -h
+            $ secimport build
         3. run:
             $  secimport run
             $  secimport run --entrypoint my_custom_main.py
@@ -58,7 +60,7 @@ COMMANDS
 
 ```
 
-## Stop on violation 
+## Stop on violation
 ```
 root@1bc0531d91d0:/workspace# secimport run  --stop_on_violation=true
  >>> secimport run
@@ -118,11 +120,11 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 SECIMPORT COMPILING...
 
-CREATED JSON TEMPLATE:  traced_modules.json
-CREATED YAML TEMPLATE:  traced_modules.yaml
+CREATED JSON TEMPLATE:  policy.json
+CREATED YAML TEMPLATE:  policy.yaml
 
 
-compiling template traced_modules.yaml
+compiling template policy.yaml
 [debug] adding syscall close to allowlist for module None
 [debug] adding syscall dup to allowlist for module None
 [debug] adding syscall fstat to allowlist for module None
@@ -133,12 +135,12 @@ compiling template traced_modules.yaml
 [debug] adding syscall set_robust_list to allowlist for module general_requirements
 [debug] adding syscall set_tid_address to allowlist for module general_requirements
 
-DTRACE SANDBOX:  traced_modules.d
+DTRACE SANDBOX:  sandbox.d
 BPFTRCE SANDBOX:  sandbox.bt
 
  SANDBOX READY: sandbox.bt
 
-Now, let's run the sandbox.
+Now, let's run the sandbox!
 - Run the same commands as before, they should run without any problem;.
 - Do something new in the shell; e.g:   >>> __import__("os").system("ps")
 
