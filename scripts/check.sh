@@ -10,7 +10,7 @@ fi
 
 # Lint and fix code styling
 python3 -m ruff --fix .
-doctoc
+./scripts/update_docs_table_of_contents.sh
 pre-commit
 export PYTHONPATH=$(pwd):$PYTHONPATH
 
@@ -26,4 +26,4 @@ cd docker/
 # Run unit tests inside container
 # cd ..
 # export KERNEL_VERSION=`docker run --rm -it alpine uname -r | cut -d'-' -f1`
-# docker run --rm --name=secimport --privileged -v "$(pwd)/secimport":"/workspace/secimport/" -v "$(pwd)/tests":"/workspace/tests/" -it secimport:${KERNEL_VERSION} "/workspace/run_tests.sh"
+docker run --rm --name=secimport --privileged -v "$(pwd)/secimport":"/workspace/secimport/" -v "$(pwd)/tests":"/workspace/tests/" -it secimport:${KERNEL_VERSION} "/workspace/scripts/run_tests.sh"

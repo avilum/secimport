@@ -12,18 +12,21 @@ def main():
     dtrace_rendered_profile = build_module_sandbox_from_yaml_template(
         template_path=template_filename, backend=InstrumentationBackend.DTRACE
     )
-    with open(dtrace_sandbox_filename, "w") as f:
-        f.write(dtrace_rendered_profile)
+    if dtrace_rendered_profile is not None:
+        with open(dtrace_sandbox_filename, "w") as f:
+            print("creating ", dtrace_sandbox_filename)
+            f.write(dtrace_rendered_profile)
 
     bpftrace_sandbox_filename = Path(sys.argv[2]).with_suffix(".bt")
     bpftrace_rendered_profile = build_module_sandbox_from_yaml_template(
         template_path=template_filename, backend=InstrumentationBackend.EBPF
     )
-    with open(bpftrace_sandbox_filename, "w") as f:
-        f.write(bpftrace_rendered_profile)
 
-    print("\nDTRACE SANDBOX: ", dtrace_sandbox_filename)
-    print("BPFTRCE SANDBOX: ", bpftrace_sandbox_filename)
+    if bpftrace_rendered_profile is not None:
+        with open(bpftrace_sandbox_filename, "w") as f:
+            f.write(bpftrace_rendered_profile)
+
+        print("BPFTRCE SANDBOX: ", bpftrace_sandbox_filename)
 
 
 if __name__ == "__main__":

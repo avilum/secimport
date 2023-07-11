@@ -22,11 +22,9 @@
         - secimport code
     - ~1GB in size
 3. `./run.sh` will start a new docker container with secimport.
-    - `secimport-shell` or `./trace.sh` will open a syscall-tracing python shell.
-        - All syscalls and modules will be logged to traced_modules.json once you hit CTRL+D.
-    - `./run_sandbox.sh` will run a python script inside the sandbox `sandbox.bt`.
-      -   It will execute `os.system('ps')`, and the process will be killed.
-        - Logs will be written to `sandbox.log`
+    - `secimport interactive`
+        -  `secimport shell` or `secimport trace` will run a new process (python interpreter or specific entrypoint). It it will <b>record all functions and syscalls inside the newly created process</b>.
+        - All syscalls and modules will be logged to ./trace.log once you hit CTRL+D or CTRL+C.
     - You can use `-v` in docker run to mount your code into the container and trace it.
 
 ```python

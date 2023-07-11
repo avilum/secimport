@@ -45,8 +45,8 @@ INFO:     Finished server process [26]
 
 SECIMPORT COMPILING...
 
-CREATED JSON TEMPLATE:  sandbox.json
-CREATED YAML TEMPLATE:  sandbox.yaml
+CREATED JSON TEMPLATE:  policy.json
+CREATED YAML TEMPLATE:  policy.yaml
 
 
 compiling template sandbox.yaml

@@ -10,6 +10,6 @@ bpftrace -c "/workspace/Python-3.10.0/python -c __import__('os').system('ps')" -
 # The process is killed becused we ran os.system inside our sandbox.
 # Watch the logs:
 less +G sandbox.log
-# OR: 
+# OR:
 # tail -n 20 sandbox.log
 echo "The sandbox log is at ./sandbox.log"

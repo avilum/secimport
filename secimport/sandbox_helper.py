@@ -6,12 +6,6 @@ Copyright (c) 2022 Avi Lumelsky
 
 from secimport.backends.common.instrumentation_backend import InstrumentationBackend
 from secimport.backends.common.utils import DEFAULT_BACKEND
-from secimport.backends.bpftrace_backend.bpftrace_backend import (
-    run_bpftrace_script_for_module,
-)
-from secimport.backends.dtrace_backend.dtrace_backend import (
-    run_dtrace_script_for_module,
-)
 
 
 def secure_import(
@@ -43,6 +37,10 @@ def secure_import(
     """
 
     if backend == InstrumentationBackend.EBPF:
+        from secimport.backends.bpftrace_backend.bpftrace_backend import (
+            run_bpftrace_script_for_module,
+        )
+
         assert run_bpftrace_script_for_module(
             module_name=module_name,
             allow_shells=allow_shells,
@@ -55,6 +53,10 @@ def secure_import(
             destructive=destructive,
         )
     elif backend == InstrumentationBackend.DTRACE:
+        from secimport.backends.dtrace_backend.dtrace_backend import (
+            run_dtrace_script_for_module,
+        )
+
         assert run_dtrace_script_for_module(
             module_name=module_name,
             allow_shells=allow_shells,

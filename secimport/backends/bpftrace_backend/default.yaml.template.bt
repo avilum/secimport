@@ -1,7 +1,7 @@
 #!/usr/bin/env bpftrace
 
 BEGIN {
-    ###SYSCALL_FILTER###
+###SYSCALL_FILTER###
 }
 
 
@@ -10,9 +10,9 @@ usdt:###INTERPRETER_PATH###:function__entry {
         @latest_supervised_module =  str(arg0); // module name (string)
 }
 
-// usdt:###INTERPRETER_PATH###:function__return {
-//     @["depth"]--;
-// }
+usdt:###INTERPRETER_PATH###:function__return {
+     @stack[pid, tid]--;
+}
 
 tracepoint:raw_syscalls:sys_enter / @stack[pid, tid] && @syscalls_filters["general_requirements", args->id] != 1 && @syscalls_filters[@latest_supervised_module, args->id] != 1 /  {
     printf("\033[91m[SECURITY PROFILE VIOLATED]: %s called syscall %d at depth %d\033[0m\r\n", @latest_supervised_module, args->id, @stack[pid, tid]);
