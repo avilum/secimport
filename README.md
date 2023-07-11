@@ -7,12 +7,13 @@
     - [The problem](#the-problem)
     - [The solution](#the-solution)
   - [Installation](#installation)
-    - [With Docker](#with-docker)
-    - [Without Docker](#without-docker)
+  - [With Docker](#with-docker)
+  - [Without Docker](#without-docker)
   - [Usage](#usage)
   - [Stop on violation](#stop-on-violation)
   - [Kill on violation](#kill-on-violation)
   - [Dynamic profiling - trace, build sandbox, run.](#dynamic-profiling---trace-build-sandbox-run)
+  - [nsjail support (seccomp)](#nsjail-support-seccomp)
   - [Python API](#python-api)
   - [Docker](#docker)
   - [Examples](#examples)
@@ -32,10 +33,10 @@ secimport is production-oriented sandbox toolkit.<br>
 It traces your code, and runs an executable that allows only the same syscalls, per module.
 
 ### The problem
-Traditional tools like seccomp or AppArmor enforce syscalls for the entire process.<br>Something like `allowed_syscalls=["read","openat","bind","write"]`, which is great, but not enough for python's attack surface. It is to<br>
+Traditional tools like seccomp or AppArmor enforce syscalls for the entire process.<br>Something like `allowed_syscalls=["read","openat","bind","write"]`, which is great, but not enough for python's attack surface.<br>
 
 ### The solution
-secimport is able to trace which modules/packages (imports) need which syscalls.<br>
+`secimport` is able to trace which syscalls each module in your code uses (by package name).<br>
 After tracing, secimport creates a JSON/YAML policy for your code. It compiles it into a high-performance eBPF instrumentation script (smaller then 512 bytes overall), that looks like <a>this</a>.
 ```
 modules:
@@ -85,30 +86,27 @@ An example policy that uses logging, multiprocessing, os and filesystem will loo
 ```
 It was created by tracing the code. secimport automatically finds these per-module syscalls for you.
 
-Finally, you comvert this policy into an sandbox (eBPF instrumentation script) to run the python process in production. Running the sandbox will enfore python to obey any given policy.
+Finally, you convert this policy into an sandbox (eBPF instrumentation script) to run the python process in production. Running the sandbox will enfore python to obey any given policy.
 
-Forget about supply chain, webshells and RCE.<br> secimport catches everything.
-secimport is great for...
-- Tracing:
-  - Trace which syscalls are called by each module in your code.
-  - secimport uses USDT (Userland Statically Defined Tracing) together with kernel probes in the runtime using eBPF or dtrace instrumentation scripts.
+`secimport` is great for...
 - Preventing Code Execution: reduce the risk of supply chain attacks.
   - Trace the syscalls flow of your application at the user-space/os/kernel level and per module.
   - Run your application while enforcing syscalls per module.
-  - Upon violation of the policy, it can log, stop, or kill the process.
-- Security Teams
-  - secimport makes 1day attacks less of an issue, because it prevents the code form running. If you are using a vulnerable package and someone exploited it, your policy will not allow this exploit's syscalls and it will be handled as you wish.
+    - Upon violation of the policy, it can log, stop, or kill the process.
 - Protect yourself from RCE:
+  - secimport makes 1day attacks less of an issue, because it prevents the code form running. If you are using a vulnerable package and someone exploited it, your policy will not allow this exploit's syscalls and it will be handled as you wish.
   - Avoid incidents like <a href="https://en.wikipedia.org/wiki/Log4Shell">log4shell</a>. A logging library requires very few syscalls, and it should never run command using fork, execve or spawn.
-  - The syscalls that "fastapi", "numpy" or "requests" require are much different.
-- Load Insecure AI Models: models from unsafe source (torch, pickled models) can be limited to run only a set of syscalls. magic lines like 'import os;os.system(...)' will be catched by secimport.
-- Minimal Performance Impact: Has negligible performance impact and is production-ready thanks to eBPF. Check out the [Performance](https://github.com/avilum/secimport/wiki/Performance-Benchmarks) benchmarks.
-
+    - The syscalls that "fastapi", "numpy" or "requests" use are very different.
+- Load AI Models from Insecure Sources
+  - Models from unsafe source (huggingface, torch hub, and pytorch pickled models) can be limited to run only a set of syscalls. RCE like 'import os;os.system(...)' somewhere deep in the code will be catched by secimport.
+- Minimal Performance Impact
+  -  Has negligible performance impact and is production-ready thanks to eBPF. Check out the [Performance](https://github.com/avilum/secimport/wiki/Performance-Benchmarks) benchmarks.
+- Trace which syscalls are called by each module in your code.
+  - secimport uses USDT (Userland Statically Defined Tracing) together with kernel probes in the runtime using eBPF or dtrace instrumentation scripts.
 ## Installation
-Tested on Ubuntu, Debian, Rocky (Linux x86/AMD/ARM) and MacOS in (x86/M1).<br>
-If you run on MacOS you will need to <a href="https://github.com/avilum/secimport/blob/master/docs/MAC_OS_USERS.md">disable SIP for dtrace. </a>
+Tested on Ubuntu, Debian, Rocky (Linux x86/AMD/ARM) and MacOS in (x86/M1). If you run on MacOS you will need to <a href="https://github.com/avilum/secimport/blob/master/docs/MAC_OS_USERS.md">disable SIP for dtrace. </a>
 
-### With Docker
+## With Docker
 For quicker evaluation, we recommend using the <a href="#Docker">Docker</a> image instead of self-installing.<br>
 - Build and run the Docker container with a custom kernel that matches your existing OS kernel version:
   ```
@@ -116,7 +114,7 @@ For quicker evaluation, we recommend using the <a href="#Docker">Docker</a> imag
   ```
   A temporary container will be created, and you will be logged in as the root user.
 
-### Without Docker
+## Without Docker
 1. Install python with USDT probes by <a href="https://github.com/avilum/secimport/wiki/Installation#python-interpreter-requirements">configuring it with '--dtrace'</a>
 2. Install one of the backends: <a href="https://github.com/avilum/secimport/wiki/Installation">eBPF or DTrace</a>.
 3. Install secimport
@@ -282,9 +280,15 @@ Type "help", "copyright", "credits" or "license" for more information.
 
 For more detailed usage instructions, see the [Command-Line Usage](https://github.com/avilum/secimport/wiki/Command-Line-Usage) page.
 
+## nsjail support (seccomp)
+Beside the sandbox that secimport builds, <br>
+The `secimport build` command creates an <a href="https://github.com/google/nsjail">nsjail</a> sandbox with seccomp profile for your traced code.<br> `nsjail` enables namespace sandboxing with seccomp on linux<br>
+`secimport` automatically generates seccomp profiles to use with `nsjail` as executable bash script.
+It can be used to limit the syscalls of the entire python process, as another layer of defence.
+
 ## Python API
 
-You can also use `secimport` by replacing `import` with `secimport.secure_import` for selected modules. See the [Python Imports](examples/python_imports/) example for more details.
+Instead of CLI, you can also use `secimport` by replacing "`import`" with "`secimport.secure_import`" for selected modules. See the [Python Imports](examples/python_imports/) example for more details.
 
 ## Docker
 The quickest way to evaluate `secimport` is to use our [Docker container](docker/README.md), which includes `bpftrace` (`ebpf`) and other plug-and-play examples.
