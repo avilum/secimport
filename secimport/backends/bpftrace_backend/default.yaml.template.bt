@@ -15,7 +15,7 @@ usdt:###INTERPRETER_PATH###:function__return {
 }
 
 tracepoint:raw_syscalls:sys_enter / @stack[pid, tid] && @syscalls_filters["general_requirements", args->id] != 1 && @syscalls_filters[@latest_supervised_module, args->id] != 1 /  {
-    printf("\033[91m[SECURITY PROFILE VIOLATED]: %s called syscall %d at depth %d\033[0m\r\n", @latest_supervised_module, args->id, @stack[pid, tid]);
+    printf("\033[91m[SECURITY PROFILE VIOLATED]: %s called syscall %d at depth %d in module %s\033[0m\r\n", @latest_supervised_module, args->id, @stack[pid, tid], @latest_supervised_module);
     if (str($1) == "STOP") {
         printf("\n^^^ STOPPING PROCESS %d DUE TO SYSCALL VIOLATION ^^^\n", pid);
         signal("SIGSTOP");
