@@ -32,6 +32,11 @@
 secimport is production-oriented sandbox toolkit.<br>
 It traces your code, and runs an executable that allows only the same syscalls, per module.
 
+Technical Blogs:
+1. <a href="https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26">secimport + Dtrace</a>
+2. <a href="https://infosecwriteups.com/securing-pytorch-models-with-ebpf-7f75732b842d">secimprt + eBPF + PyTorch</a>
+3. <a href="https://infosecwriteups.com/securing-pytorch-models-with-ebpf-7f75732b842d">secimport + eBPF + FastAPI </a>
+
 ### The problem
 Traditional tools like seccomp or AppArmor enforce syscalls for the entire process.<br>Something like `allowed_syscalls=["read","openat","bind","write"]`, which is great, but not enough for python's attack surface.<br>
 
