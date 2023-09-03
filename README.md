@@ -32,10 +32,10 @@
 secimport is production-oriented sandbox toolkit.<br>
 It traces your code, and runs an executable that allows only the same syscalls, per module.
 
-Technical Blogs:
-1. <a href="https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26">secimport + Dtrace</a>
-2. <a href="https://infosecwriteups.com/securing-pytorch-models-with-ebpf-7f75732b842d">secimprt + eBPF + PyTorch</a>
-3. <a href="https://infosecwriteups.com/securing-pytorch-models-with-ebpf-7f75732b842d">secimport + eBPF + FastAPI </a>
+Technical Blogs (Free Reading):
+1. <a href="https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26?source=friends_link&sk=5e9a2fa4d4921af0ec94f175f7ee49f9">secimport + Dtrace</a>
+2. <a href="https://infosecwriteups.com/securing-pytorch-models-with-ebpf-7f75732b842d?source=friends_link&sk=14d8db403aaf66724a8a69b4dea24e12">secimprt + eBPF + PyTorch</a>
+3. <a href="https://avi-lumelsky.medium.com/secure-fastapi-with-ebpf-724d4aef8d9e?source=friends_link&sk=b01a6b97ef09003b53cd52c479017b03">secimport + eBPF + FastAPI </a>
 
 ### The problem
 Traditional tools like seccomp or AppArmor enforce syscalls for the entire process.<br>Something like `allowed_syscalls=["read","openat","bind","write"]`, which is great, but not enough for python's attack surface.<br>
