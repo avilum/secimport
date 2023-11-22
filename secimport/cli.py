@@ -6,6 +6,7 @@ import stat
 import fire
 import sys
 import yaml
+import subprocess
 import secimport
 from secimport.backends.common.utils import SECIMPORT_ROOT
 
@@ -203,6 +204,10 @@ class SecImportCLI:
             python_interpreter (str, optional): The path of the python executable interpreter to trace. Defaults to sys.executable.
             trace_log_file (str, optional): The log file to write the trace into. Defaults to "trace.log".
         """
+        with_dtrace = subprocess.check_output([python_interpreter, '-c', 'import sysconfig; print(sysconfig.get_config_var("WITH_DTRACE"))'], encoding='utf-8')
+        if with_dtrace.strip() != "1":
+            colored_print(COLORS.FAIL, f"\nIt seems that {python_interpreter} was compiled without --with-dtrace=1. secimport will probably not work properly!\n")
+
         if entrypoint:
             # entrypoint_cmd = str(Path(entrypoint).absolute())
             entrypoint_cmd = f'bash -c "{python_interpreter} {entrypoint}"'
