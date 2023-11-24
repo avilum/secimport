@@ -30,5 +30,16 @@ From <a href="https://en.wikipedia.org/wiki/DTrace">Wikipedia</a>:
     - Allowlist / Blocklist
       - Allow only a set of syscalls for each module in you would like to confine. Log/Kill upon violation.
 
+## On Ubuntu, I get the error message `ERROR: Could not resolve symbol: /proc/self/exe:BEGIN_trigger`
+You must install additional debugging symbols using these commmands:
+
+    echo "deb http://ddebs.ubuntu.com $(lsb_release -cs) main restricted universe multiverse
+    deb http://ddebs.ubuntu.com $(lsb_release -cs)-updates main restricted universe multiverse
+    deb http://ddebs.ubuntu.com $(lsb_release -cs)-proposed main restricted universe multiverse" | \
+    sudo tee -a /etc/apt/sources.list.d/ddebs.list
+    sudo apt install ubuntu-dbgsym-keyring
+    sudo apt update
+    sudo apt install bpftrace-dbgsym
+
 ## What are the performance impacts?
 - See docs/PERFORMANCE.md
