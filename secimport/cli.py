@@ -219,6 +219,7 @@ class SecImportCLI:
             f"{entrypoint_cmd}",
             "-o",
             f"{trace_log_file}",
+            f"{python_interpreter}",
         ]
         colored_print(COLORS.HEADER, "\nTracing using ", cmd)
         colored_print(
@@ -242,12 +243,16 @@ class SecImportCLI:
             trace_log_file (str): The output file to write the trace into.
         """
         assert isinstance(pid, int), f"pid must be an int, got: {pid}"
+
+        python_interpreter = (Path('/proc') / str(pid) / 'exe').resolve()
+
         cmd = [
             str(SECIMPORT_ROOT) + "/profiles/trace.bt",
             "-p",
             f"{pid}",
             "-o",
             f"{trace_log_file}",
+            f"{python_interpreter}"
         ]
         colored_print(COLORS.HEADER, "\nTRACING PID:")
         colored_print(COLORS.OKBLUE, pid)
