@@ -17,13 +17,13 @@
 
 # Python Interpreter Requirements
 The only runtime requirement is a Python interpreter that was built with --with-dtrace (USDT probes).<br>
-You can check if your current interpreter supported by running `readelf` on your python interpreter:
+You can check if your current interpreter supported by running this command:
 ```python
-readelf -n Python-3.10.0/python | grep -i function__entry
+python -m sysconfig | grep WITH_DTRACE
 ```
-You should be able to see the following output:
+This configuration option should have the value "1" (and not "0"!):
 ```
-    Name: function__entry
+	WITH_DTRACE = "1"
 ```
 If your current interpreter is not supported (empty output):
 - Using `pip`
