@@ -111,6 +111,10 @@ Finally, you convert this policy into an sandbox (eBPF instrumentation script) t
 ## Installation
 Tested on Ubuntu, Debian, Rocky (Linux x86/AMD/ARM) and MacOS in (x86/M1). If you run on MacOS you will need to <a href="https://github.com/avilum/secimport/blob/master/docs/MAC_OS_USERS.md">disable SIP for dtrace. </a>
 
+## Examples
+
+The [Sandbox Examples](https://github.com/avilum/secimport/wiki/Sandbox-Examples) page contains basic and advanced real-world examples.
+
 ## With Docker
 For quicker evaluation, we recommend using the <a href="https://github.com/avilum/secimport/tree/master/docker">Secimport Docker Image</a> instead of self-installing.<br>
 - Build and run the Docker container with a custom kernel that matches your existing OS kernel version:
@@ -297,11 +301,6 @@ Instead of CLI, you can also use `secimport` by replacing "`import`" with "`seci
 
 ## Docker
 The quickest way to evaluate `secimport` is to use our [Docker container](docker/README.md), which includes `bpftrace` (`ebpf`) and other plug-and-play examples.
-
-
-## Examples
-
-The [Sandbox Examples](https://github.com/avilum/secimport/wiki/Sandbox-Examples) page contains basic and advanced real-world examples.
 
 ## Contributing
 
