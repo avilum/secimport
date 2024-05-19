@@ -5,6 +5,7 @@
 - [Is it safe to use in production?](#is-it-safe-to-use-in-production)
 - [Should I use dtrace or bpftrace backend?](#should-i-use-dtrace-or-bpftrace-backend)
 - [What are the tradeoffs? How does it change they way I code?](#what-are-the-tradeoffs-how-does-it-change-they-way-i-code)
+- [On Ubuntu, I get the error message `ERROR: Could not resolve symbol: /proc/self/exe:BEGIN_trigger`](#on-ubuntu-i-get-the-error-message-error-could-not-resolve-symbol-procselfexebegin_trigger)
 - [What are the performance impacts?](#what-are-the-performance-impacts)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
