@@ -4,7 +4,7 @@
 // It can be attached to a running process using -p or can be used to trace a python shell interactively.
 //
 // Usage:
-// ./trace.bt Python-3.10.0/python -c Python-3.10.0/python
+// ./trace.bt Python-3.11.8/python -c Python-3.11.8/python
 
 BEGIN {
     // Mapping all syscalls both ways, based on https://github.com/iovisor/bpftrace/blob/2c7a7a598dbe1aa790db2dfe2db242aa69137d5b/tools/syscount.bt

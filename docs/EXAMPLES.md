@@ -64,11 +64,11 @@ A log file is automatically created, containing everything you need to know:
 ```
 $ less /tmp/.secimport/sandbox_pickle.log
 
-  @posix_spawn from /Users/avilumelsky/Downloads/Python-3.10.0/Lib/threading.py
+  @posix_spawn from /Users/avilumelsky/Downloads/Python-3.11.8/Lib/threading.py
     DETECTED SHELL:
         depth=8
         sandboxed_depth=0
-        sandboxed_module=/Users/avilumelsky/Downloads/Python-3.10.0/Lib/pickle.py
+        sandboxed_module=/Users/avilumelsky/Downloads/Python-3.11.8/Lib/pickle.py
 
     TERMINATING SHELL:
         libsystem_kernel.dylib`__posix_spawn+0xa
@@ -109,7 +109,7 @@ modules:
 <br><br>
 ## Blocking New Processes Example
 ```python
-Python 3.10.0 (default, May  2 2022, 21:43:20) [Clang 13.0.0 (clang-1300.0.27.3)] on darwin
+Python 3.11.8 (default, May  2 2022, 21:43:20) [Clang 13.0.0 (clang-1300.0.27.3)] on darwin
 Type "help", "copyright", "credits" or "license" for more information.
 
 # Let's import subprocess module, limiting it's syscall access.

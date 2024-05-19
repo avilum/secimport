@@ -846,7 +846,7 @@ BEGIN {
 }
 
 
-usdt:/workspace/Python-3.10.0/python:function__entry {
+usdt:/workspace/Python-3.11.8/python:function__entry {
         @["depth"]++;
         @entrypoints[str(arg0)] = @["depth"];
         @globals["previous_module"] = @globals["current_module"];
@@ -855,7 +855,7 @@ usdt:/workspace/Python-3.10.0/python:function__entry {
         printf("%s, %s, depth=%d\n", str(arg0), str(arg1), @["depth"]);
 }
 
-usdt:/workspace/Python-3.10.0/python:function__return {
+usdt:/workspace/Python-3.11.8/python:function__return {
     @["depth"]--;
 }
 

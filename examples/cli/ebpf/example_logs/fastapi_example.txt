@@ -6,7 +6,7 @@ root@28a2599fc9a1:/workspace# ll
 total 40
 drwxr-xr-x 1 root root 4096 Apr  9 19:18 ./
 drwxr-xr-x 1 root root 4096 Apr  9 19:18 ../
-drwxr-xr-x 1 1000 1000 4096 Apr  9 17:22 Python-3.10.0/
+drwxr-xr-x 1 1000 1000 4096 Apr  9 17:22 Python-3.11.8/
 drwxr-xr-x 8 root root  256 Apr  8 14:10 examples/
 -rwxr-xr-x 1 root root  332 Apr  9 17:15 fastapi_example.sh*
 -rwxr-xr-x 1 root root  246 Apr  9 11:44 fastapi_main.py*
@@ -20,7 +20,7 @@ FastAPI Example
 Tracing the main application, hit CTRL+C/CTRL+D when you are done.
  >>> secimport trace
 
-TRACING: ['/workspace/secimport/profiles/trace.bt', '-c', 'bash -c "/workspace/Python-3.10.0/python fastapi_main.py"', '-o', 'trace.log']
+TRACING: ['/workspace/secimport/profiles/trace.bt', '-c', 'bash -c "/workspace/Python-3.11.8/python fastapi_main.py"', '-o', 'trace.log']
 
                         Press CTRL+D/CTRL+C to stop the trace;
 
@@ -196,78 +196,78 @@ compiling template sandbox.yaml
 [debug] adding syscall getpid to allowlist for module /root/.local/lib/python3.10/site-packages/uvicorn/protocols/htt
 [debug] adding syscall clock_gettime to allowlist for module /root/.local/lib/python3.10/site-packages/uvicorn/server.py
 [debug] adding syscall getpid to allowlist for module /root/.local/lib/python3.10/site-packages/uvicorn/server.py
-[debug] adding syscall brk to allowlist for module /workspace/Python-3.10.0/Lib/abc.py
-[debug] adding syscall clock_gettime to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/base_events.py
-[debug] adding syscall fcntl to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/base_events.py
-[debug] adding syscall fstat to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/base_events.py
-[debug] adding syscall getpid to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/base_events.py
-[debug] adding syscall listen to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/base_events.py
-[debug] adding syscall getpid to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/coroutines.py
-[debug] adding syscall getpid to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/mixins.py
-[debug] adding syscall recvfrom to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/selector_events.py
-[debug] adding syscall sendto to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/selector_events.py
-[debug] adding syscall getpid to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/tasks.py
-[debug] adding syscall getpeername to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/trsock.py
-[debug] adding syscall getsockname to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/trsock.py
-[debug] adding syscall clock_gettime to allowlist for module /workspace/Python-3.10.0/Lib/asyncio/unix_events.py
-[debug] adding syscall close to allowlist for module /workspace/Python-3.10.0/Lib/codecs.py
-[debug] adding syscall dup to allowlist for module /workspace/Python-3.10.0/Lib/codecs.py
-[debug] adding syscall fstat to allowlist for module /workspace/Python-3.10.0/Lib/codecs.py
-[debug] adding syscall ioctl to allowlist for module /workspace/Python-3.10.0/Lib/codecs.py
-[debug] adding syscall lseek to allowlist for module /workspace/Python-3.10.0/Lib/codecs.py
-[debug] adding syscall read to allowlist for module /workspace/Python-3.10.0/Lib/codecs.py
-[debug] adding syscall rt_sigaction to allowlist for module /workspace/Python-3.10.0/Lib/codecs.py
-[debug] adding syscall brk to allowlist for module /workspace/Python-3.10.0/Lib/collections/__init__.py
-[debug] adding syscall mmap to allowlist for module /workspace/Python-3.10.0/Lib/collections/__init__.py
-[debug] adding syscall brk to allowlist for module /workspace/Python-3.10.0/Lib/copy.py
-[debug] adding syscall brk to allowlist for module /workspace/Python-3.10.0/Lib/dataclasses.py
-[debug] adding syscall mmap to allowlist for module /workspace/Python-3.10.0/Lib/enum.py
-[debug] adding syscall rt_sigaction to allowlist for module /workspace/Python-3.10.0/Lib/enum.py
-[debug] adding syscall setsockopt to allowlist for module /workspace/Python-3.10.0/Lib/enum.py
-[debug] adding syscall stat to allowlist for module /workspace/Python-3.10.0/Lib/genericpath.py
-[debug] adding syscall clock_gettime to allowlist for module /workspace/Python-3.10.0/Lib/logging/__init__.py
-[debug] adding syscall getpid to allowlist for module /workspace/Python-3.10.0/Lib/logging/__init__.py
-[debug] adding syscall write to allowlist for module /workspace/Python-3.10.0/Lib/logging/__init__.py
-[debug] adding syscall getcwd to allowlist for module /workspace/Python-3.10.0/Lib/multiprocessing/process.py
-[debug] adding syscall getpid to allowlist for module /workspace/Python-3.10.0/Lib/multiprocessing/process.py
-[debug] adding syscall getrandom to allowlist for module /workspace/Python-3.10.0/Lib/multiprocessing/process.py
-[debug] adding syscall prlimit64 to allowlist for module /workspace/Python-3.10.0/Lib/multiprocessing/util.py
-[debug] adding syscall read to allowlist for module /workspace/Python-3.10.0/Lib/os.py
-[debug] adding syscall uname to allowlist for module /workspace/Python-3.10.0/Lib/platform.py
-[debug] adding syscall close to allowlist for module /workspace/Python-3.10.0/Lib/posixpath.py
-[debug] adding syscall fstat to allowlist for module /workspace/Python-3.10.0/Lib/posixpath.py
-[debug] adding syscall getcwd to allowlist for module /workspace/Python-3.10.0/Lib/posixpath.py
-[debug] adding syscall getdents64 to allowlist for module /workspace/Python-3.10.0/Lib/posixpath.py
-[debug] adding syscall openat to allowlist for module /workspace/Python-3.10.0/Lib/posixpath.py
-[debug] adding syscall getrandom to allowlist for module /workspace/Python-3.10.0/Lib/random.py
-[debug] adding syscall clock_gettime to allowlist for module /workspace/Python-3.10.0/Lib/selectors.py
-[debug] adding syscall close to allowlist for module /workspace/Python-3.10.0/Lib/selectors.py
-[debug] adding syscall epoll_create1 to allowlist for module /workspace/Python-3.10.0/Lib/selectors.py
-[debug] adding syscall epoll_wait to allowlist for module /workspace/Python-3.10.0/Lib/selectors.py
-[debug] adding syscall rt_sigreturn to allowlist for module /workspace/Python-3.10.0/Lib/selectors.py
-[debug] adding syscall write to allowlist for module /workspace/Python-3.10.0/Lib/selectors.py
-[debug] adding syscall rt_sigaction to allowlist for module /workspace/Python-3.10.0/Lib/signal.py
-[debug] adding syscall fstat to allowlist for module /workspace/Python-3.10.0/Lib/site.py
-[debug] adding syscall getegid to allowlist for module /workspace/Python-3.10.0/Lib/site.py
-[debug] adding syscall geteuid to allowlist for module /workspace/Python-3.10.0/Lib/site.py
-[debug] adding syscall getgid to allowlist for module /workspace/Python-3.10.0/Lib/site.py
-[debug] adding syscall getuid to allowlist for module /workspace/Python-3.10.0/Lib/site.py
-[debug] adding syscall ioctl to allowlist for module /workspace/Python-3.10.0/Lib/site.py
-[debug] adding syscall lseek to allowlist for module /workspace/Python-3.10.0/Lib/site.py
-[debug] adding syscall openat to allowlist for module /workspace/Python-3.10.0/Lib/site.py
-[debug] adding syscall accept4 to allowlist for module /workspace/Python-3.10.0/Lib/socket.py
-[debug] adding syscall bind to allowlist for module /workspace/Python-3.10.0/Lib/socket.py
-[debug] adding syscall getsockname to allowlist for module /workspace/Python-3.10.0/Lib/socket.py
-[debug] adding syscall ioctl to allowlist for module /workspace/Python-3.10.0/Lib/socket.py
-[debug] adding syscall setsockopt to allowlist for module /workspace/Python-3.10.0/Lib/socket.py
-[debug] adding syscall socket to allowlist for module /workspace/Python-3.10.0/Lib/socket.py
-[debug] adding syscall socketpair to allowlist for module /workspace/Python-3.10.0/Lib/socket.py
-[debug] adding syscall brk to allowlist for module /workspace/Python-3.10.0/Lib/sre_compile.py
-[debug] adding syscall getpid to allowlist for module /workspace/Python-3.10.0/Lib/threading.py
-[debug] adding syscall gettid to allowlist for module /workspace/Python-3.10.0/Lib/threading.py
-[debug] adding syscall brk to allowlist for module /workspace/Python-3.10.0/Lib/typing.py
-[debug] adding syscall getpid to allowlist for module /workspace/Python-3.10.0/Lib/typing.py
-[debug] adding syscall mmap to allowlist for module /workspace/Python-3.10.0/Lib/typing.py
+[debug] adding syscall brk to allowlist for module /workspace/Python-3.11.8/Lib/abc.py
+[debug] adding syscall clock_gettime to allowlist for module /workspace/Python-3.11.8/Lib/asyncio/base_events.py
+[debug] adding syscall fcntl to allowlist for module /workspace/Python-3.11.8/Lib/asyncio/base_events.py
+[debug] adding syscall fstat to allowlist for module /workspace/Python-3.11.8/Lib/asyncio/base_events.py
+[debug] adding syscall getpid to allowlist for module /workspace/Python-3.11.8/Lib/asyncio/base_events.py
+[debug] adding syscall listen to allowlist for module /workspace/Python-3.11.8/Lib/asyncio/base_events.py
+[debug] adding syscall getpid to allowlist for module /workspace/Python-3.11.8/Lib/asyncio/coroutines.py
+[debug] adding syscall getpid to allowlist for module /workspace/Python-3.11.8/Lib/asyncio/mixins.py
+[debug] adding syscall recvfrom to allowlist for module /workspace/Python-3.11.8/Lib/asyncio/selector_events.py
+[debug] adding syscall sendto to allowlist for module /workspace/Python-3.11.8/Lib/asyncio/selector_events.py
+[debug] adding syscall getpid to allowlist for module /workspace/Python-3.11.8/Lib/asyncio/tasks.py
+[debug] adding syscall getpeername to allowlist for module /workspace/Python-3.11.8/Lib/asyncio/trsock.py
+[debug] adding syscall getsockname to allowlist for module /workspace/Python-3.11.8/Lib/asyncio/trsock.py
+[debug] adding syscall clock_gettime to allowlist for module /workspace/Python-3.11.8/Lib/asyncio/unix_events.py
+[debug] adding syscall close to allowlist for module /workspace/Python-3.11.8/Lib/codecs.py
+[debug] adding syscall dup to allowlist for module /workspace/Python-3.11.8/Lib/codecs.py
+[debug] adding syscall fstat to allowlist for module /workspace/Python-3.11.8/Lib/codecs.py
+[debug] adding syscall ioctl to allowlist for module /workspace/Python-3.11.8/Lib/codecs.py
+[debug] adding syscall lseek to allowlist for module /workspace/Python-3.11.8/Lib/codecs.py
+[debug] adding syscall read to allowlist for module /workspace/Python-3.11.8/Lib/codecs.py
+[debug] adding syscall rt_sigaction to allowlist for module /workspace/Python-3.11.8/Lib/codecs.py
+[debug] adding syscall brk to allowlist for module /workspace/Python-3.11.8/Lib/collections/__init__.py
+[debug] adding syscall mmap to allowlist for module /workspace/Python-3.11.8/Lib/collections/__init__.py
+[debug] adding syscall brk to allowlist for module /workspace/Python-3.11.8/Lib/copy.py
+[debug] adding syscall brk to allowlist for module /workspace/Python-3.11.8/Lib/dataclasses.py
+[debug] adding syscall mmap to allowlist for module /workspace/Python-3.11.8/Lib/enum.py
+[debug] adding syscall rt_sigaction to allowlist for module /workspace/Python-3.11.8/Lib/enum.py
+[debug] adding syscall setsockopt to allowlist for module /workspace/Python-3.11.8/Lib/enum.py
+[debug] adding syscall stat to allowlist for module /workspace/Python-3.11.8/Lib/genericpath.py
+[debug] adding syscall clock_gettime to allowlist for module /workspace/Python-3.11.8/Lib/logging/__init__.py
+[debug] adding syscall getpid to allowlist for module /workspace/Python-3.11.8/Lib/logging/__init__.py
+[debug] adding syscall write to allowlist for module /workspace/Python-3.11.8/Lib/logging/__init__.py
+[debug] adding syscall getcwd to allowlist for module /workspace/Python-3.11.8/Lib/multiprocessing/process.py
+[debug] adding syscall getpid to allowlist for module /workspace/Python-3.11.8/Lib/multiprocessing/process.py
+[debug] adding syscall getrandom to allowlist for module /workspace/Python-3.11.8/Lib/multiprocessing/process.py
+[debug] adding syscall prlimit64 to allowlist for module /workspace/Python-3.11.8/Lib/multiprocessing/util.py
+[debug] adding syscall read to allowlist for module /workspace/Python-3.11.8/Lib/os.py
+[debug] adding syscall uname to allowlist for module /workspace/Python-3.11.8/Lib/platform.py
+[debug] adding syscall close to allowlist for module /workspace/Python-3.11.8/Lib/posixpath.py
+[debug] adding syscall fstat to allowlist for module /workspace/Python-3.11.8/Lib/posixpath.py
+[debug] adding syscall getcwd to allowlist for module /workspace/Python-3.11.8/Lib/posixpath.py
+[debug] adding syscall getdents64 to allowlist for module /workspace/Python-3.11.8/Lib/posixpath.py
+[debug] adding syscall openat to allowlist for module /workspace/Python-3.11.8/Lib/posixpath.py
+[debug] adding syscall getrandom to allowlist for module /workspace/Python-3.11.8/Lib/random.py
+[debug] adding syscall clock_gettime to allowlist for module /workspace/Python-3.11.8/Lib/selectors.py
+[debug] adding syscall close to allowlist for module /workspace/Python-3.11.8/Lib/selectors.py
+[debug] adding syscall epoll_create1 to allowlist for module /workspace/Python-3.11.8/Lib/selectors.py
+[debug] adding syscall epoll_wait to allowlist for module /workspace/Python-3.11.8/Lib/selectors.py
+[debug] adding syscall rt_sigreturn to allowlist for module /workspace/Python-3.11.8/Lib/selectors.py
+[debug] adding syscall write to allowlist for module /workspace/Python-3.11.8/Lib/selectors.py
+[debug] adding syscall rt_sigaction to allowlist for module /workspace/Python-3.11.8/Lib/signal.py
+[debug] adding syscall fstat to allowlist for module /workspace/Python-3.11.8/Lib/site.py
+[debug] adding syscall getegid to allowlist for module /workspace/Python-3.11.8/Lib/site.py
+[debug] adding syscall geteuid to allowlist for module /workspace/Python-3.11.8/Lib/site.py
+[debug] adding syscall getgid to allowlist for module /workspace/Python-3.11.8/Lib/site.py
+[debug] adding syscall getuid to allowlist for module /workspace/Python-3.11.8/Lib/site.py
+[debug] adding syscall ioctl to allowlist for module /workspace/Python-3.11.8/Lib/site.py
+[debug] adding syscall lseek to allowlist for module /workspace/Python-3.11.8/Lib/site.py
+[debug] adding syscall openat to allowlist for module /workspace/Python-3.11.8/Lib/site.py
+[debug] adding syscall accept4 to allowlist for module /workspace/Python-3.11.8/Lib/socket.py
+[debug] adding syscall bind to allowlist for module /workspace/Python-3.11.8/Lib/socket.py
+[debug] adding syscall getsockname to allowlist for module /workspace/Python-3.11.8/Lib/socket.py
+[debug] adding syscall ioctl to allowlist for module /workspace/Python-3.11.8/Lib/socket.py
+[debug] adding syscall setsockopt to allowlist for module /workspace/Python-3.11.8/Lib/socket.py
+[debug] adding syscall socket to allowlist for module /workspace/Python-3.11.8/Lib/socket.py
+[debug] adding syscall socketpair to allowlist for module /workspace/Python-3.11.8/Lib/socket.py
+[debug] adding syscall brk to allowlist for module /workspace/Python-3.11.8/Lib/sre_compile.py
+[debug] adding syscall getpid to allowlist for module /workspace/Python-3.11.8/Lib/threading.py
+[debug] adding syscall gettid to allowlist for module /workspace/Python-3.11.8/Lib/threading.py
+[debug] adding syscall brk to allowlist for module /workspace/Python-3.11.8/Lib/typing.py
+[debug] adding syscall getpid to allowlist for module /workspace/Python-3.11.8/Lib/typing.py
+[debug] adding syscall mmap to allowlist for module /workspace/Python-3.11.8/Lib/typing.py
 [debug] adding syscall brk to allowlist for module <frozen importlib._bootstrap>
 [debug] adding syscall clock_gettime to allowlist for module <frozen importlib._bootstrap>
 [debug] adding syscall close to allowlist for module <frozen importlib._bootstrap>
@@ -337,7 +337,7 @@ BPFTRCE SANDBOX:  sandbox.bt
  SANDBOX READY: sandbox.bt
 
  >>> secimport run
- RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', 'bash -c "/workspace/Python-3.10.0/python fastapi_main.py"']
+ RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', 'bash -c "/workspace/Python-3.11.8/python fastapi_main.py"']
 
 Attaching 5 probes...
 REGISTERING SYSCALLS...
