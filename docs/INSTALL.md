@@ -66,7 +66,7 @@ make install
 
 Download python
 ```shell
-PYTHON_VERSION="3.10.0"
+PYTHON_VERSION="3.11.8"
 
 cd /tmp
 curl -o Python-$PYTHON_VERSION.tgz https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tgz
@@ -97,9 +97,9 @@ make altinstall
 <br><br>
 ## Test the interpreter
 ```shell
-➜  Python-3.10.0 ./python
+➜  Python-3.11.8 ./python
 
-Python 3.10.0 (default, Jul  6 2022, 09:21:12) [Clang 13.0.0 (clang-1300.0.27.3)] on darwin
+Python 3.11.8 (default, Jul  6 2022, 09:21:12) [Clang 13.0.0 (clang-1300.0.27.3)] on darwin
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import ssl
 >>> # You're good to go!

@@ -7,7 +7,7 @@ python3 -m pip install requests secimport
 ```shell
 root@47454e6c2da3:/workspace/examples/cli/ebpf/requests_demo# secimport trace do_request.py
 
-    Tracing using  ['/workspace/secimport/profiles/trace.bt', '-c', 'bash -c "/workspace/Python-3.10.0/python do_request.py"', '-o', 'trace.log']
+    Tracing using  ['/workspace/secimport/profiles/trace.bt', '-c', 'bash -c "/workspace/Python-3.11.8/python do_request.py"', '-o', 'trace.log']
 
     Press CTRL+D or CTRL+C to stop the trace gracefully.
 
@@ -29,7 +29,7 @@ Policy is ready:  policy.yaml policy.json
 ...
 [debug]  '/root/.local/lib/python3.10/site-packages/idna/idnadata.py' is not importable via importlib. Keeping the name as-is.
 ...
-[debug]  adding syscall brk to allowlist for module /workspace/Python-3.10.0/Lib/ssl.py
+[debug]  adding syscall brk to allowlist for module /workspace/Python-3.11.8/Lib/ssl.py
 ...
 [debug]  adding syscall set_tid_address to allowlist for module general_requirements
 ...
@@ -43,7 +43,7 @@ Policy is ready:  policy.yaml policy.json
 ```shell
 root@47454e6c2da3:/workspace/examples/cli/ebpf/requests_demo# secimport run --entrypoint do_request.py
 
-RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', 'bash -c "/workspace/Python-3.10.0/python do_request.py"']
+RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', 'bash -c "/workspace/Python-3.11.8/python do_request.py"']
 Attaching 5 probes...
 
 200

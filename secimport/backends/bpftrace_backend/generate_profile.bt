@@ -1,7 +1,7 @@
 #!/usr/bin/env bpftrace
 
 // Usage:
-// ./trace.bt -c Python-3.10.0/python
+// ./trace.bt -c Python-3.11.8/python
 
 BEGIN {
     // Mapping all syscalls both ways, based on https://github.com/iovisor/bpftrace/blob/2c7a7a598dbe1aa790db2dfe2db242aa69137d5b/tools/syscount.bt
@@ -686,7 +686,7 @@ BEGIN {
 }
 
 // function__entry(str filename, str funcname, int lineno)
-usdt:/workspace/Python-3.10.0/python:function__entry {
+usdt:/workspace/Python-3.11.8/python:function__entry {
         @["depth"]++;
         @entrypoints[str(arg0)] = @["depth"];
         @globals["previous_module"] = @globals["current_module"];
@@ -697,7 +697,7 @@ usdt:/workspace/Python-3.10.0/python:function__entry {
 }
 
 // function__return(str filename, str funcname, int lineno)
-usdt:/workspace/Python-3.10.0/python:function__return {
+usdt:/workspace/Python-3.11.8/python:function__return {
         @["depth"]--;
 }
 

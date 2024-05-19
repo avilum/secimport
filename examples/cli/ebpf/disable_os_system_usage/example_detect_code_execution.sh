@@ -5,7 +5,7 @@
 #            You can remove this argument.
 
 echo "Starting secimport sandbox with python shell..."
-bpftrace -c "/workspace/Python-3.10.0/python -c __import__('os').system('ps')" -o sandbox.log sandbox.bt --unsafe
+bpftrace -c "/workspace/Python-3.11.8/python -c __import__('os').system('ps')" -o sandbox.log sandbox.bt --unsafe
 
 # The process is killed becused we ran os.system inside our sandbox.
 # Watch the logs:

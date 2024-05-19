@@ -4,7 +4,7 @@
 // It can be attached to a running process using -p or can be used to trace a python shell interactively.
 //
 // Usage:
-// ./trace.bt -c Python-3.10.0/python
+// ./trace.bt -c Python-3.11.8/python
 
 BEGIN {
     // Mapping all syscalls both ways, based on https://github.com/iovisor/bpftrace/blob/2c7a7a598dbe1aa790db2dfe2db242aa69137d5b/tools/syscount.bt
@@ -688,7 +688,7 @@ BEGIN {
     printf("Tracing Modules - Exit gracefully with Ctrl+D\n")
 }
 
-usdt:/workspace/Python-3.10.0/python:function__entry {
+usdt:/workspace/Python-3.11.8/python:function__entry {
         @["depth"]++;
         @entrypoints[str(arg0)] = @["depth"];
         @globals["previous_module"] = @globals["current_module"];
@@ -698,7 +698,7 @@ usdt:/workspace/Python-3.10.0/python:function__entry {
         // printf("%s, %s, depth=%d\n", str(arg0), str(arg1), @["depth"]) ;
 }
 
-usdt:/workspace/Python-3.10.0/python:function__return {
+usdt:/workspace/Python-3.11.8/python:function__return {
         @["depth"]--;
 }
 

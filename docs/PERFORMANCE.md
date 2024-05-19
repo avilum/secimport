@@ -111,7 +111,7 @@ print("--- %s seconds ---" % (time.time() - start_time))
 
 Without secimport
 ```python
-root@3ecd9c9b5613:/workspace# Python-3.10.0/python pytorch_example.py
+root@3ecd9c9b5613:/workspace# Python-3.11.8/python pytorch_example.py
 99 674.6323852539062
 199 454.4176025390625
 299 307.2438659667969
@@ -140,7 +140,7 @@ With secimport
 ```python
 root@3ecd9c9b5613:/workspace# secimport run --entrypoint pytorch_example.py
  >>> secimport run
- RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', 'bash -c "/workspace/Python-3.10.0/python pytorch_example.py"']
+ RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', 'bash -c "/workspace/Python-3.11.8/python pytorch_example.py"']
 Attaching 4 probes...
 99 3723.3251953125
 199 2513.790283203125

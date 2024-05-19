@@ -9,12 +9,12 @@ else
 fi
 
 # Using a custom linukit kernel version that matches the current kernel;
-# KERNEL_VERSION=`docker run --rm -it alpine uname -r | cut -d'-' -f1`
-KERNEL_VERSION="5.10.76"
+#KERNEL_VERSION=`docker run --rm -it alpine uname -r | cut -d'-' -f1`
+KERNEL_VERSION="5.10.25"
 
 echo "USING KERNEL $KERNEL_VERSION"
-BPFTRACE_VERSION=${BPFTRACE_VERSION:-v0.16.0}
-PYTHON_VERSION=${PYTHON_VERSION:-"3.10.0"}
+BPFTRACE_VERSION=${BPFTRACE_VERSION:-v0.20.3}
+PYTHON_VERSION=${PYTHON_VERSION:-"3.11.8"}
 
 pushd docker
 

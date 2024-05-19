@@ -23,7 +23,7 @@
     "/root/.local/lib/python3.10/site-packages/idna/idnadata.py": [
         " brk"
     ],
-    "/workspace/Python-3.10.0/Lib/codecs.py": [
+    "/workspace/Python-3.11.8/Lib/codecs.py": [
         " close",
         " dup",
         " fstat",
@@ -32,17 +32,17 @@
         " read",
         " rt_sigaction"
     ],
-    "/workspace/Python-3.10.0/Lib/collections/__init__.py": [
+    "/workspace/Python-3.11.8/Lib/collections/__init__.py": [
         " brk",
         " mmap"
     ],
-    "/workspace/Python-3.10.0/Lib/email/message.py": [
+    "/workspace/Python-3.11.8/Lib/email/message.py": [
         " clock_gettime"
     ],
-    "/workspace/Python-3.10.0/Lib/email/utils.py": [
+    "/workspace/Python-3.11.8/Lib/email/utils.py": [
         " clock_gettime"
     ],
-    "/workspace/Python-3.10.0/Lib/encodings/idna.py": [
+    "/workspace/Python-3.11.8/Lib/encodings/idna.py": [
         " clock_gettime",
         " close",
         " connect",
@@ -64,38 +64,38 @@
         " stat",
         " uname"
     ],
-    "/workspace/Python-3.10.0/Lib/genericpath.py": [
+    "/workspace/Python-3.11.8/Lib/genericpath.py": [
         " stat"
     ],
-    "/workspace/Python-3.10.0/Lib/http/cookiejar.py": [
+    "/workspace/Python-3.11.8/Lib/http/cookiejar.py": [
         " clock_gettime"
     ],
-    "/workspace/Python-3.10.0/Lib/http/cookies.py": [
+    "/workspace/Python-3.11.8/Lib/http/cookies.py": [
         " brk"
     ],
-    "/workspace/Python-3.10.0/Lib/logging/__init__.py": [
+    "/workspace/Python-3.11.8/Lib/logging/__init__.py": [
         " exit_group",
         " munmap",
         " rt_sigaction"
     ],
-    "/workspace/Python-3.10.0/Lib/os.py": [
+    "/workspace/Python-3.11.8/Lib/os.py": [
         " read"
     ],
-    "/workspace/Python-3.10.0/Lib/posixpath.py": [
+    "/workspace/Python-3.11.8/Lib/posixpath.py": [
         " close",
         " fstat",
         " getcwd",
         " getdents64",
         " openat"
     ],
-    "/workspace/Python-3.10.0/Lib/random.py": [
+    "/workspace/Python-3.11.8/Lib/random.py": [
         " getrandom"
     ],
-    "/workspace/Python-3.10.0/Lib/selectors.py": [
+    "/workspace/Python-3.11.8/Lib/selectors.py": [
         " close",
         " epoll_create1"
     ],
-    "/workspace/Python-3.10.0/Lib/site.py": [
+    "/workspace/Python-3.11.8/Lib/site.py": [
         " fstat",
         " getegid",
         " geteuid",
@@ -105,20 +105,20 @@
         " lseek",
         " openat"
     ],
-    "/workspace/Python-3.10.0/Lib/socket.py": [
+    "/workspace/Python-3.11.8/Lib/socket.py": [
         " bind",
         " close",
         " getsockname",
         " ioctl",
         " socket"
     ],
-    "/workspace/Python-3.10.0/Lib/sre_compile.py": [
+    "/workspace/Python-3.11.8/Lib/sre_compile.py": [
         " brk"
     ],
-    "/workspace/Python-3.10.0/Lib/sre_constants.py": [
+    "/workspace/Python-3.11.8/Lib/sre_constants.py": [
         " mmap"
     ],
-    "/workspace/Python-3.10.0/Lib/ssl.py": [
+    "/workspace/Python-3.11.8/Lib/ssl.py": [
         " brk",
         " clock_gettime",
         " close",
@@ -132,24 +132,24 @@
         " read",
         " write"
     ],
-    "/workspace/Python-3.10.0/Lib/threading.py": [
+    "/workspace/Python-3.11.8/Lib/threading.py": [
         " gettid",
         " write"
     ],
-    "/workspace/Python-3.10.0/Lib/typing.py": [
+    "/workspace/Python-3.11.8/Lib/typing.py": [
         " mmap"
     ],
-    "/workspace/Python-3.10.0/lib/python3.10/site-packages/requests/": [
+    "/workspace/Python-3.11.8/lib/python3.10/site-packages/requests/": [
         " clock_gettime"
     ],
-    "/workspace/Python-3.10.0/lib/python3.10/site-packages/urllib3/c": [
+    "/workspace/Python-3.11.8/lib/python3.10/site-packages/urllib3/c": [
         " clock_gettime",
         " ioctl"
     ],
-    "/workspace/Python-3.10.0/lib/python3.10/site-packages/urllib3/r": [
+    "/workspace/Python-3.11.8/lib/python3.10/site-packages/urllib3/r": [
         " brk"
     ],
-    "/workspace/Python-3.10.0/lib/python3.10/site-packages/urllib3/u": [
+    "/workspace/Python-3.11.8/lib/python3.10/site-packages/urllib3/u": [
         " brk",
         " clock_gettime",
         " close",

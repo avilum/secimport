@@ -65,9 +65,9 @@ COMMANDS
 root@1bc0531d91d0:/workspace# secimport run  --stop_on_violation=true
  >>> secimport run
 [WARNING]: This sandbox will send SIGSTOP to the program upon violation.
- RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', '/workspace/Python-3.10.0/python', 'STOP']
+ RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', '/workspace/Python-3.11.8/python', 'STOP']
 Attaching 4 probes...
-Python 3.10.0 (default, Apr 28 2023, 11:32:40) [GCC 9.4.0] on linux
+Python 3.11.8 (default, Apr 28 2023, 11:32:40) [GCC 9.4.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import os
 >>> os.system('ps')
@@ -82,10 +82,10 @@ Type "help", "copyright", "credits" or "license" for more information.
 root@ee4bc99bb011:/workspace# secimport run --kill_on_violation
  >>> secimport run
 [WARNING]: This sandbox will send SIGKILL to the program upon violation.
- RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', '/workspace/Python-3.10.0/python', 'KILL']
+ RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', '/workspace/Python-3.11.8/python', 'KILL']
 import os
 oAttaching 4 probes...
-sPython 3.10.0 (default, Apr 28 2023, 11:32:40) [GCC 9.4.0] on linux
+sPython 3.11.8 (default, Apr 28 2023, 11:32:40) [GCC 9.4.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import os
 >>> os.system('ps')
@@ -107,11 +107,11 @@ Let's create our first tailor-made sandbox with secimport!
 OK? (y): y
  >>> secimport trace
 
-TRACING: ['/workspace/secimport/profiles/trace.bt', '-c', '/workspace/Python-3.10.0/python', '-o', 'trace.log']
+TRACING: ['/workspace/secimport/profiles/trace.bt', '-c', '/workspace/Python-3.11.8/python', '-o', 'trace.log']
 
                         Press CTRL+D to stop the trace;
 
-Python 3.10.0 (default, Mar 19 2023, 08:34:46) [GCC 9.4.0] on linux
+Python 3.11.8 (default, Mar 19 2023, 08:34:46) [GCC 9.4.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import this
 >>>
@@ -146,11 +146,11 @@ Now, let's run the sandbox!
 
         OK? (y): y
  >>> secimport run
- RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', '/workspace/Python-3.10.0/python']
+ RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', '/workspace/Python-3.11.8/python']
 Attaching 5 probes...
 REGISTERING SYSCALLS...
 STARTED
-Python 3.10.0 (default, Mar 19 2023, 08:34:46) [GCC 9.4.0] on linux
+Python 3.11.8 (default, Mar 19 2023, 08:34:46) [GCC 9.4.0] on linux
 Type "help", "copyright", "credits" or "license" for more information.
 >>> import this
 >>> import os
