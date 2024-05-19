@@ -2,7 +2,8 @@ ARG KERNEL_VERSION
 
 #FROM --platform=linux/amd64 linuxkit/kernel:${KERNEL_VERSION} as ksrc
 FROM docker/for-desktop-kernel:5.10.25-6594e668feec68f102a58011bb42bd5dc07a7a9b as ksrc
-FROM --platform=linux/amd64 ubuntu:latest AS build
+# FROM --platform=linux/amd64 ubuntu:latest AS build
+FROM ubuntu:latest AS build
 
 ARG BPFTRACE_VERSION
 ARG PYTHON_VERSION
