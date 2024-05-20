@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "secimport"
-version = "0.9.2"
-description = "A sandbox/supervisor for python modules."
+version = "0.10.0"
+description = "A eBPF runtime sandbox for python that prevents RCE."
 authors = ["Avi Lumelsky"]
 license = "MIT"
 homepage = "https://github.com/avilum/secimport"

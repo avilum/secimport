@@ -39,11 +39,12 @@ RUN echo "Installing python with dtrace" && \
     cd Python-${PYTHON_VERSION} && ./configure --with-dtrace --prefix=/usr/local/openssl --prefix=$(pwd) --with-ensurepip=install && make && make install
 
 RUN echo "Installing bpftrace" && \
-    wget https://github.com/iovisor/bpftrace/releases/download/${BPFTRACE_VERSION}/bpftrace && \
-    chmod +x bpftrace && \
-    mv bpftrace /bin && \
-    echo "Done building bpftrace" && \
-    mv /kernel/usr/src/linux-headers* /kernel/usr/src/linux-headers
+    # wget https://github.com/iovisor/bpftrace/releases/download/${BPFTRACE_VERSION}/bpftrace && \
+    # chmod +x bpftrace && \
+    # mv bpftrace /bin && \
+    # echo "Done building bpftrace" && \
+    mv /kernel/usr/src/linux-headers* /kernel/usr/src/linux-headers && \
+    apt-get install bpftrace -y;
 
 # Install nsjail: taken from https://github.com/google/nsjail/blob/master//Dockerfile=
 #RUN git clone https://github.com/google/nsjail.git /nsjail && cd /nsjail && make && mv /nsjail/nsjail /bin && rm -rf -- /nsjail

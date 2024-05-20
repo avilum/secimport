@@ -58,9 +58,10 @@ def render_syscalls_filter(
         # Translating syscall
         _syscall_number = SYSCALLS_NAMES.get(_syscall)
         if _syscall_number is None:
-            raise NotImplementedError(
+            print("Warning:", NotImplementedError(
                 f"The provided syscall it not a syscall mapped to a number: '{_syscall}'"
-            )
+            ))
+            continue
 
         # dtrace
         if instrumentation_backend == InstrumentationBackend.DTRACE:
