@@ -3,7 +3,7 @@
 ![](https://img.shields.io/badge/Test_Coverage-90%-blue)
 
 A Tailor-Made Sandbox for Your Python Applications.<br>
-secimport is eBPF-based sandbox toolkit for Python, that enforces specific syscalls per module in yoyr code.<br>
+secimport is eBPF-based sandbox toolkit for Python, that enforces specific syscalls per module in your code.<br>
 1. It traces your python code
 2. It creates a security profile for your application<br>
 3. Use the profile by applying it to running processes, or to run a new python process with supervision.
