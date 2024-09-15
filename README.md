@@ -36,8 +36,9 @@ secimport is eBPF-based sandbox toolkit for Python, that enforces specific sysca
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Background
+## Talks
+[![Secimport Talk on BSIDES](https://img.youtube.com/vi/nRV0ulYMsxU/0.jpg)](https://youtu.be/nRV0ulYMsxU?t=1257)
 ## Technical Blogs
-- <iframe width="1852" height="1042" src="https://www.youtube.com/embed/nRV0ulYMsxU" title="BSidesBUD2024: Scaling Runtime Application Security" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 - <a href="https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26?source=friends_link&sk=5e9a2fa4d4921af0ec94f175f7ee49f9">secimport + Dtrace</a>
 - <a href="https://infosecwriteups.com/securing-pytorch-models-with-ebpf-7f75732b842d?source=friends_link&sk=14d8db403aaf66724a8a69b4dea24e12">secimprt + eBPF + PyTorch</a>
 - <a href="https://avi-lumelsky.medium.com/secure-fastapi-with-ebpf-724d4aef8d9e?source=friends_link&sk=b01a6b97ef09003b53cd52c479017b03">secimport + eBPF + FastAPI </a>
