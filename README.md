@@ -10,6 +10,18 @@ secimport is eBPF-based sandbox toolkit for Python, that enforces specific sysca
 
 <b>secimport for python is like seccomp-bpf for linux but per module in your code.</b>
 
+
+
+<a href="https://star-history.com/#avilum/secimport&Date">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=avilum/secimport&type=Date&theme=dark" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=avilum/secimport&type=Date" />
+   <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=avilum/secimport&type=Date" />
+ </picture>
+</a>
+
+
+
 <!-- START doctoc generated TOC please keep comment here to allow auto update -->
 <!-- DON'T EDIT THIS SECTION, INSTEAD RE-RUN doctoc TO UPDATE -->
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
