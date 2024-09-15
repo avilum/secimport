@@ -23,25 +23,26 @@ secimport is eBPF-based sandbox toolkit for Python, that enforces specific sysca
   - [Example Sandboxes](#example-sandboxes)
   - [Using Docker](#using-docker)
   - [Without Docker](#without-docker)
+- [Quickstart: trace, build, run.](#quickstart-trace-build-run)
 - [Command Line Usage](#command-line-usage)
     - [Stop on violation](#stop-on-violation)
     - [Kill on violation](#kill-on-violation)
-- [Quickstart: trace, build, run.](#quickstart-trace-build-run)
 - [Advanced](#advanced)
-  - [Python API](#python-api)
-  - [seccomp-bpf support using nsjail](#seccomp-bpf-support-using-nsjail)
-  - [Changelog](#changelog)
-  - [Contributing](#contributing)
+    - [Python API](#python-api)
+    - [seccomp-bpf support using nsjail](#seccomp-bpf-support-using-nsjail)
+- [Changelog](#changelog)
+    - [Contributing](#contributing)
 
 <!-- END doctoc generated TOC please keep comment here to allow auto update -->
 
 # Background
 ## Technical Blogs
+- <iframe width="1852" height="1042" src="https://www.youtube.com/embed/nRV0ulYMsxU" title="BSidesBUD2024: Scaling Runtime Application Security" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 - <a href="https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26?source=friends_link&sk=5e9a2fa4d4921af0ec94f175f7ee49f9">secimport + Dtrace</a>
 - <a href="https://infosecwriteups.com/securing-pytorch-models-with-ebpf-7f75732b842d?source=friends_link&sk=14d8db403aaf66724a8a69b4dea24e12">secimprt + eBPF + PyTorch</a>
 - <a href="https://avi-lumelsky.medium.com/secure-fastapi-with-ebpf-724d4aef8d9e?source=friends_link&sk=b01a6b97ef09003b53cd52c479017b03">secimport + eBPF + FastAPI </a>
 
-## The problem 
+## The problem
 Traditional tools like seccomp or AppArmor enforce syscalls for the entire process.<br>Something like `allowed_syscalls=["read","openat","bind","write"]`, which is great, but not enough for python's attack surface.<br>
 
 ## How it works
@@ -108,6 +109,57 @@ Tested on Ubuntu, Debian, Rocky (Linux x86/AMD/ARM) and MacOS in (x86/M1). If yo
       python3 -m pip install poetry && python3 -m poetry install
       ```
 
+# Quickstart: trace, build, run.
+```shell
+root@1fa3d6f09989:/workspace# secimport interactive
+
+Let's create our first tailor-made sandbox with secimport!
+- A python shell will be opened
+- The behavior will be recorded.
+
+OK? (y): y
+ >>> secimport trace
+
+TRACING: ['/workspace/secimport/profiles/trace.bt', '-c', '/workspace/Python-3.11.8/python', '-o', 'trace.log']
+
+                        Press CTRL+D to stop the trace;
+
+Python 3.11.8 (default, Mar 19 2023, 08:34:46) [GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import this
+>>>
+ TRACING DONE;
+ >>> secimport build
+
+SECIMPORT COMPILING...
+
+CREATED JSON TEMPLATE:  policy.json
+CREATED YAML TEMPLATE:  policy.yaml
+compiling template policy.yaml
+DTRACE SANDBOX:  sandbox.d
+BPFTRCE SANDBOX:  sandbox.bt
+```
+
+Now, let's run the sandbox!
+```python
+- Run the same commands as before, they should run without any problem;.
+- Do something new in the shell; e.g:   >>> __import__("os").system("ps")
+
+        OK? (y): y
+ >>> secimport run
+ RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', '/workspace/Python-3.11.8/python']
+Attaching 5 probes...
+REGISTERING SYSCALLS...
+STARTED
+Python 3.11.8 (default, Mar 19 2023, 08:34:46) [GCC 9.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+>>> import this
+>>> import os
+[SECIMPORT VIOLATION]: <stdin> called syscall ioctl at depth 0
+[SECIMPORT VIOLATION]: <stdin> called syscall ioctl at depth 0
+```
+
+For more detailed usage instructions, see the [Command-Line Usage](https://github.com/avilum/secimport/wiki/Command-Line-Usage) page.
 
 # Command Line Usage
 To sandbox your program using the CLI, start a bpftrace program that logs all the syscalls for all the modules in your application into a file with the secimport trace command. Once you have covered the logic you would like to sandbox, hit CTRL+C or CTRL+D, or wait for the program to finish. Then, build a sandbox from the trace using the secimport build command, and run the sandbox with the secimport run command.
@@ -208,72 +260,21 @@ Type "help", "copyright", "credits" or "license" for more information.
  SANDBOX EXITED;
 ```
 
-# Quickstart: trace, build, run.
-```shell
-root@1fa3d6f09989:/workspace# secimport interactive
-
-Let's create our first tailor-made sandbox with secimport!
-- A python shell will be opened
-- The behavior will be recorded.
-
-OK? (y): y
- >>> secimport trace
-
-TRACING: ['/workspace/secimport/profiles/trace.bt', '-c', '/workspace/Python-3.11.8/python', '-o', 'trace.log']
-
-                        Press CTRL+D to stop the trace;
-
-Python 3.11.8 (default, Mar 19 2023, 08:34:46) [GCC 9.4.0] on linux
-Type "help", "copyright", "credits" or "license" for more information.
->>> import this
->>>
- TRACING DONE;
- >>> secimport build
-
-SECIMPORT COMPILING...
-
-CREATED JSON TEMPLATE:  policy.json
-CREATED YAML TEMPLATE:  policy.yaml
-compiling template policy.yaml
-DTRACE SANDBOX:  sandbox.d
-BPFTRCE SANDBOX:  sandbox.bt
-```
-
-Now, let's run the sandbox!
-```python
-- Run the same commands as before, they should run without any problem;.
-- Do something new in the shell; e.g:   >>> __import__("os").system("ps")
-
-        OK? (y): y
- >>> secimport run
- RUNNING SANDBOX... ['./sandbox.bt', '--unsafe', ' -c ', '/workspace/Python-3.11.8/python']
-Attaching 5 probes...
-REGISTERING SYSCALLS...
-STARTED
-Python 3.11.8 (default, Mar 19 2023, 08:34:46) [GCC 9.4.0] on linux
-Type "help", "copyright", "credits" or "license" for more information.
->>> import this
->>> import os
-[SECIMPORT VIOLATION]: <stdin> called syscall ioctl at depth 0
-[SECIMPORT VIOLATION]: <stdin> called syscall ioctl at depth 0
-```
-
-For more detailed usage instructions, see the [Command-Line Usage](https://github.com/avilum/secimport/wiki/Command-Line-Usage) page.
 
 # Advanced
 
-## Python API
+### Python API
 See the [Python Imports](examples/python_imports/) example for more details.<br>
 You can use secimport directly from python, instead of the CLI.<br> you can replace `import` with `secimport.secure_import` for selected modules, and have them supervised in real time.<br>
 
-## seccomp-bpf support using nsjail
+### seccomp-bpf support using nsjail
 Beside the sandbox that secimport builds, <br>
 The `secimport build` command creates an <a href="https://github.com/google/nsjail">nsjail</a> sandbox with seccomp profile for your traced code.<br> `nsjail` enables namespace sandboxing with seccomp on linux<br>
 `secimport` automatically generates seccomp profiles to use with `nsjail` as executable bash script.
 It can be used to limit the syscalls of the entire python process, as another layer of defence.
 
-## Changelog
+# Changelog
 See the [Changelog](https://github.com/avilum/secimport/blob/master/docs/CHANGELOG.md) for development progress and existing features.
 
-## Contributing
+### Contributing
 For information on how to contribute to `secimport`, see the [Contributing](https://github.com/avilum/secimport/blob/master/docs/CONTRIBUTING.md) guide.
