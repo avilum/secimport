@@ -7,13 +7,13 @@
 
 secimport is an eBPF-based security toolkit that enforces syscall restrictions per Python module, providing granular control over your application's security profile. Think of it as seccomp-bpf for Linux, but operating at the Python module level.
 
-<a href="https://star-history.com/#avilum/secimport&Date">
+[<a href="https://star-history.com/#avilum/secimport&Date">
  <picture>
    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=avilum/secimport&type=Date&theme=dark" />
    <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/svg?repos=avilum/secimport&type=Date" />
    <img alt="Star History Chart" src="https://api.star-history.com/svg?repos=avilum/secimport&type=Date" />
  </picture>
-</a>
+</a>](https://star-history.com/#avilum/secimport&Date)
 
 ## Key Features
 
