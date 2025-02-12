@@ -1,8 +1,9 @@
 ARG KERNEL_VERSION
 
 #FROM --platform=linux/amd64 linuxkit/kernel:${KERNEL_VERSION} as ksrc
-FROM docker/for-desktop-kernel:5.10.25-6594e668feec68f102a58011bb42bd5dc07a7a9b as ksrc
-# FROM --platform=linux/amd64 ubuntu:latest AS build
+#FROM docker/for-desktop-kernel:5.10.25-6594e668feec68f102a58011bb42bd5dc07a7a9b as ksrc
+#FROM --platform=linux/amd64 ubuntu:latest AS build
+FROM linuxkit/kernel:6.6.13-44a5293614ca7c7674013e928cb11dcdbba73ba8 as ksrc
 FROM ubuntu:latest AS build
 
 ARG BPFTRACE_VERSION
@@ -46,16 +47,16 @@ RUN echo "Installing bpftrace" && \
     mv /kernel/usr/src/linux-headers* /kernel/usr/src/linux-headers && \
     apt-get install bpftrace -y;
 
-# Install nsjail: taken from https://github.com/google/nsjail/blob/master//Dockerfile=
+# Install nsjail: taken from https://github.com/google/nsjail/blob/master/Dockerfile
 #RUN git clone https://github.com/google/nsjail.git /nsjail && cd /nsjail && make && mv /nsjail/nsjail /bin && rm -rf -- /nsjail
 
 # Python dependencies for examples
-RUN /workspace/Python-${PYTHON_VERSION}/python -m pip install --upgrade pip && Python-${PYTHON_VERSION}/python -m pip install pyyaml fire fastapi uvicorn --user -U
+RUN /workspace/Python-${PYTHON_VERSION}/python -m pip install --upgrade pip && Python-${PYTHON_VERSION}/python -m pip install pyyaml typer fastapi uvicorn --user -U
 
 ENV BPFTRACE_KERNEL_SOURCE=/kernel/usr/src/linux-headers
 COPY setup.sh .
 
 # Open port 8000 for demos/examples with networking
 EXPOSE 8000
-ENTRYPOINT ["/bin/sh", "/workspace/setup.sh"]
+CMD ["/bin/sh", "/workspace/setup.sh"]
 

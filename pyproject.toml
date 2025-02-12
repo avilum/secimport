@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "secimport"
-version = "0.10.0"
+version = "0.11.0"
 description = "A eBPF runtime sandbox for python that prevents RCE."
 authors = ["Avi Lumelsky"]
 license = "MIT"
@@ -15,9 +15,9 @@ include = ["secimport/templates/**/*.d","secimport/profiles/*",]
 secimport = 'secimport.cli:main'
 
 [tool.poetry.dependencies]
-python = "^3.6"
+python = "^3.8"
 PyYAML = "^6.0"
-fire = ">=0.4,<0.7"
+typer = "^0.15.1"
 
 [tool.poetry.dev-dependencies]
 

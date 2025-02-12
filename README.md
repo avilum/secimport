@@ -94,7 +94,7 @@ For quicker evaluation, we recommend using the <a href="https://github.com/avilu
   A temporary container will be created, and you will be logged in as the root user.
 
 ## Without Docker
-Tested on Ubuntu, Debian, Rocky (Linux x86/AMD/ARM) and MacOS in (x86/M1). If you run on MacOS you will need to <a href="https://github.com/avilum/secimport/blob/master/docs/MAC_OS_USERS.md">disable SIP for dtrace. </a>
+Tested on Ubuntu, Debian, Rocky (Linux x86/AMD/ARM) and MacOS in (x86/ARM). If you run on MacOS you will need to <a href="https://github.com/avilum/secimport/blob/master/docs/MAC_OS_USERS.md">disable SIP for dtrace. </a>
 
 1. Install python with USDT probes by <a href="https://github.com/avilum/secimport/wiki/Installation#python-interpreter-requirements">configuring it with '--dtrace'</a>
 2. Install one of the backends: <a href="https://github.com/avilum/secimport/wiki/Installation">eBPF or DTrace</a>.

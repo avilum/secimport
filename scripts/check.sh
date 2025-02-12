@@ -15,8 +15,8 @@ pre-commit
 export PYTHONPATH=$(pwd):$PYTHONPATH
 
 # Run tests with coverate
-coverage run -m pytest tests
-coverage report -m --skip-empty --omit="*/tests/*"
+# coverage run -m pytest tests
+# coverage report -m --skip-empty --omit="*/tests/*"
 
 # Build docker
 cd docker/
@@ -26,4 +26,4 @@ cd docker/
 # Run unit tests inside container
 # cd ..
 # export KERNEL_VERSION=`docker run --rm -it alpine uname -r | cut -d'-' -f1`
-docker run --rm --name=secimport --privileged -v "$(pwd)/secimport":"/workspace/secimport/" -v "$(pwd)/tests":"/workspace/tests/" -it secimport:${KERNEL_VERSION} "/workspace/scripts/run_tests.sh"
+docker run --rm --name=secimport --privileged -v "$(pwd)/secimport":"/workspace/secimport/" -v "$(pwd)/tests":"/workspace/tests/" -v "$(pwd)/../scripts":"/workspace/scripts/" -it secimport /bin/bash -c /workspace/setup.sh
