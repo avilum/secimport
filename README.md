@@ -1,7 +1,10 @@
 # secimport
+![macOS](https://img.shields.io/badge/Platform-macOS-blue)
+![Linux](https://img.shields.io/badge/Platform-Linux-blue)
 
 [![Upload Python Package](https://github.com/avilum/secimport/actions/workflows/python-publish.yml/badge.svg)](https://github.com/avilum/secimport/actions/workflows/python-publish.yml)
-![](https://img.shields.io/badge/Test_Coverage-90%-blue)
+
+<!-- ![](https://img.shields.io/badge/Test_Coverage-90%-blue) -->
 
 ## Module-Level Sandboxing for Python Applications
 
@@ -32,7 +35,7 @@ git clone https://github.com/avilum/secimport.git
 cd secimport/docker
 ./build.sh && ./run.sh
 ```
-
+Command line:
 ```
 secimport --help
 
