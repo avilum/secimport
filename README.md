@@ -33,26 +33,30 @@ cd secimport/docker
 ./build.sh && ./run.sh
 ```
 
-### Manual Installation
+```
+secimport --help
 
-1. Install Python with USDT probes:
-   ```bash
-   # Configure Python with --enable-dtrace
-   # See detailed instructions in our wiki
-   ```
+ Usage: python -m secimport.cli [OPTIONS] COMMAND [ARGS]...
 
-2. Install a supported backend (eBPF or DTrace)
-   ```bash
-   # Ubuntu/Debian
-   apt-get install bpftrace
+ secimport is a comprehensive toolkit designed to enable the tracing, construction, and execution of secure Python runtimes. It leverages USDT probes and eBPF/DTrace technologies to enhance overall security measures.
+ WORKFLOW:     1. secimport trace / secimport shell     2. secimport build     3. secimport run
+ QUICKSTART:     $ secimport interactive
+ For more details, please see https://github.com/avilum/secimport/wiki/Command-Line-Usage
 
-   # For other platforms, see our Installation wiki
-   ```
-
-3. Install secimport
-   ```bash
-   pip install secimport
-   ```
+╭─ Options ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ --install-completion          Install completion for the current shell.                                                                                                                                                                                    │
+│ --show-completion             Show completion for the current shell, to copy it or customize the installation.                                                                                                                                             │
+│ --help                        Show this message and exit.                                                                                                                                                                                                  │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+╭─ Commands ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ trace         Trace a Python process using an entrypoint or interactive shell.                                                                                                                                                                             │
+│ shell         Alias for 'trace'.                                                                                                                                                                                                                           │
+│ trace-pid     Trace a running process by PID.                                                                                                                                                                                                              │
+│ build         Build a sandbox profile from a trace log.                                                                                                                                                                                                    │
+│ run           Run a Python process inside the sandbox.                                                                                                                                                                                                     │
+│ interactive   Run secimport in interactive mode.                                                                                                                                                                                                           │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+```
 
 ## Creating Your First Sandbox
 
@@ -98,6 +102,29 @@ import secimport
 requests = secimport.secure_import('requests', allowed_syscalls=['open', 'read', ...])
 ```
 
+## Manual Installation
+
+1. Install Python with USDT probes:
+
+   ```bash
+   # Configure Python with --enable-dtrace
+   # See detailed instructions in our wiki
+   ```
+
+2. Install a supported backend (eBPF or DTrace)
+
+   ```bash
+   # Ubuntu/Debian
+   apt-get install bpftrace
+
+   # For other platforms, see our Installation wiki
+   ```
+
+3. Install secimport
+   ```bash
+   pip install secimport
+   ```
+
 ## seccomp-bpf support using nsjail
 
 Beside the sandbox that secimport builds, <br>
@@ -115,13 +142,14 @@ It can be used to limit the syscalls of the entire python process, as another la
 ## Learn More
 
 ### Technical Resources
+
 - https://www.oligo.security/
 - [Talk: secimport at BSides](https://youtu.be/nRV0ulYMsxU?t=1257)
 - Blog Posts:
   - [secimport + DTrace](https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26?source=friends_link&sk=5e9a2fa4d4921af0ec94f175f7ee49f9)
   - [secimport + eBPF + PyTorch](https://infosecwriteups.com/securing-pytorch-models-with-ebpf-7f75732b842d?source=friends_link&sk=14d8db403aaf66724a8a69b4dea24e12)
   - [secimport + eBPF + FastAPI](https://avi-lumelsky.medium.com/secure-fastapi-with-ebpf-724d4aef8d9e?source=friends_link&sk=b01a6b97ef09003b53cd52c479017b03)
-  
+
 ## Contributing
 
 We welcome contributions! See our [Contributing Guide](https://github.com/avilum/secimport/blob/master/docs/CONTRIBUTING.md) for details.
