@@ -147,11 +147,14 @@ It can be used to limit the syscalls of the entire python process, as another la
 ### Technical Resources
 
 - https://www.oligo.security/
+- [Talk: secimport on PyCon](https://www.youtube.com/watch?v=6DJNQtBJvLA)
 - [Talk: secimport at BSides](https://youtu.be/nRV0ulYMsxU?t=1257)
 - Blog Posts:
   - [secimport + DTrace](https://infosecwriteups.com/sandboxing-python-modules-in-your-code-1e590d71fc26?source=friends_link&sk=5e9a2fa4d4921af0ec94f175f7ee49f9)
   - [secimport + eBPF + PyTorch](https://infosecwriteups.com/securing-pytorch-models-with-ebpf-7f75732b842d?source=friends_link&sk=14d8db403aaf66724a8a69b4dea24e12)
   - [secimport + eBPF + FastAPI](https://avi-lumelsky.medium.com/secure-fastapi-with-ebpf-724d4aef8d9e?source=friends_link&sk=b01a6b97ef09003b53cd52c479017b03)
+
+
 
 ## Contributing
 
