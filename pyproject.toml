@@ -17,6 +17,7 @@ secimport = 'secimport.cli:main'
 [tool.poetry.dependencies]
 python = "^3.8"
 PyYAML = "^6.0"
+stapsdt = "^0.1.1"
 typer = ">=0.15.1,<0.21.0"
 
 [tool.poetry.dev-dependencies]
