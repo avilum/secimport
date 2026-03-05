@@ -196,11 +196,23 @@ class SecImportCLI:
             encoding="utf-8",
         )
         if with_dtrace.strip() != "1":
-            colored_print(
-                COLORS.FAIL,
-                f"\nIt seems that {python_interpreter} was compiled without --with-dtrace=1. "
-                "secimport will probably not work properly!\n",
-            )
+            import importlib.util
+            if importlib.util.find_spec("stapsdt") is not None:
+                colored_print(
+                    COLORS.OKBLUE,
+                    f"\n[!] {python_interpreter} was compiled without --with-dtrace=1.\n"
+                    "However, 'stapsdt' is installed. secimport will use dynamic USDT probes.\n"
+                    "Note: Ensure that the 'libstapsdt' system library is also installed (https://github.com/linux-usdt/libstapsdt).\n",
+                )
+            else:
+                colored_print(
+                    COLORS.FAIL,
+                    f"\nIt seems that {python_interpreter} was compiled without --with-dtrace=1. "
+                    "secimport will probably not work properly!\n"
+                    "To enable dynamic USDT probes on standard python binaries, please:\n"
+                    "1. Install 'libstapsdt' system library: https://github.com/linux-usdt/libstapsdt\n"
+                    "2. Install 'stapsdt' python package: pip install stapsdt\n",
+                )
 
         if entrypoint:
             entrypoint_cmd = f'bash -c "{python_interpreter} {entrypoint}"'
