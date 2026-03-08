@@ -1,4 +1,5 @@
 import os
+import sysconfig
 from sys import platform
 from pathlib import Path
 from typing import List
@@ -220,9 +221,12 @@ def build_module_sandbox_from_yaml_template(
         print(f"The profile does not contain any modules: {template_path}")
         return
 
+    has_static_dtrace = sysconfig.get_config_var("WITH_DTRACE") == 1
+    interpreter_path = PYTHON_EXECUTABLE if has_static_dtrace else "*:python"
+
     script_template = script_template.replace("###SYSCALL_FILTER###", syscalls_filter)
     script_template = script_template.replace(
-        "###INTERPRETER_PATH###", PYTHON_EXECUTABLE
+        "###INTERPRETER_PATH###", interpreter_path
     )
     probes_code = ("\n" * 2).join(parsed_probes)
     script_template = script_template.replace(

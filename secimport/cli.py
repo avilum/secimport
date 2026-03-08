@@ -194,10 +194,12 @@ class SecImportCLI:
         with_dtrace = subprocess.check_output(
             [python_interpreter, "-c", 'import sysconfig; print(sysconfig.get_config_var("WITH_DTRACE"))'],
             encoding="utf-8",
-        )
-        if with_dtrace.strip() != "1":
+        ).strip()
+        use_stapsdt_wrapper = False
+        if with_dtrace != "1":
             import importlib.util
             if importlib.util.find_spec("stapsdt") is not None:
+                use_stapsdt_wrapper = True
                 colored_print(
                     COLORS.OKBLUE,
                     f"\n[!] {python_interpreter} was compiled without --with-dtrace=1.\n"
@@ -214,7 +216,40 @@ class SecImportCLI:
                     "2. Install 'stapsdt' python package: pip install stapsdt\n",
                 )
 
-        if entrypoint:
+        if use_stapsdt_wrapper:
+            from secimport.backends.common.utils import BASE_DIR_NAME
+            if not BASE_DIR_NAME.exists():
+                BASE_DIR_NAME.mkdir(parents=True, exist_ok=True)
+
+            helper_path = BASE_DIR_NAME / "trace_helper.py"
+            # Prepare the logic to run the script if entrypoint is provided
+            run_logic = f"import runpy; runpy.run_path('{entrypoint}', run_name='__main__')" if entrypoint else ""
+
+            shim_code = f"""
+import sys
+import stapsdt
+
+p = stapsdt.Provider("python")
+# https://docs.python.org/3/howto/instrumentation.html#available-static-markers
+e_p = p.add_probe("function__entry", stapsdt.ArgTypes.uint64, stapsdt.ArgTypes.uint64, stapsdt.ArgTypes.int32)
+r_p = p.add_probe("function__return", stapsdt.ArgTypes.uint64, stapsdt.ArgTypes.uint64, stapsdt.ArgTypes.int32)
+p.load()
+def t(f, e, a):
+    if e == "call":
+        # Using local variables to ensure string stability for bpftrace
+        e_p.fire(f.f_code.co_filename, f.f_code.co_name, f.f_lineno)
+    elif e == "return":
+        r_p.fire(f.f_code.co_filename, f.f_code.co_name, f.f_lineno)
+    return t
+sys.setprofile(t)
+{run_logic}
+"""
+            with open(helper_path, "w") as f:
+                f.write(shim_code)
+
+            interactive_flag = "-i" if not entrypoint else ""
+            entrypoint_cmd = f"{python_interpreter} {interactive_flag} {helper_path}"
+        elif entrypoint:
             entrypoint_cmd = f'bash -c "{python_interpreter} {entrypoint}"'
         else:
             entrypoint_cmd = python_interpreter
@@ -227,9 +262,16 @@ class SecImportCLI:
             trace_log_file,
             python_interpreter,
         ]
+        if os.geteuid() != 0:
+            cmd.insert(0, "sudo")
+
         colored_print(COLORS.HEADER, "\nTracing using ", cmd)
         colored_print(COLORS.BOLD, "Press CTRL+D or CTRL+C to stop the trace gracefully.\n")
-        os.system(" ".join(cmd))
+
+        try:
+            subprocess.run(cmd)
+        except KeyboardInterrupt:
+            pass
         colored_print(
             COLORS.BOLD,
             "The trace log is at",
@@ -259,10 +301,16 @@ class SecImportCLI:
             trace_log_file,
             f"{python_interpreter}",
         ]
+        if os.geteuid() != 0:
+            cmd.insert(0, "sudo")
+
         colored_print(COLORS.HEADER, "\nTRACING PID:")
         colored_print(COLORS.OKBLUE, pid)
         input("\t\t\tPress CTRL+D/CTRL+C to stop the trace;")
-        os.system(" ".join(cmd))
+        try:
+            subprocess.run(cmd)
+        except KeyboardInterrupt:
+            pass
         colored_print(COLORS.ENDC)
 
     @staticmethod
@@ -322,6 +370,9 @@ class SecImportCLI:
                 "The sandbox was not found. Try calling 'secimport trace/trace_pid' and then 'secimport build'."
             )
         sandbox_startup_cmd = [f"{sandbox_executable}", "--unsafe"]
+        if os.geteuid() != 0:
+            sandbox_startup_cmd.insert(0, "sudo")
+
         if pid is not None:
             sandbox_startup_cmd += [f"-p {pid}"]
         elif python_interpreter is not None:
@@ -349,7 +400,10 @@ class SecImportCLI:
             sandbox_startup_cmd.append("KILL")
 
         colored_print(COLORS.HEADER, "RUNNING SANDBOX...", sandbox_startup_cmd)
-        os.system(" ".join(sandbox_startup_cmd))
+        try:
+            subprocess.run(sandbox_startup_cmd)
+        except KeyboardInterrupt:
+            pass
         colored_print(
             COLORS.BOLD,
             "SANDBOX EXITED;",
