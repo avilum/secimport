@@ -255,6 +255,7 @@ sys.setprofile(t)
             entrypoint_cmd = python_interpreter
 
         cmd = [
+            "bpftrace",
             f"{SECIMPORT_ROOT}/profiles/trace.bt",
             "-c",
             entrypoint_cmd,
@@ -369,7 +370,7 @@ sys.setprofile(t)
             raise FileNotFoundError(
                 "The sandbox was not found. Try calling 'secimport trace/trace_pid' and then 'secimport build'."
             )
-        sandbox_startup_cmd = [f"{sandbox_executable}", "--unsafe"]
+        sandbox_startup_cmd = ["bpftrace", f"{sandbox_executable}", "--unsafe"]
         if os.geteuid() != 0:
             sandbox_startup_cmd.insert(0, "sudo")
 
