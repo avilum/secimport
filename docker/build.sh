@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/bin/sh
 
-if [[ "$PWD" =~ docker$ ]]
+if [ "$(basename $PWD)" = docker ]
 then
     echo "Building secimport docker container...";
 else
@@ -16,14 +16,15 @@ echo "USING KERNEL $KERNEL_VERSION"
 BPFTRACE_VERSION=${BPFTRACE_VERSION:-v0.20.3}
 PYTHON_VERSION=${PYTHON_VERSION:-"3.11.8"}
 
-pushd docker
+if [ "$(basename $PWD)" = docker ]
+then
+    cd ..
+fi
 
 docker build \
     --build-arg KERNEL_VERSION=${KERNEL_VERSION} \
     --build-arg BPFTRACE_VERSION=${BPFTRACE_VERSION} \
     --build-arg PYTHON_VERSION=${PYTHON_VERSION} \
-    -t secimport .
-
-popd
+    -t secimport -f docker/docker/Dockerfile .
 
 echo "You can now use the ./run.sh script to try secimport."
