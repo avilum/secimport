@@ -16,10 +16,7 @@ echo "USING KERNEL $KERNEL_VERSION"
 BPFTRACE_VERSION=${BPFTRACE_VERSION:-v0.20.3}
 PYTHON_VERSION=${PYTHON_VERSION:-"3.11.8"}
 
-if [ "$(basename $PWD)" = docker ]
-then
-    cd ..
-fi
+cd ..
 
 docker build \
     --build-arg KERNEL_VERSION=${KERNEL_VERSION} \
