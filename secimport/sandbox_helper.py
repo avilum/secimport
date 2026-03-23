@@ -4,8 +4,40 @@ Import python modules with syscalls supervision.
 Copyright (c) 2022 Avi Lumelsky
 """
 
+import importlib.util
+import sysconfig
 from secimport.backends.common.instrumentation_backend import InstrumentationBackend
 from secimport.backends.common.utils import DEFAULT_BACKEND
+
+# Check if the python interpreter was built with DTrace support (static USDT)
+HAS_STATIC_DTRACE = sysconfig.get_config_var("WITH_DTRACE") == 1
+
+# Optional: stapsdt for dynamic USDT probes as a fallback
+STAPSDT_AVAILABLE = importlib.util.find_spec("stapsdt") is not None
+
+# Global singletons to prevent resource leakage
+_GLOBAL_STAPS_PROVIDER = None
+_GLOBAL_ENTRY_PROBE = None
+
+
+def _get_staps_probe():
+    """Returns a singleton USDT probe if static DTrace is missing and stapsdt is available."""
+    global _GLOBAL_STAPS_PROVIDER, _GLOBAL_ENTRY_PROBE
+
+    # Only use stapsdt if static DTrace is NOT supported by the interpreter
+    if not HAS_STATIC_DTRACE and STAPSDT_AVAILABLE and _GLOBAL_STAPS_PROVIDER is None:
+        import stapsdt
+
+        # To follow the principle of minimum change, we use the standard "python" provider name.
+        # This makes the dynamic probe a drop-in replacement for the missing static probe.
+        _GLOBAL_STAPS_PROVIDER = stapsdt.Provider("python")
+
+        # We also use the standard "function__entry" probe name that secimport already expects.
+        _GLOBAL_ENTRY_PROBE = _GLOBAL_STAPS_PROVIDER.add_probe(
+            "function__entry", stapsdt.ArgTypes.uint64
+        )
+        _GLOBAL_STAPS_PROVIDER.load()
+    return _GLOBAL_ENTRY_PROBE
 
 
 def secure_import(
@@ -33,15 +65,19 @@ def secure_import(
         log_file_system (bool, optional): Whether to log filesystem calls - e.g read, open, write, etc.
         destructive (bool, optional): Whether to kill the process with -9 sigkill upon violation of any of the configurations above.
     Returns:
-        _type_: A Python Module. The module is supervised by a dtrace process with destructive capabilities unless the 'destructive' argument is set to False.
+        _type_: A Python Module. The module is supervised by the selected instrumentation backend (dtrace/ebpf) with destructive capabilities unless the 'destructive' argument is set to False.
     """
+
+    # Get the dynamic probe (will only be initialized if static DTrace is missing)
+    _entry_probe = _get_staps_probe()
 
     if backend == InstrumentationBackend.EBPF:
         from secimport.backends.bpftrace_backend.bpftrace_backend import (
             run_bpftrace_script_for_module,
         )
 
-        assert run_bpftrace_script_for_module(
+        # Replaced assert with explicit check to prevent bypassing security when python is run with optimization (-O)
+        if not run_bpftrace_script_for_module(
             module_name=module_name,
             allow_shells=allow_shells,
             allow_networking=allow_networking,
@@ -51,13 +87,17 @@ def secure_import(
             log_network=log_network,
             log_file_system=log_file_system,
             destructive=destructive,
-        )
+        ):
+            raise RuntimeError(
+                f"Failed to start eBPF instrumentation for module '{module_name}'"
+            )
     elif backend == InstrumentationBackend.DTRACE:
         from secimport.backends.dtrace_backend.dtrace_backend import (
             run_dtrace_script_for_module,
         )
 
-        assert run_dtrace_script_for_module(
+        # Replaced assert with explicit check to ensure the instrumentation is active before importing
+        if not run_dtrace_script_for_module(
             module_name=module_name,
             allow_shells=allow_shells,
             allow_networking=allow_networking,
@@ -67,9 +107,16 @@ def secure_import(
             log_network=log_network,
             log_file_system=log_file_system,
             destructive=destructive,
-        )
+        ):
+            raise RuntimeError(
+                f"Failed to start DTrace instrumentation for module '{module_name}'"
+            )
     else:
         raise NotImplementedError(f"backend '{backend}' is not implemented.")
+
+    # Fire the dynamic probe before import (if applicable)
+    if _entry_probe:
+        _entry_probe.fire(module_name)
 
     _module = __import__(module_name, **kwargs)
     return _module
